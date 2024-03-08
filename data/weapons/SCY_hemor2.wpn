@@ -35,9 +35,8 @@
                     "blowbackSpread":2.0,
                     "particleColor":[100,75,75,50]},
 	"autocharge":true,  # whether the weapon will continue charging and fire if the LMB is tapped instead of held		
-	"projectileSpecId":"heavymauler_shot",  # projectile that will be fired	
+	"projectileSpecId":"SCY_hemor2S",  # projectile that will be fired	
         #"everyFrameEffect":"data.scripts.weapons.SCY_hemorMuzzle",
         "everyFrameEffect":"data.scripts.weapons.SCY_addToMuzzlePlugin",			
 	"fireSoundTwo":"SCY_hemor2",
-	"passThroughMissiles":true,
 }

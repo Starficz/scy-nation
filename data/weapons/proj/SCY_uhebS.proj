@@ -15,4 +15,5 @@
 	"hitGlowRadius":75,	
 	"textureScrollSpeed":10,
 	"pixelsPerTexel":1.0,	
+	"passThroughMissiles":true,
 }

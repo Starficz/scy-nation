@@ -23,6 +23,6 @@
                            "particleColor":[150,200,255,150]},
 	"autocharge":true,  # whether the weapon will continue charging and fire if the LMB is tapped instead of held		
 	#"projectileSpecId":"railgun_shot",  # projectile that will be fired		
-	"projectileSpecId":"hveldriver_shot",  # projectile that will be fired	
+	"projectileSpecId":"SCY_kacc1S",  # projectile that will be fired	
 	"fireSoundTwo":"SCY_kacc1",
 }

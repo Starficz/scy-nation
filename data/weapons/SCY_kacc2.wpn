@@ -25,7 +25,7 @@
 
 	"autocharge":true,  # whether the weapon will continue charging and fire if the LMB is tapped instead of held		
 	#"projectileSpecId":"SCY_kaccS",  # projectile that will be fired		
-	"projectileSpecId":"hveldriver_shot",  # projectile that will be fired	
+	"projectileSpecId":"SCY_kacc2S",  # projectile that will be fired	
         "everyFrameEffect":"data.scripts.weapons.SCY_addToMuzzlePlugin",		
 	"fireSoundTwo":"SCY_kacc2",
 }

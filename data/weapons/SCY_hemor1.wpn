@@ -35,6 +35,6 @@
                     "blowbackSpread":2.0,
                     "particleColor":[100,75,75,50]},
 	"autocharge":true,	
-	"projectileSpecId":"heavymauler_shot",	
+	"projectileSpecId":"SCY_hemor1S",	
 	"fireSoundTwo":"SCY_hemor1",
 }

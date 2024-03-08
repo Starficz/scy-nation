@@ -1,12 +1,12 @@
 {
-    "masterVersionFile":"https://www.dropbox.com/s/gv2fnntn9i03p5a/SCY.version?dl=1",
+    "masterVersionFile":"https://raw.githubusercontent.com/Starficz/scy-nation/master/SCY.version",
     "modName":"Scy Nation",
     "modThreadId":8010,
     "modNexusId":"17",
     "modVersion":
     {
         "major":1,
-        "minor":7,
-        "patch":0,
+        "minor":8,
+        "patch":1,
     },
 }

@@ -27,5 +27,4 @@
 	"autocharge":true,  # whether the weapon will continue charging and fire if the LMB is tapped instead of held		
 	"projectileSpecId":"SCY_uhebS",  # projectile that will be fired		
 	"fireSoundTwo":"SCY_uheb",
-	"passThroughMissiles":true,
 }
