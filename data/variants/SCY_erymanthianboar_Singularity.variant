@@ -1,7 +1,7 @@
 {
     "displayName": "Singularity",
     "fluxCapacitors": 0,
-    "fluxVents": 10,
+    "fluxVents": 9,
     "goalVariant": true,
     "hullId": "SCY_erymanthianboar",
     "hullMods": [
@@ -19,7 +19,7 @@
             "weapons": {
                 "WS0009": "SCY_mrm2",
                 "WS0010": "SCY_mrm2",
-                "WS0002": "SCY_singularity",
+                "WS0002": "SCY_laser3",
                 "WS0003": "SCY_laser2",
             }
         },
