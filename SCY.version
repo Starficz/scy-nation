@@ -1,8 +1,10 @@
 {
-    "masterVersionFile":"https://raw.githubusercontent.com/Starficz/scy-nation/master/SCY.version",
+    "masterVersionFile":"https://raw.githubusercontent.com/Starficz/scy-nation/main/SCY.version",
     "modName":"Scy Nation",
     "modThreadId":8010,
     "modNexusId":"17",
+    "directDownloadURL": "https://github.com/Starficz/scy-nation/releases/latest/download/SCY.zip",
+    "changelogURL": "https://raw.githubusercontent.com/Starficz/scy-nation/main/changelog.md",
     "modVersion":
     {
         "major":1,

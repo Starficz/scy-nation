@@ -1,4 +1,4 @@
-Version 1.8.0
+##Version 1.8.0
 - Scyan Engineering hullmod
 	- Updated Text and Effect
 	- Now grants double flux capactity from all sources
@@ -25,7 +25,7 @@ Version 1.8.0
 	- Allowed markets to generate on loading a save without faction generated
 	- Amity Freeport antique ship dealer is better
 
-Version 1.8.1
+##Version 1.8.1
 - Thanks to Himemi for the following 2:
 	- Updated Scy maps 
 	- Added new material and surface maps
