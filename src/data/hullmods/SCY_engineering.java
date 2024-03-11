@@ -52,7 +52,7 @@ public class SCY_engineering extends BaseHullMod {
     }
     ship.getMutableStats().getFluxCapacity().modifyMult(id, CAP_MULT);
     ship.getMutableStats().getVentRateMult().modifyPercent(id, ship.getVariant().getNumFluxCapacitors()*VENT_PERCENT_PER_CAP);
-    if(!ship.hasListenerOfClass(SCYVentingAI.class)) ship.addListener(new SCYVentingAI(ship));
+    if(!ship.hasListenerOfClass(SCYVentingAI.class) && ship.getHullSize() != HullSize.FIGHTER) ship.addListener(new SCYVentingAI(ship));
   }
 
   public static class SCYVentingAI implements AdvanceableListener{
@@ -60,7 +60,6 @@ public class SCY_engineering extends BaseHullMod {
     public CombatEngineAPI engine;
     public ShipAPI ship;
     public ShipAPI target;
-    public float targetRange;
     public float lastUpdatedTime = 0f;
     public List<StarficzAIUtils.FutureHit> incomingProjectiles = new ArrayList<>();
     public List<StarficzAIUtils.FutureHit> predictedWeaponHits = new ArrayList<>();
@@ -88,20 +87,6 @@ public class SCY_engineering extends BaseHullMod {
         combinedHits.addAll(incomingProjectiles);
         combinedHits.addAll(predictedWeaponHits);
       }
-
-      // update ranges and block firing if system is active
-      float minRange = Float.POSITIVE_INFINITY;
-
-      for (WeaponAPI weapon : ship.getAllWeapons()) {
-        if (!weapon.isDecorative() && !weapon.hasAIHint(WeaponAPI.AIHints.PD) && weapon.getType() != WeaponAPI.WeaponType.MISSILE) {
-          float currentRange = weapon.getRange();
-          minRange = Math.min(currentRange, minRange);
-          if (ship.getSystem().isChargeup()) {
-            weapon.setForceNoFireOneFrame(true);
-          }
-        }
-      }
-      targetRange = minRange;
 
       // calculate how much damage the ship would take if unphased/vent/used system
       float currentTime = Global.getCombatEngine().getTotalElapsedTime(false);

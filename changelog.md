@@ -1,3 +1,6 @@
+## Version 1.8.3
+- Fixed NPE Crash to desktop
+
 ## Version 1.8.2
 - Ship Balance Changes
 	- Nemean Lion
