@@ -1,3 +1,39 @@
+## Version 1.8.2
+- Ship Balance Changes
+	- Nemean Lion
+		- 42 DP -> 45 DP
+	- Keto 
+		+ 190 OP -> 210 OP
+
+	- Logistics ships buffed to more reasonable alternatives vs vanilla
+	- Balius (F) 
+		+ 350 Cargo -> 400 Cargo
+		+ 5 Supplies/month -> 4 Supplies per month
+	- Balius (T) 
+		+ 600 Fuel -> 650 Fuel
+		+ 5 Supplies/month -> 4 Supplies per month
+		- 50 Cargo -> 30 Cargo
+	- Xanthus 
+		+ 20 DP -> 10 DP (Supplies/month were always 10)
+		+ 1200 Cargo -> 1600 Cargo
+		+ 7 Fuel/LY -> 4 Fuel/LY
+		- 700 Fuel -> 300 Fuel
+
+- Weapon Balance Changes
+	- Nano-needle Minigun mk.1
+		+ Gained PD + PD_ALSO tags by default
+	- Arc Missile Rack (small)
+		+ Range 1000 -> 1500
+		- Refire delay 10s -> 15s
+	- Arc Missile Pod (medium)
+		+ Reload rate 15s/missile -> 10s/missile
+
+- Misc updates / Fixes
+	- Faction doctrine nerfed from its 15 points to a vanilla spread of 7
+	- Default aggression moved from Steady to Aggressive
+	- encounter tracks switched from Tri-Tachyon to SCY market
+	- AI core turn-in rewards slightly nerfed
+
 ## Version 1.8.1
 - Thanks to Himemi for the following 2:
 	- Updated Scy maps 

@@ -313,17 +313,17 @@
     "carriers": 3,
     "phaseShips": 0,
 
-    "officerQuality": 5,
-    "shipQuality": 5,
-    "numShips": 5,
+    "officerQuality": 2,
+    "shipQuality": 3,
+    "numShips": 2,
 
     "shipSize": 4,
-    "aggression": 2,
+    "aggression": 3,
 
-    "combatFreighterProbability": 0.2,     				    # instead of some portion of the freighters in a fleet
-    "combatFreighterCombatUseFraction": 0.2,  				# as part of the normal combat lineup
+    "combatFreighterProbability": 0.1,     				    # instead of some portion of the freighters in a fleet
+    "combatFreighterCombatUseFraction": 0.1,  				# as part of the normal combat lineup
     "combatFreighterCombatUseFractionWhenPriority": 0.33,   # as part of normal combat lineup, when marked as priority ship
-    "autofitRandomizeProbability": 0.2,
+    "autofitRandomizeProbability": 0.1,
 
     "commanderSkillsShuffleProbability": 0.5,
     "commanderSkills": [
@@ -349,9 +349,9 @@
     "market_neutral": "SCY_market_interaction_neutral",
     "market_hostile": "SCY_market_interaction_hostile",
     "market_friendly": "SCY_market_interaction_friendly",
-    "encounter_neutral": "music_tritach_encounter_neutral",
-    "encounter_hostile": "music_tritach_encounter_hostile",
-    "encounter_friendly": "music_tritach_encounter_friendly",
+    "encounter_neutral": "SCY_market_interaction_neutral",
+    "encounter_hostile": "SCY_market_interaction_hostile",
+    "encounter_friendly": "SCY_market_interaction_friendly",
   },
 
   "portraits": {
@@ -390,8 +390,8 @@
     "offersCommissions": true,
     "engagesInHostilities": true,
     "buysAICores": true,
-    "AICoreValueMult": 3,
-    "AICoreRepMult": 1,
+    "AICoreValueMult": 2.5,
+    "AICoreRepMult": 0.75,
     "buysSurveyData": true,
     "hostilityImpactOnGrowth": true,
     "punitiveExpeditionData": {
