@@ -19,7 +19,7 @@ public class SCY_talosSystem implements EveryFrameWeaponEffectPlugin {
 
   @Override
   public void advance(float amount, CombatEngineAPI engine, WeaponAPI weapon) {
-    if (engine.isPaused() || !lightOn) {
+    if (engine.isPaused() || !lightOn || weapon.getShip().getShield() == null) {
       return;
     }
 
