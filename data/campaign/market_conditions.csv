@@ -12,4 +12,4 @@ name,id,script,desc,icon,order
 
 #Space-borne Refinery,SCY_spaceRefinery,data.campaign.econ.SCY_spaceRefinery,"The ultimate refining complex, utilizing a vast array of precision-aligned mirrors to focus the infrared emissions of the star to power a high-yield and efficient furnace for processing ores. These specialized stations usually also have large docks to house a mining ship fleet. Produces metals and rare metals, require ores, volatiles and heavy machinery.",graphics/icons/markets/ore_refining_complex.png,30
 
-#Spy Guild,SCY_spyGuild,data.campaign.econ.SCY_spyGuild,"This station is a hub of a wide spying network. Wether it is from governement sanctioned agent, or from passer-by looking to make a buck, everyone ""knows"" something, and is ready to share it for the right price.",graphics/icons/markets/pirate_moot.png,60
+#Spy Guild,SCY_spyGuild,data.campaign.econ.SCY_spyGuild,"This station is a hub of a wide spying network. Whether it is from government sanctioned agents, or from passer-by looking to make a buck, everyone ""knows"" something, and is ready to share it for the right price.",graphics/icons/markets/pirate_moot.png,60
