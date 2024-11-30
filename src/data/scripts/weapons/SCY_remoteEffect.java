@@ -59,7 +59,7 @@ public class SCY_remoteEffect implements EveryFrameWeaponEffectPlugin, OnFireEff
       timer.randomize();
     }
 
-    if (!CONTROLLED.isEmpty()) {
+    if (CONTROLLED.size() > 1) {
       // Fast Missile Rack Hack
       if (FRM) {
         if (!reset) {

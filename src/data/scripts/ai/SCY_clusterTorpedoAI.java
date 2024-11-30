@@ -26,7 +26,7 @@ public class SCY_clusterTorpedoAI implements MissileAIPlugin, GuidedMissileAI {
   // Random starting offset for the waving.
   private final float OFFSET;
 
-  private final float DROP_DELAY = 0.3f;
+  private final float DROP_DELAY = 0.1f;
 
   private CombatEngineAPI engine;
   private final MissileAPI missile;
