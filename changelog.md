@@ -1,3 +1,9 @@
+## Version 1.8.4
+- [Buff] Cluster torpedo full release of bomblets 1.5s -> 0.5s 
+- Fixed NPE Crash on Talos and Stymphalian Bird when shield shunted
+- Rewrote Stymphalian Bird System to work with extra charges from any source
+- Fix Coasting missile Volley Limit
+
 ## Version 1.8.3
 - Fixed NPE Crash to desktop
 
