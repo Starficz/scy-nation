@@ -1,4 +1,4 @@
-// By Tartiflette
+// By Tartiflette, updated by Starficz
 package data.scripts.weapons;
 
 import static data.scripts.util.SCY_txt.txt;
@@ -14,6 +14,7 @@ import com.fs.starfarer.api.combat.ShipSystemAPI;
 import com.fs.starfarer.api.combat.WeaponAPI;
 import com.fs.starfarer.api.graphics.SpriteAPI;
 import com.fs.starfarer.api.util.IntervalUtil;
+import com.fs.starfarer.api.util.Misc;
 import org.magiclib.util.MagicRender;
 import org.magiclib.util.MagicUI;
 import java.awt.Color;
@@ -25,101 +26,93 @@ import org.lwjgl.util.vector.Vector2f;
 
 public class SCY_stymphalianEffect implements EveryFrameWeaponEffectPlugin, OnFireEffectPlugin {
 
-  private boolean runOnce = false,
-      active = false,
-      ready = false,
-      teleporterArmed = true,
-      ventBoost = false,
-      shieldBoost = false;
-
-  private ShipAPI SHIP;
+  private boolean runOnce = false, ventBoost = false, shieldBoost = false, overcharged = false, teleporterArmed = true;
+  private ShipAPI ship;
   private WeaponAPI SPARKS;
   private SpriteAPI HEAT, CAPACITOR, RAILS;
-  private ShipSystemAPI SYSTEM;
+  private ShipSystemAPI system;
   private float SHIELD_ARC = 0, SPARKS_WIDTH;
   private final Color NO_COLOR = new Color(0, 0, 0, 0);
   private int reverse = 1;
-  private float heat = 0, capacitor = 0, rails = 0, flip = 1, overcharge = 0f;
-  private final IntervalUtil timer = new IntervalUtil(0.05f, 0.05f);
+  private float boost = 0f, heat = 0, capacitor = 0, rails = 0, flip = 1;
+  private final IntervalUtil animationTimer = new IntervalUtil(0.05f, 0.05f);
+  private final String ID = "SCY_experimentalTeleporter";
 
   @Override
   public void onFire(DamagingProjectileAPI projectile, WeaponAPI weapon, CombatEngineAPI engine) {
-    if (ready) {
+    if (overcharged) {
 
-      int extraShots = 1 + ((int) Math.round(9 * overcharge));
-      SYSTEM.setAmmo(0);
+      int extraShots = 1 + Math.round(9 * boost);
       rails = 1;
-      overcharge = 0;
+      boost = 0;
       capacitor = 0;
-      ready = false;
+      system.setAmmo(system.getAmmo() - 1);
+      overcharged = false;
 
       for (int y = 0; y < extraShots; y++) {
         engine.spawnProjectile(
-            SHIP,
-            weapon,
-            "SCY_stymphalianSuper",
-            projectile.getLocation(),
-            projectile.getFacing(),
-            SHIP.getVelocity());
-      }
-      engine.spawnProjectile(
-          SHIP,
+          ship,
           weapon,
-          "SCY_stymphalianMain",
+          "SCY_stymphalianSuper",
           projectile.getLocation(),
           projectile.getFacing(),
-          SHIP.getVelocity());
+          ship.getVelocity()
+        );
+      }
+      engine.spawnProjectile(
+        ship,
+        weapon,
+        "SCY_stymphalianMain",
+        projectile.getLocation(),
+        projectile.getFacing(),
+        ship.getVelocity()
+      );
       engine.removeEntity(projectile);
 
       // flash
-      Vector2f speed = SHIP.getVelocity();
-      float facing = SHIP.getFacing();
+      Vector2f speed = ship.getVelocity();
+      float facing = ship.getFacing();
       Vector2f barrel = new Vector2f(150, 0);
       Vector2f tip = VectorUtils.rotate(barrel, facing, barrel);
-      SimpleEntity aim =
-          new SimpleEntity(
-              new Vector2f(weapon.getLocation().x + tip.x, weapon.getLocation().y + tip.y));
+      SimpleEntity aim = new SimpleEntity(new Vector2f(weapon.getLocation().x + tip.x, weapon.getLocation().y + tip.y));
 
-      if (MagicRender.screenCheck(0.25f, SHIP.getLocation())) {
+      if (MagicRender.screenCheck(0.25f, ship.getLocation())) {
         engine.spawnEmpArc(
-            SHIP,
-            weapon.getLocation(),
-            SHIP,
-            aim,
-            DamageType.KINETIC,
-            0,
-            0,
-            1000,
-            null,
-            2,
-            Color.orange,
-            Color.white);
+          ship,
+          weapon.getLocation(),
+          ship,
+          aim,
+          DamageType.KINETIC,
+          0,
+          0,
+          1000,
+          null,
+          2,
+          Color.orange,
+          Color.white
+        );
 
-        engine.addHitParticle(
-            weapon.getLocation(), (Vector2f) speed.scale(.5f), 200, 2, 1f, Color.ORANGE);
-        engine.addHitParticle(
-            weapon.getLocation(), (Vector2f) speed.scale(.5f), 100, 2, 0.2f, Color.white);
+        engine.addHitParticle(weapon.getLocation(), (Vector2f) speed.scale(.5f), 200, 2, 1f, Color.ORANGE);
+        engine.addHitParticle(weapon.getLocation(), (Vector2f) speed.scale(.5f), 100, 2, 0.2f, Color.white);
         for (int x = 0; x < 10; x++) {
           engine.addHitParticle(
-              weapon.getLocation(),
-              MathUtils.getPoint(
-                  null,
-                  MathUtils.getRandomNumberInRange(100, 500),
-                  MathUtils.getRandomNumberInRange(facing - 20f, facing + 20f)),
-              MathUtils.getRandomNumberInRange(3, 10),
-              1f,
-              MathUtils.getRandomNumberInRange(0.5f, 1f),
-              Color.orange);
+            weapon.getLocation(),
+            MathUtils.getPoint(null, MathUtils.getRandomNumberInRange(100, 500), MathUtils.getRandomNumberInRange(facing - 20f, facing + 20f)),
+            MathUtils.getRandomNumberInRange(3, 10),
+            1f,
+            MathUtils.getRandomNumberInRange(0.5f, 1f),
+            Color.orange
+          );
         }
       }
-      CombatUtils.applyForce(SHIP, SHIP.getFacing() + 180, 100 * overcharge);
+      CombatUtils.applyForce(ship, ship.getFacing() + 180, 100 * boost);
       Global.getSoundPlayer()
           .playSound(
               "SCY_spear_chargedFire",
-              1.25f - overcharge / 2,
-              0.5f + overcharge / 2,
-              SHIP.getLocation(),
-              SHIP.getVelocity());
+              1.25f - boost / 2,
+              0.5f + boost / 2,
+              ship.getLocation(),
+              ship.getVelocity());
     }
   }
 
@@ -128,16 +121,16 @@ public class SCY_stymphalianEffect implements EveryFrameWeaponEffectPlugin, OnFi
 
     if (!runOnce) {
       runOnce = true;
-      SHIP = weapon.getShip();
-      SYSTEM = SHIP.getSystem();
-      if (SHIP.getShield() != null) {
-        SHIELD_ARC = SHIP.getShield().getArc();
+      ship = weapon.getShip();
+      system = ship.getSystem();
+      if (ship.getShield() != null) {
+        SHIELD_ARC = ship.getShield().getArc();
       }
 
-      for (WeaponAPI w : SHIP.getAllWeapons()) {
+      for (WeaponAPI w : ship.getAllWeapons()) {
         switch (w.getSlot().getId()) {
           case "Z_SYSTEM1":
-            if (SHIP.getOriginalOwner() != -1 && SHIP.getOwner() != -1) {
+            if (ship.getOriginalOwner() != -1 && ship.getOwner() != -1) {
               w.getAnimation().setFrame(1);
             }
             HEAT = w.getSprite();
@@ -146,13 +139,13 @@ public class SCY_stymphalianEffect implements EveryFrameWeaponEffectPlugin, OnFi
             SPARKS = w;
             break;
           case "Z_SYSTEM3":
-            if (SHIP.getOriginalOwner() != -1 && SHIP.getOwner() != -1) {
+            if (ship.getOriginalOwner() != -1 && ship.getOwner() != -1) {
               w.getAnimation().setFrame(1);
             }
             CAPACITOR = w.getSprite();
             break;
           case "Z_HEAT_MAIN":
-            if (SHIP.getOriginalOwner() != -1 && SHIP.getOwner() != -1) {
+            if (ship.getOriginalOwner() != -1 && ship.getOwner() != -1) {
               w.getAnimation().setFrame(1);
             }
             RAILS = w.getSprite();
@@ -169,219 +162,168 @@ public class SCY_stymphalianEffect implements EveryFrameWeaponEffectPlugin, OnFi
       RAILS.setColor(NO_COLOR);
 
       // spread the load
-      timer.randomize();
+      animationTimer.randomize();
       return;
     }
 
-    // UI
-    UIEffect(overcharge, ready);
+    if(engine.isPaused()) return;
 
-    // timer tic
-    timer.advance(amount);
+    animationTimer.advance(amount);
 
-    // system initial activation
-    if (SYSTEM.isActive() && !active) {
-      active = true;
-      ready = true;
-      overcharge = 1;
-      capacitor = 1;
-      heat = 1;
-      timer.forceIntervalElapsed();
-      teleporterArmed = false;
-      SYSTEM.setAmmo(1);
+    // every frame decays
+    boost = Math.max(0, boost - amount*(2f/15f));
+    heat = Math.max(0, heat - amount/5f);
+    capacitor = Math.max(0, capacitor - amount*(2f/15f));
+    if (heat > 0 || capacitor > 0) {
+      visualEffect();
     }
 
-    if (ready) {
+    // always check the main gun glow
+    rails = Math.max(0, rails - ((float) 1 / 150));
+    RAILS.setColor(new Color(1, 1, 1, rails));
 
-      // teleporter cooldown protection
-      if (SYSTEM.getCooldownRemaining() == 0) {
-        teleporterArmed = true;
+    // if boost is 0, switch off all boosts and overcharged state
+    if(boost == 0){
+      if(overcharged){
+        system.setAmmo(system.getAmmo() - 1);
+        overcharged = false;
+      }
+      if (shieldBoost) {
+        shieldBoost = false;
+        ship.getShield().setArc(SHIELD_ARC);
+        ship.getMutableStats().getShieldUnfoldRateMult().unmodify(ID);
+        ship.getMutableStats().getShieldDamageTakenMult().unmodify(ID);
+      }
+      if (ventBoost) {
+        ventBoost = false;
+        ship.getMutableStats().getVentRateMult().unmodify(ID);
       }
 
-      // weapon boost
-      //            if(weapon.getChargeLevel()==1){
-      ////                weaponEffect(engine,weapon);
-      //                extraShots=1+((int)Math.round(9*overcharge));
-      //                SYSTEM.setAmmo(0);
-      //                rails=1;
-      //                overcharge=0;
-      //                capacitor=0;
-      //                ready=false;
-      //            } else
+      ship.getMutableStats().getTimeMult().unmodify(ID);
+      ship.getMutableStats().getDeceleration().unmodify(ID);
+      ship.getMutableStats().getAcceleration().unmodify(ID);
+      engine.getTimeMult().unmodify(ID);
+    }
+
+    // if system is active without being overcharged, activate/reset to first stage of system and refund the charge
+    if (system.isActive()){
+      if(!overcharged && teleporterArmed){
+        system.setAmmo(system.getAmmo() + 1);
+        overcharged = true;
+        boost = 1;
+        capacitor = 1;
+        heat = 1;
+        shieldBoost = false;
+        ventBoost = false;
+        teleporterArmed = false;
+      }
+    } else{
+      teleporterArmed = true;
+    }
+
+    // Apply first stage of system buffs, and check if any second stage trigger is activated
+    if(overcharged){
+      // First stage of system buffs
+      // Overcharge Trail
+      if (MagicRender.screenCheck(0.25f, ship.getLocation()) && animationTimer.intervalElapsed()) {
+        engine.addHitParticle(
+          ship.getLocation(),
+          new Vector2f(ship.getVelocity().x * 0.5f, ship.getVelocity().y * 0.5f),
+          ship.getCollisionRadius() * (0.5f + boost),
+          boost / 10,
+          MathUtils.getRandomNumberInRange(0.5f, 1f + boost),
+          new Color(0.3f, 0.1f, 0.3f));
+      }
+
+      // Time dilation
+      float dilation = (1 + boost * 2);
+      ship.getMutableStats().getTimeMult().modifyMult(ID, dilation);
+      ship.getMutableStats().getDeceleration().modifyMult(ID, dilation);
+      ship.getMutableStats().getAcceleration().modifyMult(ID, dilation);
+
+      if (ship == engine.getPlayerShip()) engine.getTimeMult().modifyMult(ID, 1f / dilation);
+      else engine.getTimeMult().unmodify(ID);
+
+      // Check second stage triggers
       // shield boost
-      if (SHIP.getShield().isOn()) {
+      if (ship.getShield() != null && ship.getShield().isOn()) {
         shieldBoost = true;
-        SYSTEM.setAmmo(0);
-        ready = false;
-      } else
+        system.setAmmo(system.getAmmo() - 1);
+        overcharged = false;
+      }
       // system reuse
-      if (SYSTEM.isActive() && teleporterArmed) {
-        overcharge = 0;
-        ready = false;
-      } else
+      else if (system.isActive() && teleporterArmed) {
+        teleporterArmed = false;
+        overcharged = false;
+      }
       // venting boost
-      if (SHIP.getFluxTracker().isVenting()) {
+      else if (ship.getFluxTracker().isVenting()) {
         ventBoost = true;
-        SYSTEM.setAmmo(0);
-        Global.getSoundPlayer()
-            .playSound("SCY_enhancedVent", 1f, 1, SHIP.getLocation(), SHIP.getVelocity());
-        ready = false;
+        Global.getSoundPlayer().playSound("SCY_enhancedVent", 1f, 1, ship.getLocation(), ship.getVelocity());
+        system.setAmmo(system.getAmmo() - 1);
+        overcharged = false;
       }
-
-    } else if (weapon.getChargeLevel() == 1) {
-      rails = Math.min(1, rails + 0.5f);
-      RAILS.setColor(new Color(1, 1, 1, rails));
     }
 
-    // OVERCHARGE IS ACTIVE
 
-    // 20fps check
-    if (timer.intervalElapsed()) {
 
-      if (active) {
-        // overcharge fading
-        overcharge = Math.max(0, overcharge - ((float) 1 / 150));
+    // Apply second stage buffs if active
+    if (shieldBoost) {
+      ship.getShield().setArc(SHIELD_ARC + (270 * boost));
+      ship.getMutableStats().getShieldUnfoldRateMult().modifyMult(ID, 10f * boost);
+      ship.getMutableStats().getShieldDamageTakenMult().modifyMult(ID, 1 - (1 * boost));
 
-        String ID = "SCY_experimentalTeleporter";
-        if (overcharge > 0) {
+      if (MagicRender.screenCheck(0.5f, ship.getLocation()) && animationTimer.intervalElapsed()) {
+        engine.addHitParticle(
+          MathUtils.getPoint(ship.getShield().getLocation(), ship.getShield().getRadius(),
+                  (int) MathUtils.getRandomNumberInRange(ship.getFacing() - (ship.getShield().getArc() / 2), ship.getFacing() + (ship.getShield().getArc() / 2))),
+          ship.getVelocity(),
+          5 + (float) Math.random() * 5,
+          1f,
+          0.1f + (float) Math.random() * 0.2f,
+          new Color(125, 200, 250, 150));
+      }
+    }
 
-          // shieldBoost
-          if (shieldBoost) {
-            SHIP.getShield().setArc(SHIELD_ARC + (270 * overcharge));
-            SHIP.getMutableStats().getShieldUnfoldRateMult().modifyMult(ID, 10f * overcharge);
-            SHIP.getMutableStats().getShieldDamageTakenMult().modifyMult(ID, 1 - (1 * overcharge));
+    if (ventBoost) {
+      ship.getMutableStats().getVentRateMult().modifyMult(ID, 10f * boost);
 
-            if (MagicRender.screenCheck(0.5f, SHIP.getLocation())) {
-              engine.addHitParticle(
-                  MathUtils.getPoint(
-                      SHIP.getShield().getLocation(),
-                      SHIP.getShield().getRadius(),
-                      (int)
-                          MathUtils.getRandomNumberInRange(
-                              SHIP.getFacing() - (SHIP.getShield().getArc() / 2),
-                              SHIP.getFacing() + (SHIP.getShield().getArc() / 2))),
-                  SHIP.getVelocity(),
-                  5 + (float) Math.random() * 5,
-                  1f,
-                  0.1f + (float) Math.random() * 0.2f,
-                  new Color(125, 200, 250, 150));
-            }
-          } else
+      // overcharge quickly dissipates
+      boost = Math.max(0, boost - amount/3f);
 
-          // ventBoost
-          if (ventBoost) {
-            SHIP.getMutableStats().getVentRateMult().modifyMult(ID, 10f * overcharge);
-
-            // overcharge quickly dissipates
-            overcharge = Math.max(0, overcharge - (float) 1 / 60);
-
-            // STEAM
-            if (SHIP.getFluxTracker().isVenting()
-                && MagicRender.screenCheck(0.1f, SHIP.getLocation())) {
-              for (int x = 0; x < Math.round(10 * overcharge); x++) {
-                engine.addSmokeParticle(
-                    SHIP.getLocation(),
-                    MathUtils.getRandomPointInCircle(null, 50),
-                    MathUtils.getRandomNumberInRange(25f, 100f),
-                    MathUtils.getRandomNumberInRange(0.1f, 0.2f),
-                    MathUtils.getRandomNumberInRange(0.2f, 2f),
-                    new Color(1, 1, 1, 0.1f));
-              }
-            }
-          }
-
-          // Overcharge Trail
-          if (MagicRender.screenCheck(0.25f, SHIP.getLocation())) {
-            engine.addHitParticle(
-                SHIP.getLocation(),
-                new Vector2f(SHIP.getVelocity().x * 0.5f, SHIP.getVelocity().y * 0.5f),
-                SHIP.getCollisionRadius() * (0.5f + overcharge),
-                overcharge / 10,
-                MathUtils.getRandomNumberInRange(0.5f, 1f + overcharge),
-                new Color(0.3f, 0.1f, 0.3f));
-          }
-
-          // Time dilation
-          float dilation = (1 + overcharge * 2);
-          SHIP.getMutableStats().getTimeMult().modifyMult(ID, dilation);
-          SHIP.getMutableStats().getDeceleration().modifyMult(ID, dilation);
-          SHIP.getMutableStats().getAcceleration().modifyMult(ID, dilation);
-
-          if (SHIP == engine.getPlayerShip()) {
-            engine.getTimeMult().modifyMult(ID, 1f / dilation);
-          } else {
-            engine.getTimeMult().unmodify(ID);
-          }
-
-        } else { // RESTORE EVERYTHING
-          overcharge = 0;
-          ready = false;
-          SYSTEM.setAmmo(0);
-          if (shieldBoost) {
-            shieldBoost = false;
-            SHIP.getShield().setArc(SHIELD_ARC);
-            SHIP.getMutableStats().getShieldUnfoldRateMult().unmodify(ID);
-            SHIP.getMutableStats().getShieldDamageTakenMult().unmodify(ID);
-          }
-          if (ventBoost) {
-            ventBoost = false;
-            SHIP.getMutableStats().getVentRateMult().unmodify(ID);
-          }
-
-          SHIP.getMutableStats().getTimeMult().unmodify(ID);
-          SHIP.getMutableStats().getDeceleration().unmodify(ID);
-          SHIP.getMutableStats().getAcceleration().unmodify(ID);
-          engine.getTimeMult().unmodify(ID);
-        }
-
-        // visual effect
-        heat = Math.max(0, heat - ((float) 1 / 100));
-        capacitor = Math.max(0, capacitor - (float) 1 / 150);
-        if (heat <= 0 && capacitor <= 0) {
-          active = false;
-        } else {
-          visualEffect();
+      // STEAM
+      if (ship.getFluxTracker().isVenting() && MagicRender.screenCheck(0.1f, ship.getLocation()) && animationTimer.intervalElapsed()) {
+        for (int x = 0; x < Math.round(10 * boost); x++) {
+          engine.addSmokeParticle(
+            ship.getLocation(),
+            MathUtils.getRandomPointInCircle(null, 50),
+            MathUtils.getRandomNumberInRange(25f, 100f),
+            MathUtils.getRandomNumberInRange(0.1f, 0.2f),
+            MathUtils.getRandomNumberInRange(0.2f, 2f),
+            new Color(1, 1, 1, 0.1f));
         }
       }
-
-      // always check the main gun glow
-      rails = Math.max(0, rails - ((float) 1 / 150));
-      RAILS.setColor(new Color(1, 1, 1, rails));
     }
+
+    // UI
+    MagicUI.drawInterfaceStatusBar(ship, boost, overcharged ? Misc.getNegativeHighlightColor() : null, null, 0, txt("wpn_bird"), Math.round(boost * 100));
 
     // SOUND
-    if (ready) {
-      Global.getSoundPlayer()
-          .playLoop(
-              "system_emp_emitter_loop",
-              SHIP,
-              2f + overcharge,
-              overcharge / 2,
-              SHIP.getLocation(),
-              SHIP.getVelocity());
-      Global.getSoundPlayer()
-          .playLoop(
-              "SCY_deconstruction_loop",
-              SHIP,
-              0.2f + overcharge / 2,
-              overcharge / 2,
-              SHIP.getLocation(),
-              SHIP.getVelocity());
-    }
-  }
-
-  //////////////////////////////
-  //                          //
-  //       UI FEEDBACK        //
-  //                          //
-  //////////////////////////////
-
-  private void UIEffect(Float charge, boolean overcharge) {
-    if (overcharge) {
-      MagicUI.drawInterfaceStatusBar(
-          SHIP, charge, Color.RED, null, charge, txt("wpn_bird"), Math.round(charge * 100));
-    } else {
-      MagicUI.drawInterfaceStatusBar(SHIP, heat, null, null, 0, txt("wpn_bird"), 0);
+    if (overcharged) {
+      Global.getSoundPlayer().playLoop(
+        "system_emp_emitter_loop",
+        ship,
+        2f + boost,
+        boost / 2,
+        ship.getLocation(),
+        ship.getVelocity());
+      Global.getSoundPlayer().playLoop(
+        "SCY_deconstruction_loop",
+        ship,
+        0.2f + boost / 2,
+        boost / 2,
+        ship.getLocation(),
+        ship.getVelocity());
     }
   }
 
@@ -393,13 +335,7 @@ public class SCY_stymphalianEffect implements EveryFrameWeaponEffectPlugin, OnFi
 
   private void visualEffect() {
     // capacitor
-    float capacitorAlpha =
-        Math.min(
-            1,
-            Math.max(
-                0,
-                (1 - 1 / (float) Math.pow(capacitor + 1, 2))
-                    + capacitor * ((float) Math.random() / 2)));
+    float capacitorAlpha = Math.min(1, Math.max(0, (1 - 1 / (float) Math.pow(capacitor + 1, 2))+ capacitor * ((float) Math.random() / 2)));
     CAPACITOR.setColor(new Color(capacitorAlpha, capacitorAlpha, 1, capacitorAlpha));
 
     // heat
@@ -407,8 +343,7 @@ public class SCY_stymphalianEffect implements EveryFrameWeaponEffectPlugin, OnFi
 
     // spakles
     int frame = SPARKS.getAnimation().getFrame();
-    if (Math.random()
-        > 1 - overcharge) { // chance to skip the animation that grows as the Overcharge dwindle
+    if (Math.random() > 1 - boost) { // chance to skip the animation that grows as the Overcharge dwindle
       if (frame == 0) { // random start
         frame = (int) Math.round(Math.random() * (SPARKS.getAnimation().getNumFrames() - 1));
         if (Math.random() > 0.5) { // random flip
