@@ -1,10 +1,10 @@
 package data.scripts.weapons;
 
+
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.combat.CombatEngineAPI;
 import com.fs.starfarer.api.combat.EveryFrameWeaponEffectPlugin;
 import com.fs.starfarer.api.combat.ShipAPI;
-// import com.fs.starfarer.api.combat.ShipSystemAPI;
 import com.fs.starfarer.api.combat.WeaponAPI;
 import com.fs.starfarer.api.graphics.SpriteAPI;
 import org.magiclib.util.MagicAnim;
@@ -47,7 +47,6 @@ public class SCY_lionAnimation implements EveryFrameWeaponEffectPlugin {
         switch (w.getSlot().getId()) {
           case "D_FL":
             WFL = w;
-            WFL.getAnimation().setFrame(1);
             DFL = WFL.getSprite();
             dfX = DFL.getCenterX();
             dfY = DFL.getCenterY();
@@ -55,13 +54,11 @@ public class SCY_lionAnimation implements EveryFrameWeaponEffectPlugin {
             break;
           case "D_FR":
             WFR = w;
-            WFR.getAnimation().setFrame(1);
             DFR = WFR.getSprite();
             log.info("Front Right deco: " + WFR.getId());
             break;
           case "D_RL":
             WRL = w;
-            WRL.getAnimation().setFrame(1);
             DRL = WRL.getSprite();
             drX = DRL.getCenterX();
             drY = DRL.getCenterY();
@@ -69,7 +66,6 @@ public class SCY_lionAnimation implements EveryFrameWeaponEffectPlugin {
             break;
           case "D_RR":
             WRR = w;
-            WRR.getAnimation().setFrame(1);
             DRR = WRR.getSprite();
             log.info("Rear Right deco: " + WRR.getId());
             break;
@@ -89,25 +85,21 @@ public class SCY_lionAnimation implements EveryFrameWeaponEffectPlugin {
               case "M_FL":
                 MFL = m;
                 FL = true;
-                WFL.getAnimation().setFrame(1);
                 log.info("Front Left module: " + m.getHullSpec().getHullId());
                 break;
               case "M_FR":
                 MFR = m;
                 FR = true;
-                WFR.getAnimation().setFrame(1);
                 log.info("Front Right module: " + m.getHullSpec().getHullId());
                 break;
               case "M_RL":
                 MRL = m;
                 RL = true;
-                WRL.getAnimation().setFrame(1);
                 log.info("Rear Left module: " + m.getHullSpec().getHullId());
                 break;
               case "M_RR":
                 MRR = m;
                 RR = true;
-                WRR.getAnimation().setFrame(1);
                 log.info("Rear Right module: " + m.getHullSpec().getHullId());
                 break;
             }
@@ -118,25 +110,25 @@ public class SCY_lionAnimation implements EveryFrameWeaponEffectPlugin {
       }
       return;
     }
-
+    Color tranparent = new Color(0, 0, 0, 0);
     // check if the modules are alive and hide the deco weapon otherwise
     if (FL && !MFL.isAlive()) {
-      WFL.getAnimation().setFrame(0);
+      DFL.setColor(tranparent);
       FL = false;
       log.info("Front Left module absent");
     }
     if (FR && !MFR.isAlive()) {
-      WFR.getAnimation().setFrame(0);
+      DFR.setColor(tranparent);
       FR = false;
       log.info("Front Right module absent");
     }
     if (RL && !MRL.isAlive()) {
-      WRL.getAnimation().setFrame(0);
+      DRL.setColor(tranparent);
       RL = false;
       log.info("Rear Left module absent");
     }
     if (RR && !MRR.isAlive()) {
-      WRR.getAnimation().setFrame(0);
+      DRR.setColor(tranparent);
       RR = false;
       log.info("Rear Right module absent");
     }

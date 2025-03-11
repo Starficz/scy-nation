@@ -3,7 +3,7 @@
     "hullId": "SCY_lionFL",
     "hullSize": "FRIGATE",
     "style": "SCYHULL",
-    "spriteName": "graphics/SCY/ships/SCY_nemeanLion_armorFrontLeft_01.png",
+    "spriteName": "graphics/SCY/ships/SCY_nemeanLion_armorFrontLeft.png",
     "height": 269,
     "width": 104,
     "center": [

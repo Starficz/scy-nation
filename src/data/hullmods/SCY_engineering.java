@@ -83,7 +83,7 @@ public class SCY_engineering extends BaseHullMod {
         incomingProjectiles = StarficzAIUtils.incomingProjectileHits(ship, ship.getLocation());
         float timeToPredict = Math.max(ship.getFluxTracker().getTimeToVent() + damageTracker.getMaxInterval(), 3f);
         predictedWeaponHits = StarficzAIUtils.generatePredictedWeaponHits(ship, ship.getLocation(), timeToPredict);
-        combinedHits = new ArrayList<>();
+        combinedHits.clear();
         combinedHits.addAll(incomingProjectiles);
         combinedHits.addAll(predictedWeaponHits);
       }
