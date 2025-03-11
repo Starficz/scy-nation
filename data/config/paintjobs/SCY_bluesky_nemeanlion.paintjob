@@ -1,0 +1,8 @@
+{
+	"decos": {
+		"D_FL": "graphics/SCY/ships/bluesky/SCY_nemeanLion_armorFrontLeft.png",
+		"D_FR": "graphics/SCY/ships/bluesky/SCY_nemeanLion_armorFrontRight.png",
+		"D_RL": "graphics/SCY/ships/bluesky/SCY_nemeanLion_armorRearLeft.png",
+		"D_RR": "graphics/SCY/ships/bluesky/SCY_nemeanLion_armorRearRight.png"
+	}
+}
