@@ -1,0 +1,14 @@
+id,paintjobFamilies,weaponIds,spriteMap
+#decos,,,
+SCY_bluesky_lion_armor_deco_FL,Bluesky,SCY_WWlionAFL,graphics/SCY/ships/SCY_nemeanLion_armorFrontLeft.png -> graphics/bluesky/ships/SCY_nemeanLion_armorFrontLeft.png
+SCY_bluesky_lion_armor_deco_FR,Bluesky,SCY_WWlionAFR,graphics/SCY/ships/SCY_nemeanLion_armorFrontRight.png -> graphics/bluesky/ships/SCY_nemeanLion_armorFrontRight.png
+SCY_bluesky_lion_armor_deco_RL,Bluesky,SCY_WWlionARL,graphics/SCY/ships/SCY_nemeanLion_armorRearLeft.png -> graphics/bluesky/ships/SCY_nemeanLion_armorRearLeft.png
+SCY_bluesky_lion_armor_deco_RR,Bluesky,SCY_WWlionARR,graphics/SCY/ships/SCY_nemeanLion_armorRearRight.png -> graphics/bluesky/ships/SCY_nemeanLion_armorRearRight.png
+SCY_bluesky_keto_gun_patch,Bluesky,SCY_WketoAMaskL,graphics/SCY/ships/deco/SCY_keto_patchGun.png -> graphics/bluesky/ships/deco/SCY_keto_patchGun.png
+SCY_bluesky_keto_flightdeck_patch,Bluesky,SCY_WketoAMaskR,graphics/SCY/ships/deco/SCY_keto_patchFlightdeck.png -> graphics/bluesky/ships/deco/SCY_keto_patchFlightdeck.png
+SCY_bluesky_siren_door_FL,Bluesky,SCY_XXsirenDoorFL,graphics/SCY/ships/deco/SCY_siren_doorFrontLeft.png -> graphics/bluesky/ships/deco/SCY_siren_doorFrontLeft.png
+SCY_bluesky_siren_door_FR,Bluesky,SCY_XXsirenDoorFR,graphics/SCY/ships/deco/SCY_siren_doorFrontRight.png -> graphics/bluesky/ships/deco/SCY_siren_doorFrontRight.png
+SCY_bluesky_siren_door_RL,Bluesky,SCY_XXsirenDoorRL,graphics/SCY/ships/deco/SCY_siren_doorRearLeft.png -> graphics/bluesky/ships/deco/SCY_siren_doorRearLeft.png
+SCY_bluesky_siren_door_RR,Bluesky,SCY_XXsirenDoorRR,graphics/SCY/ships/deco/SCY_siren_doorRearRight.png -> graphics/bluesky/ships/deco/SCY_siren_doorRearRight.png
+SCY_bluesky_talos_bridge,Bluesky,SCY_ZtalosBridge,graphics/SCY/ships/deco/SCY_talos_bridge.png -> graphics/bluesky/ships/deco/SCY_talos_bridge.png
+SCY_bluesky_tisiphone_bridge,Bluesky,SCY_ZtisiphoneBridge,graphics/SCY/ships/deco/SCY_tisiphone_bridge.png -> graphics/bluesky/ships/deco/SCY_tisiphone_bridge.png

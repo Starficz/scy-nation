@@ -1,8 +1,0 @@
-{
-	"decos": {
-		"F_GUNLEFT": "graphics/SCY/ships/bluesky/deco/SCY_siren_doorFrontLeft.png",
-		"F_GUNRIGHT": "graphics/SCY/ships/bluesky/deco/SCY_siren_doorFrontRight.png",
-		"G_GUNLEFT": "graphics/SCY/ships/bluesky/deco/SCY_siren_doorRearLeft.png",
-		"G_GUNRIGHT": "graphics/SCY/ships/bluesky/deco/SCY_siren_doorRearRight.png"
-	}
-}
