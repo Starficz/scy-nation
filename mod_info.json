@@ -1,20 +1,20 @@
 {
 	"id":"SCY",
 	"name":"Scy Nation",
-	"author":"Created by Tartiflette. Music by Fastland. With the help of Debido, Mesotronik, Dark Revenant, Histidine, Silentstormpt, SniZupGun, Deathfly, 19_30 and many others.",
-	"version": {"major":'1', "minor":'8', "patch":'4'},
+	"author":"Created by Tartiflette. Music by Fastland. Maintained by Starficz. Originally created with the help of Debido, Mesotronik, Dark Revenant, Histidine, Silentstormpt, SniZupGun, Deathfly, 19_30 and many others.",
+	"version": {"major":"1", "minor":"9", "patch":"0"},
     "description":" Blood-thirsty pirates for some, ruthless slavers for others, treacherous spies for the rest... The Sector is a tough place to live in, and like many others the Scyan people have been forced to compromise their principles in order to survive.",
-    "gameVersion": "0.97a-RC11",
+    "gameVersion": "0.98a-RC7",
     "dependencies": [
         {
             "id": "lw_lazylib",
-            "name": "LazyLib",
+            "name": "LazyLib"
         },
         {
             "id": "MagicLib",
-            "name": "MagicLib",
-        },
+            "name": "MagicLib"
+        }
     ],
 	"jars":["jars/SCY_code.jar"],
-        "modPlugin":"data.scripts.SCY_modPlugin",
+    "modPlugin":"data.scripts.SCY_modPlugin"
 }

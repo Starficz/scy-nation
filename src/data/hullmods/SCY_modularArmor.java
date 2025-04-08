@@ -267,6 +267,7 @@ public class SCY_modularArmor extends BaseHullMod {
           float width,
           boolean isForModSpec) {
 
+    if (ship == null) return;
     ShipVariantAPI variant = Global.getSettings().getVariant(ship.getHullSpec().getBaseHullId() + "_combat");
 
 
