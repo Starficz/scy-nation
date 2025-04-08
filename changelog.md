@@ -1,3 +1,7 @@
+## Version 1.9.0
+- Integrated MagicPaintjob support for the Bluesky Skin
+- 0.98a release
+
 ## Version 1.8.4
 - [Buff] Cluster torpedo full release of bomblets 1.5s -> 0.5s 
 - Fixed NPE Crash on Talos and Stymphalian Bird when shield shunted
