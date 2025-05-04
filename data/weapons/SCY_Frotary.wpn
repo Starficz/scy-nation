@@ -28,5 +28,5 @@
 	"interruptibleBurst":true,
 	"projectileSpecId":"vulcan_shot",  # projectile that will be fired
 	"fireSoundTwo":"vulcan_cannon_fire",	
-        "everyFrameEffect":"data.scripts.weapons.SCY_minigunAnimation",
+        "everyFrameEffect":"org.scy.weapons.SCY_minigunAnimation",
 }

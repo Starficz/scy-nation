@@ -1,14 +1,15 @@
 package data.scripts;
 
-import static data.scripts.util.SCY_txt.txt;
-
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.fleet.FleetMemberAPI;
 import com.fs.starfarer.api.util.IntervalUtil;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.scy.SCY_txt.txt;
 
 public class SCY_shipsStealth implements EveryFrameScript {
 

@@ -18,7 +18,7 @@
 		"cloudTexture":"graphics/planets/US_clouds_textureSwept.png",
 		"cloudColor":[40,50,240,100],
 		"cloudRotation":-2,
-		"cloudOffset":2,
+		"cloudOffset":2
 	},
 	"SCY_homePlanet":{
 		"name":"Elysee",
@@ -37,7 +37,7 @@
 		"cloudColor":[255,230,200,200],
 		"cloudRotation":-5,
 		"cloudOffset":2,	
-		"glowTexture":"graphics/SCY/planets/SCY_elysee_lights.jpg",
+		"glowTexture":"graphics/SCY/planets/SCY_elysee_lights.jpg"
 	},
 	"SCY_miningColony":{
 		"name":"Mining Colony",
@@ -69,7 +69,7 @@
 		"starCoronaColor":[255,125,200,60],
 		"starCoronaSizeMult":5.12,
 		"isStar":true,
-		"lightPosition":[0,0,10],
+		"lightPosition":[0,0,10]
 	},	
 	"SCY_burntPlanet":{
 		"name":"Naked Planet Core",	
@@ -104,7 +104,7 @@
 		"cloudTexture":"graphics/planets/US_clouds_textureSwept.png",
 		"cloudColor":[215,255,230,100],
 		"cloudRotation":-10,
-		"cloudOffset":2,	
+		"cloudOffset":2
 	},
 	"SCY_moon":{
 		"name":"Moon",	
@@ -119,7 +119,7 @@
 		"icon":"graphics/warroom/icon_planet.png",
 		"iconColor":[102,103,106,255],
 		"isStar":false,
-		"lightPosition":[-2,-8,10],
+		"lightPosition":[-2,-8,10]
 	},
 	"SCY_redRock":{
 		"name":"Red Rock",
@@ -137,7 +137,7 @@
 		"lightPosition":[-10,1,0],
 		"cloudTexture":"graphics/planets/US_clouds_textureSoft.png",
 		"cloudColor":[255,230,200,150],
-		"cloudRotation":-5,
+		"cloudRotation":-5
 	},	        
         "SCY_tartarus":{
 		"name":"Tartarus",
@@ -159,7 +159,7 @@
 		"cloudColor":[40,50,240,100],
 		"cloudRotation":-2,
 		"cloudOffset":2,
-		"glowTexture":"graphics/SCY/planets/SCY_tartarus_light.jpg",
+		"glowTexture":"graphics/SCY/planets/SCY_tartarus_light.jpg"
 	},
 	"SCY_wormholeUnder":{
 		"name":"WormholeBG",
@@ -180,7 +180,7 @@
 		"cloudTexture":"graphics/planets/wormhole_textureClouds.png",
 		"cloudColor":[255,255,255,100],
 		"cloudRotation":-5,
-		"cloudOffset":2, 
+		"cloudOffset":2
 	},
 	"SCY_wormholeA":{
 		"name":"WormholeFG",
@@ -201,7 +201,7 @@
 		"cloudColor":[255,255,255,64],
 		"cloudRotation":18,
 		"cloudOffset":3,	
-		"glowTexture":"graphics/planets/wormhole_textureLightA.jpg",
+		"glowTexture":"graphics/planets/wormhole_textureLightA.jpg"
 	},
 	"SCY_wormholeB":{
 		"name":"WormholeFG",
@@ -222,7 +222,7 @@
 		"cloudColor":[255,255,255,32],
 		"cloudRotation":-27, 
 		"cloudOffset":4, 
-		"glowTexture":"graphics/planets/wormhole_textureLightB.jpg", 
+		"glowTexture":"graphics/planets/wormhole_textureLightB.jpg"
 	},
 	"SCY_wormholeC":{
 		"name":"WormholeFG",
@@ -243,8 +243,8 @@
 		"cloudColor":[255,255,255,0],
 		"cloudRotation":-24, 
 		"cloudOffset":5, 
-		"glowTexture":"graphics/planets/wormhole_textureLightC.jpg", 
-	},
+		"glowTexture":"graphics/planets/wormhole_textureLightC.jpg"
+	}
 }
 
 

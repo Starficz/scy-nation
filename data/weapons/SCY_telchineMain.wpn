@@ -3,7 +3,7 @@
 	"id":"SCY_telchineMain",
 	"type":"ENERGY",
 	"size":"LARGE",
-        "beamEffect":"data.scripts.weapons.SCY_deconstructionEffect",
+        "beamEffect":"org.scy.weapons.SCY_deconstructionEffect",
 	"displayArcRadius":600,
 	"turretSprite":"graphics/SCY/weapons/SCY_deconstructionT.png",
 	"turretGlowSprite":"graphics/SCY/weapons/SCY_deconstructionG.png",

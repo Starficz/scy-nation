@@ -42,5 +42,5 @@
 		"contrailColor":[0,0,0,0],
 		"engineGlowGlowMult":3,
 		"type":"GLOW" # GLOW or SMOKE
-	},
+	}
 }	

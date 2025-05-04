@@ -26,6 +26,6 @@
                     "blowbackSpread":10.0,
                     "particleColor":[100,100,100,200]},
 	"projectileSpecId":"SCY_coastingS",
-        "everyFrameEffect":"data.scripts.weapons.SCY_remoteEffect",
+        "everyFrameEffect":"org.scy.weapons.SCY_remoteEffect",
 	"fireSoundTwo":"harpoon_fire",
 }

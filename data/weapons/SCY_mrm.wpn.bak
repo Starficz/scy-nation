@@ -85,6 +85,6 @@
                      "blowbackSpread":6.0,
                      "particleColor":[190,180,160,95]},
 	"projectileSpecId":"SCY_mrmS",
-	#"everyFrameEffect":"data.scripts.weapons.SCY_manticoreSwarmAnimation",
+	#"everyFrameEffect":"org.scy.weapons.SCY_manticoreSwarmAnimation",
 	"fireSoundTwo":"SCY_mrm_fire",
 }

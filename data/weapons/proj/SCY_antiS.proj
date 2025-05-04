@@ -34,6 +34,6 @@
 			"length":40.0,
 			"angle":180.0
                         }],
-        "onHitEffect":"data.scripts.weapons.SCY_flakEffect",
+        "onHitEffect":"org.scy.weapons.SCY_flakEffect",
         "renderTargetIndicator":false,
 }

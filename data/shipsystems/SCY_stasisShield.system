@@ -1,9 +1,10 @@
 {
     "id":"SCY_stasisShield",
     "type":"SHIELD_MOD",
-    "aiType":"FORTRESS_SHIELD",
+    "aiType":"CUSTOM",
+    "aiScript":"org.scy.shipsystems.ai.SCY_stasisShieldAI",
 
-    "statsScript":"data.shipsystems.scripts.SCY_stasisShieldStats",
+    "statsScript":"org.scy.shipsystems.SCY_stasisShieldStats",
 
     "shieldRingColor":[100,200,250,255],
     "shieldInnerColor":[25,75,100,120],

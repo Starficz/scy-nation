@@ -1,7 +1,7 @@
 {
 	"id":"SCY_ketoMainS",
 	"specClass":"projectile",
-	"onHitEffect":"data.scripts.weapons.SCY_ketoMainGunEffect",
+	"onHitEffect":"org.scy.weapons.SCY_ketoMainGunEffect",
 	"spawnType":"BALLISTIC_AS_BEAM",
 	"collisionClass":"RAY",
 	"collisionClassByFighter":"NONE",

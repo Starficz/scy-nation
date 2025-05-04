@@ -45,7 +45,7 @@
 			"SCY_erymanthianboar":0.75,
 			
 			"SCY_keto":0.5,
-			"SCY_nemeanlion":0.75,
+			"SCY_nemeanlion":0.75
 		},
 		
 		# Ships in this list may be chosen as a derelict for the derelict bar event,
@@ -55,7 +55,7 @@
 			# This ship will only be available at your faction's markets
 			"SCY_stymphalianbird":1,
 			"SCY_siren":1,
-			"SCY_khalkotauroi":1,
+			"SCY_khalkotauroi":1
 		},
 		
 		# Edit the values in the lists below to change the probability of fleets from

@@ -31,5 +31,5 @@
                         "sound":"explosion_flak"
                 },
         },
-	#"onHitEffect":"data.scripts.weapons.SCY_interceptEffect",	
+	#"onHitEffect":"org.scy.weapons.SCY_interceptEffect",
 }

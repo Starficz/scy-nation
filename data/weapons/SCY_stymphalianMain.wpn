@@ -26,5 +26,5 @@
 	"autocharge":true,  # whether the weapon will continue charging and fire if the LMB is tapped instead of held		
 	"projectileSpecId":"SCY_spearS",		
 	"fireSoundTwo":"SCY_spear_fire",
-        "everyFrameEffect":"data.scripts.weapons.SCY_stymphalianEffect",
+        "everyFrameEffect":"org.scy.weapons.SCY_stymphalianEffect",
 }

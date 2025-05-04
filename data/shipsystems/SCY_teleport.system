@@ -2,7 +2,7 @@
     "id":"SCY_teleport",
     "type":"STAT_MOD",
     "aiType":"CUSTOM",
-    "aiScript":"data.shipsystems.scripts.ai.SCY_teleportingShellAI",
+    "aiScript":"org.scy.shipsystems.ai.SCY_teleportingShellAI",
 
     "weaponGlowColor":[100,150,250,255],
     "weaponTypes":[BALLISTIC, ENERGY],

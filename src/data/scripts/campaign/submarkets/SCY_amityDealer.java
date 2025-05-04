@@ -14,7 +14,7 @@ import org.magiclib.util.MagicSettings;
 import java.util.ArrayList;
 import java.util.List;
 
-import static data.scripts.util.SCY_txt.txt;
+import static org.scy.SCY_txt.txt;
 
 public class SCY_amityDealer extends BaseSubmarketPlugin {
 

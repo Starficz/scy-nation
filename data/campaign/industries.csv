@@ -1,27 +1,27 @@
 id,name,cost mult,build time,income,upkeep,downgrade,upgrade,tags,data,image,plugin,desc,order
-SCY_incom,Intelligence Command Center,500,150,,75,,,"military, industry, unraidable, tactical_bombardment",,graphics/SCY/icons/industry/SCY_incom.png,data.campaign.econ.industries.SCY_incom,"A central agency managing Sector-wide intelligence activities. By collecting sensitive data in a single place, a lot can be extrapolated through cross-referencing. Secret locations can then be pin-pointed in about two to five months (although it does decrease as the market increases in size with more traffic). However maintaining a network of connections and secure communication channels has quite a hefty cost. Installing an Alpha AI would significantly speed-up the process, if such thing was allowed of course.",300
-SCY_antimatter,Antimatter Net,100,60,,10,,,"fuelprod, industry, industrial",,graphics/SCY/icons/industry/SCY_antimatter.png,data.campaign.econ.industries.SCY_antimatter,"Collects naturally occurring antimatter ions from the magnetic field of stars and giants by isolating them using giant nets of electrified nanotubes. While not that efficient or cheap, that method does not require any raw material to generate spaceship fuel. But it does requires heavy machinery to replace worn equipment.",185
-SCY_greenhouses,Greenhouse Farming,100,90,,5,,,"farming, industry, rural",,graphics/SCY/icons/industry/SCY_greenhouses.png,data.campaign.econ.industries.SCY_greenhouses,"When no fertile ground can be found for farming, greenhouses can provide an expensive but reliable solution to feed the population. Given the lower output and higher work required to produce anything from them, they are only used if importing food from bread-basket planets is not an option.",200
-SCY_shipDealer,Ship Discount Market,1000,120,10,20,,,"heavyindustry, industry, industrial",,graphics/SCY/icons/industry/SCY_shipDealer.png,data.campaign.econ.industries.SCY_shipDealer,"Between a thriving salvaging industry and a no longer perfect nanoforge technology, there is no shortage of defective ships to buy on the cheap. But on the other hand, no one wants to trust their business or their life to a pile of junk. Fortunately for astute buyer, this market offers used, somewhat patched up ships at very competitive prices.",200
+SCY_incom,Intelligence Command Center,500,150,,75,,,"military, industry, unraidable, tactical_bombardment",,graphics/SCY/icons/industry/SCY_incom.png,org.scy.campaign.econ.industries.SCY_incom,"A central agency managing Sector-wide intelligence activities. By collecting sensitive data in a single place, a lot can be extrapolated through cross-referencing. Secret locations can then be pin-pointed in about two to five months (although it does decrease as the market increases in size with more traffic). However maintaining a network of connections and secure communication channels has quite a hefty cost. Installing an Alpha AI would significantly speed-up the process, if such thing was allowed of course.",300
+SCY_antimatter,Antimatter Net,100,60,,10,,,"fuelprod, industry, industrial",,graphics/SCY/icons/industry/SCY_antimatter.png,org.scy.campaign.econ.industries.SCY_antimatter,"Collects naturally occurring antimatter ions from the magnetic field of stars and giants by isolating them using giant nets of electrified nanotubes. While not that efficient or cheap, that method does not require any raw material to generate spaceship fuel. But it does requires heavy machinery to replace worn equipment.",185
+SCY_greenhouses,Greenhouse Farming,100,90,,5,,,"farming, industry, rural",,graphics/SCY/icons/industry/SCY_greenhouses.png,org.scy.campaign.econ.industries.SCY_greenhouses,"When no fertile ground can be found for farming, greenhouses can provide an expensive but reliable solution to feed the population. Given the lower output and higher work required to produce anything from them, they are only used if importing food from bread-basket planets is not an option.",200
+SCY_shipDealer,Ship Discount Market,1000,120,10,20,,,"heavyindustry, industry, industrial",,graphics/SCY/icons/industry/SCY_shipDealer.png,org.scy.campaign.econ.industries.SCY_shipDealer,"Between a thriving salvaging industry and a no longer perfect nanoforge technology, there is no shortage of defective ships to buy on the cheap. But on the other hand, no one wants to trust their business or their life to a pile of junk. Fortunately for astute buyer, this market offers used, somewhat patched up ships at very competitive prices.",200
 
 SCY_orbitalstation,Orbital Station - Midline,50,90,,3,,SCY_battlestation,"station, sub_item, unraidable, structure","{
 radius:55,
 variant:SCY_station1,
 fleetName:Orbital Station,
-}",graphics/icons/industry/orbital_station.png,data.campaign.econ.industries.SCY_orbitalStation,"A midline space station, featuring heavy firepower on one side and rapid axial rotation.
+}",graphics/icons/industry/orbital_station.png,org.scy.campaign.econ.industries.SCY_orbitalStation,"A midline space station, featuring heavy firepower on one side and rapid axial rotation.
 
 Must be reduced before invasions or bombardment can be attempted.",2040
 SCY_battlestation,Battlestation - Midline,100,120,,4,SCY_orbitalstation,SCY_starfortress,"station, battlestation, unraidable, structure","{
 radius:65,
 variant:SCY_station2,
 fleetName:Battlestation,
-}",graphics/icons/industry/battlestation.png,data.campaign.econ.industries.SCY_orbitalStation,"A space station, augmented with missile support modules.
+}",graphics/icons/industry/battlestation.png,org.scy.campaign.econ.industries.SCY_orbitalStation,"A space station, augmented with missile support modules.
 
 Must be reduced before invasions or bombardment can be attempted.",2050
 SCY_starfortress,Star Fortress - Midline,200,180,,5,SCY_battlestation,,"station, starfortress, unraidable, structure","{
 radius:70,
 variant:SCY_station3,
 fleetName:Star Fortress
-}",graphics/icons/industry/battlestation.png,data.campaign.econ.industries.SCY_orbitalStation,"An up-armored battlestation, featuring Ravelin-class defense drones and an extensive minefield.
+}",graphics/icons/industry/battlestation.png,org.scy.campaign.econ.industries.SCY_orbitalStation,"An up-armored battlestation, featuring Ravelin-class defense drones and an extensive minefield.
 
 Must be reduced before invasions or bombardment can be attempted.",2060

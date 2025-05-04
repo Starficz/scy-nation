@@ -19,5 +19,5 @@
 	"textureType":ROUGH,
 	"textureScrollSpeed":1.0,
 	"pixelsPerTexel":5.0,	
-        "everyFrameEffect":"data.scripts.weapons.SCY_dishEffect",
+        "everyFrameEffect":"org.scy.weapons.SCY_dishEffect",
 }

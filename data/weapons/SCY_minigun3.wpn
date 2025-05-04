@@ -27,8 +27,8 @@
 	"pixelsPerTexel":50.0,
 	"pierceSet":[],
 	"animationType":"NONE",  # NONE, GLOW, MUZZLE_FLASH, SMOKE
-	"beamEffect":"data.scripts.weapons.SCY_minigunEffect",
-        "everyFrameEffect":"data.scripts.weapons.SCY_minigunAnimation",
+	"beamEffect":"org.scy.weapons.SCY_minigunEffect",
+        "everyFrameEffect":"org.scy.weapons.SCY_minigunAnimation",
         "interruptibleBurst":true,
 	"autocharge":true,
 	"fireSoundTwo":"SCY_minigun2",

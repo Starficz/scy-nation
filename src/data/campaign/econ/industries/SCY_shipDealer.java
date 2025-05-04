@@ -5,7 +5,6 @@ import com.fs.starfarer.api.impl.campaign.econ.impl.BaseIndustry;
 import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
-// import com.fs.starfarer.api.impl.campaign.ids.Stats;
 import com.fs.starfarer.api.util.Misc;
 
 // import com.fs.starfarer.api.util.Pair;

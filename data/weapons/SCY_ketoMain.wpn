@@ -19,5 +19,5 @@
 	"projectileSpecId":"SCY_ketoMainS",	
         "fireSoundTwo":"SCY_keto_charge",
 	"fireSoundOne":"SCY_keto_fire",
-	"everyFrameEffect":"data.scripts.weapons.SCY_ketoMainEffect",
+	"everyFrameEffect":"org.scy.weapons.SCY_ketoMainEffect",
 }

@@ -3,7 +3,7 @@
     "type":"SHIELD_MOD",
     "aiType":"FORTRESS_SHIELD",
 
-    "statsScript":"data.shipsystems.scripts.SCY_twinShieldStats",
+    "statsScript":"org.scy.shipsystems.SCY_twinShieldStats",
 
     "shieldRingColor":[200,225,255,255],
     "shieldInnerColor":[50,150,255,175],

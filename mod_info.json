@@ -16,5 +16,5 @@
         }
     ],
 	"jars":["jars/SCY_code.jar"],
-    "modPlugin":"data.scripts.SCY_modPlugin"
+    "modPlugin":"org.scy.SCY_modPlugin"
 }

@@ -2,8 +2,8 @@
     "id":"SCY_targeting",
     "type":"STAT_MOD",
     "aiType":"CUSTOM",
-    "aiScript":"data.shipsystems.scripts.ai.SCY_targetingAI",
-    "statsScript":"data.shipsystems.scripts.SCY_targetingStats",
+    "aiScript":"org.scy.shipsystems.ai.SCY_targetingAI",
+    "statsScript":"org.scy.shipsystems.SCY_targetingStats",
 
     "runScriptWhileIdle":true,
     "useSound":"SCY_ping",

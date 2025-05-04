@@ -1,6 +1,6 @@
 {
 	"id":"SCY_singularityS",
-	"onHitEffect":"data.scripts.weapons.SCY_singularity_effect",
+	"onHitEffect":"org.scy.weapons.SCY_singularity_effect",
 	"specClass":"missile",
 	"missileType":"MISSILE",
 	"sprite":"graphics/SCY/missiles/SCY_singularity.png",

@@ -205,6 +205,6 @@
                      "blowbackSpread":10.0,
                      "particleColor":[190,180,160,40]},
 	"projectileSpecId":"SCY_swarmS",
-        #"everyFrameEffect":"data.scripts.weapons.SCY_swarmer_targets",
+        #"everyFrameEffect":"org.scy.weapons.SCY_swarmer_targets",
 	"fireSoundTwo":"SCY_swarm_fire",
 }

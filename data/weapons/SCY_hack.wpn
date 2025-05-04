@@ -3,7 +3,7 @@
 	"specClass":"beam",
 	"type":"ENERGY",
 	"size":"SMALL",
-	"beamEffect":"data.scripts.weapons.SCY_hackEffect",
+	"beamEffect":"org.scy.weapons.SCY_hackEffect",
 	"displayArcRadius":400,
 	"turretSprite":"graphics/SCY/weapons/SCY_hackT.png",
 	"turretGlowSprite":"graphics/SCY/weapons/SCY_hackTG.png",

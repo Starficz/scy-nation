@@ -26,6 +26,6 @@
                     "particleColor":[200,200,255,50]},
 	"autocharge":true,  # whether the weapon will continue charging and fire if the LMB is tapped instead of held		
 	"projectileSpecId":"SCY_tebS",  # projectile that will be fired	
-        #"everyFrameEffect":"data.scripts.weapons.SCY_addToMuzzlePlugin",		
+        #"everyFrameEffect":"org.scy.weapons.SCY_addToMuzzlePlugin",
 	"fireSoundTwo":"SCY_seb",
 }

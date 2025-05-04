@@ -3,7 +3,7 @@
     "type":"ENGINE_MOD",
     "aiType":"MANEUVERING_JETS",
 
-    "statsScript":"data.shipsystems.scripts.SCY_secondaryThrustersStats",
+    "statsScript":"org.scy.shipsystems.SCY_secondaryThrustersStats",
 
     "engineGlowColor":[100,165,255,255],
     "engineGlowContrailColor":[100,165,255,25],
@@ -13,12 +13,15 @@
 
     "flameoutOnImpactChance":0.2,
 
+	"clampMaxSpeedAfter":false,
 
     "useSound":"system_maneuvering_jets",
     "loopSound":"system_maneuvering_jets_loop",
     "outOfUsesSound":"engine_disabled",
 
     "aiHints":{
-        "averageSpeedIncrease":100,
+        "activeSpeedIncrease":100,
+        "burstMovementPotential":0,
+        "averageSpeedIncrease":33,
     }
 }

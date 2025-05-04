@@ -1,12 +1,12 @@
 {
     "plugins":{
-        "SCY_projectilesEffectPlugin":"data.scripts.plugins.SCY_projectilesEffectPlugin",
-        "SCY_muzzleFlashesPlugin":"data.scripts.plugins.SCY_muzzleFlashesPlugin",
-        "SCY_ArmorPaperdollsPlugin": "data.scripts.plugins.SCY_ArmorPaperdollsPlugin"
+        "SCY_projectilesEffectPlugin":"org.scy.plugins.SCY_projectilesEffectPlugin",
+        "SCY_muzzleFlashesPlugin":"org.scy.plugins.SCY_muzzleFlashesPlugin",
+        "SCY_ArmorPaperdollsPlugin": "org.scy.plugins.SCY_ArmorPaperdollsPlugin"
     },
 
     "designTypeColors":{
-        "Scyan Engineering":[5,100,200,255],
+        "Scyan Engineering":[5,100,200,255]
     },
 
     "graphics":{

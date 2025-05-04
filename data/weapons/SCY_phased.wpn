@@ -31,5 +31,5 @@
                             "particleColor":[250,50,200,255]},
 	"projectileSpecId":"SCY_phasedS",
 	"fireSoundTwo":"system_phase_cloak_activate",
-        "everyFrameEffect":"data.scripts.weapons.SCY_phaseAnim",
+        "everyFrameEffect":"org.scy.weapons.SCY_phaseAnim",
 }

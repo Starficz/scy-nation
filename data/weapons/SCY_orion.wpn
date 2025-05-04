@@ -26,6 +26,6 @@
 	"autocharge":true,  # whether the weapon will continue charging and fire if the LMB is tapped instead of held		
 	#"projectileSpecId":"SCY_orionfakeS",  # projectile that will be fired
         "projectileSpecId":"SCY_orionS",
-	"everyFrameEffect":"data.scripts.weapons.SCY_orionTracking",	
+	"everyFrameEffect":"org.scy.weapons.SCY_orionTracking",
 	"fireSoundTwo":"SCY_orion",
 }

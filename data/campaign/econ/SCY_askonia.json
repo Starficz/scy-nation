@@ -7,7 +7,7 @@
 			"size":3,
             "freePort":false,
 			"startingConditions":[
-				"population_3",
+				"population_3"
 			],
 			"industries":[
 				["population"],
@@ -15,8 +15,8 @@
 				["patrolhq"],
                 #["militarybase"],
 				["orbitalstation"],
-                ["waystation"],
-			],
-		},		
-	],
+                ["waystation"]
+			]
+		}
+	]
 }

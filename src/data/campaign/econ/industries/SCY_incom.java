@@ -1,7 +1,5 @@
 package data.campaign.econ.industries;
 
-import static data.scripts.util.SCY_txt.txt;
-
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.comm.CommMessageAPI;
@@ -13,18 +11,17 @@ import com.fs.starfarer.api.impl.campaign.ids.Commodities;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.impl.campaign.intel.MessageIntel;
 import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathBaseIntel;
-// import com.fs.starfarer.api.impl.campaign.intel.bases.LuddicPathCellsIntel;
-// import com.fs.starfarer.api.impl.campaign.intel.bases.PirateActivityIntel;
 import com.fs.starfarer.api.impl.campaign.intel.bases.PirateBaseIntel;
-// import com.fs.starfarer.api.impl.campaign.intel.raid.BaseRaidStage;
-// import com.fs.starfarer.api.impl.campaign.intel.raid.RaidIntel;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import data.campaign.econ.SCY_items;
-import java.awt.Color;
 import org.apache.log4j.Logger;
+
+import java.awt.*;
+
+import static org.scy.SCY_txt.txt;
 
 public class SCY_incom extends BaseIndustry {
 

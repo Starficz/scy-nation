@@ -7,7 +7,7 @@
 	"length":30.0,
 	"width":8,
 	"fadeTime":0.15,
-	"onHitEffect":"data.scripts.weapons.SCY_orionEffect",	
+	"onHitEffect":"org.scy.weapons.SCY_orionEffect",
 	"bulletSprite":"graphics/SCY/missiles/SCY_orion.png",
 	"fringeColor":[255,25,25,255],
 	"coreColor":[255,255,255,255],

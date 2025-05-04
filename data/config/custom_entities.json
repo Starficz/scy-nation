@@ -16,7 +16,7 @@
         "showNameOnMap":false,
         "interactable":false,
 	"tags":["orbital_junk"],
-        "layers":[JUMP_POINTS],
+        "layers":[JUMP_POINTS]
     }, 
     
 	"SCY_hephaistosStation_type":{
@@ -37,7 +37,7 @@
 		"showNameOnMap":false,
 		"scaleNameWithZoom":false,
 		"tags":["station"],
-		"layers":[STATIONS],
+		"layers":[STATIONS]
 	},	
 	
 	"SCY_overwatchStation_type":{
@@ -58,7 +58,7 @@
 		"showNameOnMap":false,
 		"scaleNameWithZoom":false,
 		"tags":["station"],
-		"layers":[STATIONS],
+		"layers":[STATIONS]
 	},	
         
     "SCY_yggdrasillWreckage_type":{
@@ -82,7 +82,7 @@
                 "tags":["station", "has_interaction_dialog", "neutrino"],
                 "layers":[STATIONS],
 		"renderCircleIndicator":true,
-		"renderCircleIndicatorSelectionFlash":true,
+		"renderCircleIndicatorSelectionFlash":true
 	},
 	
 	"SCY_refinery_type":{
@@ -103,7 +103,7 @@
 		"showNameOnMap":false,
 		"scaleNameWithZoom":false,
 		"tags":["station"],
-		"layers":[STATIONS],
+		"layers":[STATIONS]
 		},
 		
 	"SCY_processing_type":{
@@ -124,7 +124,7 @@
 		"showNameOnMap":false,
 		"scaleNameWithZoom":false,
 		"tags":["station"],
-		"layers":[STATIONS],
+		"layers":[STATIONS]
 		},
 		
 	"SCY_conditioning_type":{
@@ -145,7 +145,7 @@
 		"showNameOnMap":false,
 		"scaleNameWithZoom":false,
 		"tags":["station"],
-		"layers":[STATIONS],
+		"layers":[STATIONS]
 		},
 		
 	"SCY_amity_type":{
@@ -166,7 +166,7 @@
 		"showNameOnMap":false,
 		"scaleNameWithZoom":false,
 		"tags":["station"],
-		"layers":[STATIONS],
+		"layers":[STATIONS]
 		},
 		
 	"SCY_freeport_type":{
@@ -187,7 +187,7 @@
 		"showNameOnMap":false,
 		"scaleNameWithZoom":false,
 		"tags":["station"],
-		"layers":[STATIONS],
+		"layers":[STATIONS]
 		},
 		
 	"SCY_pirate_type":{
@@ -209,7 +209,7 @@
 		"scaleNameWithZoom":false,
 		"scaleIconWithZoom":true,
 		"tags":["station"],
-		"layers":[STATIONS],
+		"layers":[STATIONS]
 	},
 	
 	"SCY_outpost":{
@@ -231,6 +231,6 @@
 		"scaleNameWithZoom":false,
 		"scaleIconWithZoom":true,
 		"tags":["station"],
-		"layers":[STATIONS],
-	},
+		"layers":[STATIONS]
+	}
 }

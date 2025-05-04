@@ -4,7 +4,7 @@
 
     "startRelationships":{
         "ORA":0.25,
-        "luddic_church":-0.3,
+        "luddic_church":-0.3
     },
 
     "morality":"amoral",
@@ -13,7 +13,7 @@
             "technocratic":0.5,
             "militarist":0,
             "diplomatic":0.5,
-            "ideological":-1,
+            "ideological":-1
     },
     "diplomacyTraits":["pacifist", "stalwart", "neutralist", "helps_allies"],
     "colonyExpeditionChance":0.75,
@@ -30,32 +30,32 @@
 
 
     "startShipsSolo":[
-        ["SCY_talos_combat"],
+        ["SCY_talos_combat"]
     ],
     "startShipsCombatSmall":[
         ["SCY_pyraemon_combat", "SCY_talos_beamer", "SCY_alecto_escort"],
-        ["SCY_hydra_combat", "SCY_lealaps_combat", "SCY_centaur_combat"],
+        ["SCY_hydra_combat", "SCY_lealaps_combat", "SCY_centaur_combat"]
     ],
     "startShipsCombatLarge":[
         ["SCY_corocotta_combat", "SCY_lamiaA_combat", "SCY_tisiphone_assault"],
         ["SCY_dracanae_combat", "SCY_geryon_combat", "SCY_megaera_support"],
-        ["SCY_khalkotauroi_beamer", "SCY_alecto_escort", "SCY_alecto_escort"],
+        ["SCY_khalkotauroi_beamer", "SCY_alecto_escort", "SCY_alecto_escort"]
     ],
     "startShipsTradeSmall":[
-        ["SCY_telchine_standard", "SCY_tisiphone_combat", "SCY_centaur_escort"],
+        ["SCY_telchine_standard", "SCY_tisiphone_combat", "SCY_centaur_escort"]
     ],
     "startShipsTradeLarge":[
-        ["SCY_xanthus_standard", "SCY_lamia_combat", "SCY_alecto_harasser"],
+        ["SCY_xanthus_standard", "SCY_lamia_combat", "SCY_alecto_harasser"]
     ],
     "startShipsCarrierSmall":[
-        ["SCY_argus_longrange", "SCY_lealaps_bomber", "SCY_megaera_blaster"],
+        ["SCY_argus_longrange", "SCY_lealaps_bomber", "SCY_megaera_blaster"]
     ],
     "startShipsCarrierLarge":[
-        ["SCY_manticore_artillery", "SCY_geryon_support", "SCY_talos_brawler"],
+        ["SCY_manticore_artillery", "SCY_geryon_support", "SCY_talos_brawler"]
     ],
     "startShipsSuper":[
         ["SCY_stymphalianbird_hacker", "SCY_centaur_combat"],
-        ["SCY_siren_combat"],
+        ["SCY_siren_combat"]
     ],
 
 
@@ -63,21 +63,21 @@
     "defenceStations":[
         {"ids":["orbitalstation", "battlestation", "starfortress"], "weight":0.2},
         {"ids":["orbitalstation_mid", "battlestation_mid", "starfortress_mid"]},
-        {"ids":["orbitalstation_high", "battlestation_high", "starfortress_high"], "weight":0.2},
+        {"ids":["orbitalstation_high", "battlestation_high", "starfortress_high"], "weight":0.2}
     ],
 
     "startSpecialItems":[
         [["SCY_basic_package", ""]],
         #[["SCY_tech_package", ""]],
-        [["SCY_weapon_package", ""]],
+        [["SCY_weapon_package", ""]]
     ],
 
     "industrySeeds":[
         {"id":"orbitalworks", "mult":0.2},
-        {"id":"fuelprod", "mult":0.1},
+        {"id":"fuelprod", "mult":0.1}
     ],
 
     "bonusSeeds":[
-        {"id":"nanoforge_corrupted", "count":1},
-    ],
+        {"id":"nanoforge_corrupted", "count":1}
+    ]
 }

@@ -538,7 +538,7 @@ SCY_tisiphone,SHIP," Tisiphone-class is the standard attack frigate in Scyan fle
 
  The only ""true"" defensive concession is the Dual Layer Shield system. Scyan technology concerning shielding never developed much beyond its civilian origin, with their emitters usually having high energy requirements and an abysmal damage absorption even with a narrow 90 degree protective arc. But when engaging a single target that arc could be somewhat safely reduced, raising the ""thickness"" of the shield, thus its efficiency, quite significantly. This allows the Tisiphone to reach its attack range while still having enough flux overhead to fire efficiently. 
 
- With the narrow shield, an engine malfunction usually is a death sentence for the crew. Still, the extreme speed and maneuverability allows experienced pilots to hit far above frigate weight class, especially when pursuing fleeing ships. They are usually deployed in duos, one drawing fire and forcing the enemy to raise their shield, the other engaging the flanks.",,,
+ With the narrow shield, an engine malfunction usually is a death sentence if it weren't for the standard engine jumpstarter. Still, the extreme speed and maneuverability allows experienced pilots to hit far above frigate weight class, especially when pursuing fleeing ships. They are usually deployed in duos, one drawing fire and forcing the enemy to raise their shield, the other engaging the flanks.",,,
 ,,,,,
 ,,,,,
 ,,,,,
@@ -570,7 +570,7 @@ SCY_lealaps,SHIP," The Laelaps-class frigate is lightly armored but extremely ag
 
  Designed right after the Tisiphone-class frigates, these ships followed the same general design principles: powerful engines, decent flux capacity, impressive armament, but minimal armor and no cargo whatsoever. Some detractors stated that if this design had been just a 25% smaller, it would have been considered an exceptional fighter instead of an expensive and fragile frigate. But of course these same detractors never had to experience three torpedoes launched simultaneously at their vessel.
 
- Still they are correct on one point: whether it is at long or short range, Laelaps frigates are meant to destroy a single target with overwhelming power... But unlike fighters are unable to dock on a carrier to reload their launchers mid battle. This severely limits their role in larger engagements except for mop-up duties: Rare are the Scyan commanders that do not keep one or two Laelaps in their fleet to pursue and destroy even the fastest retreating ships.",,,
+ Still they are correct on one point: The Laelaps is designed to deliver overwhelming firepower in a brief window, whether at long range or in close. An integrated autoforge system allows it to somewhat reload its launchers, providing just enough sustain for a few follow up bursts when the timing is right. While this won't extend its endurance enough to last for most major engagements, it gives the ship a sharper edge in the fast-paced skirmishes it already excels at. Rare are the Scyan commanders that do not keep one or two Laelaps in their fleet to pursue and destroy even the fastest retreating ships.",,,
 ,,,,,
 ,,,,,
 ,,,,,
@@ -688,7 +688,7 @@ SCY_corocotta,SHIP," Workhorse of the Scyan navy, the Corocotta-class cruiser is
 ,,,,,
 SCY_corocottaA,SHIP," When the development of the Nemean Lion-class Battle Fortress reached the testing stage, it became apparent that it would be unable to operate alone. Instead of designing new ship classes that would yet again increase the cost of maintaining the navy, Scyan Engineers proposed to apply their newly gained expertise in modular heavy armor plating to a standard cruiser. The standard blueprint was adjusted to allow them to mount additional exterior armor plates. The added mass severely diminishes the effective agility of the vessel, but the ship is much more capable of surviving front line combat. Since these ships are not intended to leave Tartarus, the loss of speed has been considered acceptable.
 
- Workhorse of the Scyan navy, the Corocotta-class cruiser is an all-around solid ship for their doctrine: good maneuverability and speed, few weapon mounts but with impressive coverage and lightweight armor.",,,
+ Engineers doubled down on this defensive focus by replacing the secondary thrusters with a Dual Layer Shield array previously seen in the Tisiphone and Lamia. While the added armor absorbs glancing fire and minor impacts, the narrow but reinforced shielding can sustain heavier blows without overwhelming the ship’s flux capacity. Together, these improvements allow the modified Corocotta to endure focused fire far better than its predecessor - at the cost of mobility and tactical flexibility.",,,
 ,,,,,
 ,,,,,
 ,,,,,

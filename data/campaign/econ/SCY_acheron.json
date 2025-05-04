@@ -7,7 +7,7 @@
 			"size":6,
             "freePort":true,
 			"startingConditions":[
-				"population_6",
+				"population_6"
 			],
 			"industries":[
 				["population"],
@@ -23,8 +23,8 @@
                 #["militarybase"],
 				["patrolhq"],
 				["starfortress"],
-                #["waystation",],
-			],
+                #["waystation"]
+			]
 		},
 		{
 			"entities":["SCY_piratePort"],
@@ -32,15 +32,15 @@
 			"size":3,
             "freePort":true,
 			"startingConditions":[
-				"population_3",
+				"population_3"
 			],
 			"industries":[
 				["population"],
 				["spaceport"],
 				["patrolhq"],
 				["orbitalstation"],
-                ["waystation"],
-			],
+                ["waystation"]
+			]
 		},
 		{
 			"entities":["SCY_refinery"],
@@ -49,7 +49,7 @@
 			"startingConditions":[
                 "hot",
 				"volatiles_abundant",
-				"population_4",
+				"population_4"
 			],
 			"industries":[
 				["population"],
@@ -57,8 +57,8 @@
 				["SCY_antimatter"],
 				["grounddefenses"],
 				["patrolhq"],
-				["SCY_orbitalstation"],
-			],
+				["SCY_orbitalstation"]
+			]
 		},
 		{
 			"entities":["SCY_processing"],
@@ -68,7 +68,7 @@
                 "meteor_impacts",
                 "ore_abundant",
                 "rare_ore_sparse",
-				"population_4",
+				"population_4"
 			],
 			"industries":[
 				["population"],
@@ -76,8 +76,8 @@
 				["mining"],
                 ["refining"],
 				["grounddefenses"],
-				["SCY_orbitalstation"],
-			],
+				["SCY_orbitalstation"]
+			]
 		},
 		{
 			"entities":["TAR_elysee","SCY_hephaistosStation"],
@@ -89,7 +89,7 @@
                 "extreme_weather",
 				"habitable",
 				#"low_gravity",
-				"population_7",
+				"population_7"
 			],
 			"industries":[
 				["population"],
@@ -103,8 +103,8 @@
 				["heavybatteries"],
 				["highcommand"],
 				["SCY_starfortress"],
-                #["waystation"],
-			],
+                #["waystation"]
+			]
 		},
 		{
 			"entities":["TAR_mine", "SCY_overwatchStation"],
@@ -116,7 +116,7 @@
                 "ore_sparse",
                 "no_atmosphere",
                 "tectonic_activity",
-				"population_4",
+				"population_4"
 			],
 			"industries":[
 				["population"],
@@ -126,8 +126,8 @@
 				["heavybatteries"],
 				["highcommand"],
 				["SCY_battlestation"],
-				["SCY_incom"],
-			],
+				["SCY_incom"]
+			]
 		},
 		{
 			"entities":["SCY_conditioning"],
@@ -136,15 +136,15 @@
 			"startingConditions":[
                 "volatiles_abundant",
 				"dark",
-				"population_4",
+				"population_4"
 			],
 			"industries":[
 				["population"],
 				["spaceport"],
 				["mining"],
 				["grounddefenses"],
-				["SCY_orbitalstation"],
-			],
-		},
-	],
+				["SCY_orbitalstation"]
+			]
+		}
+	]
 }

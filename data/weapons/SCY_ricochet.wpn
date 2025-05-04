@@ -25,6 +25,6 @@
                        "particleColor":[255,75,50,100]},
     "autocharge":true,  	
     "projectileSpecId":"SCY_ricochetS",  # projectile that will be fired
-    "everyFrameEffect":"data.scripts.weapons.SCY_addToMuzzlePlugin",	
+    "everyFrameEffect":"org.scy.weapons.SCY_addToMuzzlePlugin",
     "fireSoundTwo":"SCY_ricochet",
 }

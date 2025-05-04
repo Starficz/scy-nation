@@ -10,7 +10,7 @@
 		"sound":"ui_channel_news",
 		"faction":"SCY",
 		"type":"News Report",
-		"shortType":"News",
+		"shortType":"News"
 	},
 	"SCY_internal":{
 		"name":"Scy Intelligence",
@@ -20,6 +20,6 @@
 		"sound":"ui_channel_comm_secure",
 		"faction":"SCY",
 		"type":"Intelligence Report",
-		"shortType":"Intel",
-	},
+		"shortType":"Intel"
+	}
 }

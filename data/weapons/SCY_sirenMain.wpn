@@ -24,6 +24,6 @@
                            "particleColor":[100,150,255,255]},
 	"autocharge":true,
 	"projectileSpecId":"SCY_teleporterS",
-        "everyFrameEffect":"data.scripts.weapons.SCY_sirenMainAnimation",	
+        "everyFrameEffect":"org.scy.weapons.SCY_sirenMainAnimation",
 	"fireSoundTwo":"SCY_siren",
 }

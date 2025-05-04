@@ -23,6 +23,6 @@
 	"pixelsPerTexel":5.0,
 	"pierceSet":[PROJECTILE_FF,PROJECTILE_NO_FF,PROJECTILE_FIGHTER,MISSILE_FF,MISSILE_NO_FF,FIGHTER],
 	"animationType":"GLOW",  # NONE, GLOW, MUZZLE_FLASH, SMOKE
-	"beamEffect":"data.scripts.weapons.SCY_scpbEffect",
+	"beamEffect":"org.scy.weapons.SCY_scpbEffect",
 	"autocharge":true,
 }

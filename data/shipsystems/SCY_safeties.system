@@ -2,8 +2,8 @@
     "id":"SCY_safeties",
     "type":"STAT_MOD",
     "aiType":"CUSTOM",
-    "aiScript":"data.shipsystems.scripts.ai.SCY_safetiesAI",	
-    "statsScript":"data.shipsystems.scripts.SCY_safetiesStats",
+    "aiScript":"org.scy.shipsystems.ai.SCY_safetiesAI",
+    "statsScript":"org.scy.shipsystems.SCY_safetiesStats",
 
     "weaponGlowColor":[50,200,255,155],
     "weaponTypes":[BALLISTIC, ENERGY],

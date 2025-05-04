@@ -18,7 +18,7 @@
 	"textureType":ROUGH,
 	"textureScrollSpeed":1.0,
 	"pixelsPerTexel":5.0,
-	"everyFrameEffect":"data.scripts.weapons.SCY_lionAnimation"
+	"everyFrameEffect":"org.scy.weapons.SCY_lionAnimation"
 
 	#"everyFrameEffect":"scy.twig.campaign.SCY_PersistentRootShip",
 }

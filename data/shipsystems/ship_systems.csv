@@ -1,33 +1,21 @@
 name,id,flux/second,f/s (base rate),f/s (base cap),flux/use,f/u (base rate),f/u (base cap),cr/u,max uses,regen,charge up,active,down,cooldown,toggle,noDissipation,noHardDissipation,hardFlux,noFiring,noTurning,noStrafing,noAccel,noShield,isPhasedCloak,tags,icon
-,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,
-# SPECIAL SYSTEMS,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,
+# SPECIAL SYSTEMS
 Experimental Teleporter,SCY_experimentalTeleporter,,,,,,,,1,0.05,0,0,0.5,0.5,,,,TRUE,,,,,,,,graphics/icons/hullsys/displacer.png
-Radar Ping,SCY_ping,,,,,,0.1,,,,2,2,2,24,,,,,,,,,,,,graphics/SCY/icons/hullsys/SCY_ping.png
-,,,,,,,,,,,,,,,,,,,,,,,,,,
-# OFFENSE SYSTEMS,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,
+#
+# OFFENSE SYSTEMS
 Safeties Switch,SCY_safeties,,,,,,,,,,1,5,1,10,TRUE,,,,,,,,,,,graphics/icons/hullsys/ammo_feeder.png
 Teleporting Shell,SCY_teleport,,,,,,,,4,0.02,,,,10,TRUE,,,,,,,,,,,graphics/SCY/icons/hullsys/SCY_teleport.png
 Targeting Priorities,SCY_targeting,,,,,,,,,,0.25,,0.25,,,,,,,,,,,,,graphics/SCY/icons/hullsys/SCY_ping.png
-,,,,,,,,,,,,,,,,,,,,,,,,,,
-# DEFENSE SYSTEMS,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,
+#
+# DEFENSE SYSTEMS
 Twin-Layer Shielding,SCY_twinShield,,,,,,0.05,,,,0.25,,1,2,TRUE,,,TRUE,,,,,,,,graphics/SCY/icons/hullsys/SCY_twinShield.png
-Stasis Shield,SCY_stasisShield,,,,1000,,,,,,0.5,3,0.5,8,,TRUE,TRUE,TRUE,TRUE,,,,,,,graphics/SCY/icons/hullsys/SCY_stasisShield.png
+Stasis Shield,SCY_stasisShield,,,,1000,,,,,,0.5,4,0.5,8,,TRUE,TRUE,TRUE,TRUE,,,,,,,graphics/SCY/icons/hullsys/SCY_stasisShield.png
 Burst EMP Emitter,SCY_emp,,,,,,,,,,0,1,0,2,,,,,,,,,,,,graphics/icons/hullsys/emp_emitter.png
-Lion's Hide,SCY_nemeanArmor,,,0,,,,,1,0.04,1.5,6,1.5,,,,,TRUE,TRUE,,,,,,,graphics/SCY/icons/hullsys/SCY_hide.png
-,,,,,,,,,,,,,,,,,,,,,,,,,,
-# MOBILITY SYSTEMS,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,
+#
+# MOBILITY SYSTEMS
 Secondary Thrusters,SCY_secondaryThrusters,,,,,,,,,,1,5,1,10,,,,,,,,,,,,graphics/icons/hullsys/maneuvering_jets.png
-Engine Jumpstart,SCY_engineJumpstart,,,,0.1,,,,1,0.05,0,0.1,0.4,,,,,,TRUE,TRUE,TRUE,TRUE,,,,graphics/icons/hullsys/infernium_injector.png
-,,,,,,,,,,,,,,,,,,,,,,,,,,
-# DRONE SYSTEMS,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,
+#
+# DRONE SYSTEMS
 Mining Drone,SCY_miningDrones,,,,,,,,20,0,0,,0,0,,,,,,,,,,,,graphics/icons/hullsys/drone_borer.png
-Mobile CIWS,SCY_ciwsDrones,,,,,,,,2,0.05,0,,0,0,,,,,,,,,,,,graphics/icons/hullsys/drone_pd_high.png
 Mobile CIWS,SCY_ciwsDrones4,,,,,,,,4,0.05,0,,0,0,,,,,,,,,,,,graphics/icons/hullsys/drone_pd_high.png
 AWACS Probe,SCY_probeDrones,,,,,,,,1,0.05,0,,0,0,,,,,,,,,,,,graphics/icons/hullsys/drone_pd_high.png

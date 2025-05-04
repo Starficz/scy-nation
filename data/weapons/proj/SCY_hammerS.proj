@@ -7,7 +7,7 @@
 	"length":30.0,
 	"width":20,
 	"fadeTime":0.1,
-	"onHitEffect":"data.scripts.weapons.SCY_hammerEffect",	
+	"onHitEffect":"org.scy.weapons.SCY_hammerEffect",
 	"bulletSprite":"graphics/SCY/missiles/SCY_hammer.png",
 	"fringeColor":[255,25,25,25],
 	"coreColor":[255,150,50,255],

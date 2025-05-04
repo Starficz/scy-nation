@@ -1,5 +1,5 @@
 name,id,tier,rarity,tech/manufacturer,tags,uiTags,base value,unlocked,hidden,hiddenEverywhere,cost_frigate,cost_dest,cost_cruiser,cost_capital,script,desc,short,sprite
-Scyan Engineering,SCY_engineering,,,,,,,,TRUE,,0,0,0,0,data.hullmods.SCY_engineering,"The hunter-killer designs from the Scyan Engineering College focus on powerful engines, great flux capacity, and exceptional active vent rates.
+Scyan Engineering,SCY_engineering,,,,,,,,TRUE,,0,0,0,0,org.scy.hullmods.SCY_engineering,"The hunter-killer designs from the Scyan Engineering College focus on powerful engines, great flux capacity, and exceptional active vent rates.
 
 The standardized singular engine is %s sturdier and faster to repair than conventional engines but cannot support any further performance enhancement.
 
@@ -7,21 +7,21 @@ Specialized flux grids provide %s more flux capacity, %s active vent rate with %
 #####,,,,,,,,,,,,,,,,,,
 #####,,,,,,,,,,,,,,,,,,
 #####,,,,,,,,,,,,,,,,,,
-Modular Armor,SCY_armorplating,,,,,,,,TRUE,,0,0,0,0,data.hullmods.SCY_modularArmor,"This modular armor is a recent innovation that allows specially fitted ships to drop these extremely massive armored plates when they no longer provide effective protection.
+Modular Armor,SCY_armorplating,,,,,,,,TRUE,,0,0,0,0,org.scy.hullmods.SCY_modularArmor,"This modular armor is a recent innovation that allows specially fitted ships to drop these extremely massive armored plates when they no longer provide effective protection.
 Modifications to the ship may also affect the modules.
 The base speed is increased gradually as modules are lost. When all modules are lost, the base speed is %s higher in total.",Raises the speed of armored ships as they drop their protection plates.,graphics/SCY/hullmods/SCY_armor.png
 #####,,,,,,,,,,,,,,,,,,
-Modular Sections,SCY_modules,,,,,,,,TRUE,,0,0,0,0,data.hullmods.SCY_modularArmor,"This massive ship cannot withstand heavy combat damage. Both the built-in gun barrel and the flight deck can be outright destroyed, disabling the main weapon of the ship or preventing fighter replenishment respectively.
+Modular Sections,SCY_modules,,,,,,,,TRUE,,0,0,0,0,org.scy.hullmods.SCY_modularArmor,"This massive ship cannot withstand heavy combat damage. Both the built-in gun barrel and the flight deck can be outright destroyed, disabling the main weapon of the ship or preventing fighter replenishment respectively.
 
 Shedding these large sections however increases the ship's base speed by up to %s percent.",Raises the speed of modular ships as sections get destroyed.,graphics/SCY/hullmods/SCY_armor.png
 ####,,,,,,,,,,,,,,,,,,
 ####,,,,,,,,,,,,,,,,,,
 ####,,,,,,,,,,,,,,,,,,
-Modular Armor,SCY_armorChild,,,,,,,,TRUE,TRUE,0,0,0,0,data.hullmods.SCY_armorChild,Child modules inherit the changes to hull and armor from their parent.,Child modules inherit the changes to hull and armor from their parent.,graphics/SCY/hullmods/SCY_armor.png
+Modular Armor,SCY_armorChild,,,,,,,,TRUE,TRUE,0,0,0,0,org.scy.hullmods.SCY_armorChild,Child modules inherit the changes to hull and armor from their parent.,Child modules inherit the changes to hull and armor from their parent.,graphics/SCY/hullmods/SCY_armor.png
 #####,,,,,,,,,,,,,,,,,,
 #####,,,,,,,,,,,,,,,,,,
 #####,,,,,,,,,,,,,,,,,,
-Scyan Interception Protocols,SCY_CommissionedCrew,,,,,,,,TRUE,,0,0,0,0,data.hullmods.SCY_CommissionedCrew,"The ship's crews have received special training on the best ways to intercept an enemy fleet, or avoid interception themselves. The ship gain %s better sensors, and %s smaller signature.",Ships gain an improved sensor profile.,graphics/SCY/hullmods/SCY_commissionedCrew.png
+Scyan Interception Protocols,SCY_CommissionedCrew,,,,,,,,TRUE,,0,0,0,0,org.scy.hullmods.SCY_CommissionedCrew,"The ship's crews have received special training on the best ways to intercept an enemy fleet, or avoid interception themselves. The ship gain %s better sensors, and %s smaller signature.",Ships gain an improved sensor profile.,graphics/SCY/hullmods/SCY_commissionedCrew.png
 #####,,,,,,,,,,,,,,,,,,
 #####,,,,,,,,,,,,,,,,,,
 #####,,,,,,,,,,,,,,,,,,

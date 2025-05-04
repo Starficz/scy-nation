@@ -12,5 +12,5 @@
 	"textureScrollSpeed":64.0,
 	"pixelsPerTexel":5.0,
 	"bulletSprite":"graphics/missiles/shell_gauss_cannon.png",
-	#"onHitEffect":"data.scripts.weapons.SCY_teleportEffect",	
+	#"onHitEffect":"org.scy.weapons.SCY_teleportEffect",
 }

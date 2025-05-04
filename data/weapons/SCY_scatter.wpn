@@ -40,8 +40,8 @@
 	"pixelsPerTexel":5.0,
 	"pierceSet":[PROJECTILE_FF,PROJECTILE_NO_FF,PROJECTILE_FIGHTER,MISSILE_FF,MISSILE_NO_FF],
 	"animationType":"GLOW",  # NONE, GLOW, MUZZLE_FLASH, SMOKE
-	#"beamEffect":"data.scripts.weapons.SCY_scatterEffect",
-	"everyFrameEffect":"data.scripts.weapons.SCY_scatterEffect",	
+	#"beamEffect":"org.scy.weapons.SCY_scatterEffect",
+	"everyFrameEffect":"org.scy.weapons.SCY_scatterEffect",
 	"autocharge":true,
 	#"fireSoundTwo":"SCY_focusBeam_mkii",
 }
