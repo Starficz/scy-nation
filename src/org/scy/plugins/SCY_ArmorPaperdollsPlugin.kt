@@ -15,7 +15,8 @@ import org.magiclib.kotlin.setAlpha
 import org.magiclib.util.MagicUI
 import org.scy.ReflectionUtils
 import org.scy.StarficzAIUtils
-import org.scy.hullmods.SCY_engineering.SCYVentingAI
+import org.scy.armorAtCell
+import org.scy.weakestArmorRegion
 import java.awt.Color
 import kotlin.math.pow
 
@@ -49,14 +50,6 @@ class SCY_ArmorPaperdollsPlugin : BaseEveryFrameCombatPlugin() {
         MagicUI.closeGLForMiscWithinViewport()
     }
 
-    override fun renderInUICoords(viewport: ViewportAPI?) {
-        if (StarficzAIUtils.DEBUG_ENABLED) {
-            Global.getCombatEngine()?.playerShip?.getListeners(SCYVentingAI::class.java)?.firstOrNull()?.let {
-                it.incomingProjectilesString.draw(100f, Global.getSettings().screenHeight-100f)
-                it.predictedWeaponHitsString.draw(500f, Global.getSettings().screenHeight-100f)
-            }
-        }
-    }
 
     //TODO: Hardcoded bullshit, no clue how alex scales sprites here.
     private val PAPERDOLL_SCALE: Map<String, Float> = mapOf(
@@ -80,8 +73,10 @@ class SCY_ArmorPaperdollsPlugin : BaseEveryFrameCombatPlugin() {
                 val offset: Vector2f = Vector2f.sub(ship.location, module.location, null).scale(shipScale) as Vector2f
                 val paperDollLocation = Vector2f.sub(location, offset, null)
 
-                val armorHullLevel = (getCurrentArmorRating(module) + module.hitpoints) / (module.armorGrid.armorRating + module.maxHitpoints)
-                val paperdollColor = Misc.interpolateColor(noHPColor.setAlpha(alpha), fullHPColor.setAlpha(alpha), armorHullLevel)
+                val armorHealthLevel = with(module.armorGrid) {
+                    (armorAtCell(weakestArmorRegion()!!)!! + module.hitpoints) / (armorRating + module.maxHitpoints)
+                }
+                val paperdollColor = Misc.interpolateColor(noHPColor.setAlpha(alpha), fullHPColor.setAlpha(alpha), armorHealthLevel)
 
                 moduleSprite.setSize(moduleSprite.width * shipScale, moduleSprite.height * shipScale)
                 moduleSprite.color = paperdollColor
@@ -129,27 +124,3 @@ fun getUIAlpha(isPauseIncluded: Boolean): Float {
     return MathUtils.clamp(alpha, 0f, (ReflectionUtils.get("fader", Global.getCombatEngine().combatUI) as Fader).brightness)
 }
 
-fun getCurrentArmorRating(ship: ShipAPI?): Float {
-    if (ship == null || !Global.getCombatEngine().isEntityInPlay(ship)) {
-        return 0f
-    }
-    val armorGrid = ship.armorGrid
-    val armorGridGrid = armorGrid.grid
-    val armorList: MutableList<Float> = ArrayList()
-    val worstPoint = DefenseUtils.getMostDamagedArmorCell(ship)
-    return if (worstPoint != null) {
-        var totalArmor = 0f
-        for (x in armorGridGrid.indices) {
-            for (y in armorGridGrid[x].indices) {
-                armorList.add(armorGridGrid[x][y])
-            }
-        }
-            armorList.sort()
-        for (i in 0..20) {
-            totalArmor += if (i < 9) armorList[i] else armorList[i] / 2
-        }
-        totalArmor
-    } else {
-        armorGrid.maxArmorInCell * 15f
-    }
-}

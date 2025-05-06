@@ -1,6 +1,6 @@
 {
     "displayName": "Close Support",
-    "fluxCapacitors": 6,
+    "fluxCapacitors": 10,
     "fluxVents": 10,
     "goalVariant": true,
     "hullId": "SCY_alecto",

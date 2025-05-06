@@ -36,7 +36,7 @@ public class SCY_modularArmor extends BaseHullMod {
 
   @Override
   public String getDescriptionParam(int index, ShipAPI.HullSize hullSize) {
-    if (index == 0) return 100 * SPEED_BONUS + txt("%");
+    if (index == 0) return (int) (100 * SPEED_BONUS) + txt("%");
     return null;
   }
 

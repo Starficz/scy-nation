@@ -1,7 +1,7 @@
 {
     "displayName": "Fighter",
     "fluxCapacitors": 0,
-    "fluxVents": 10,
+    "fluxVents": 14,
     "goalVariant": true,
     "hullId": "SCY_keto",
     "hullMods": [
@@ -40,6 +40,8 @@
             "autofire": true,
             "mode": "LINKED",
             "weapons": {
+                "WS0004": "flak",
+                "WS0005": "flak",
                 "WS0009": "vulcan",
                 "WS0008": "vulcan",
                 "WS0007": "vulcan",

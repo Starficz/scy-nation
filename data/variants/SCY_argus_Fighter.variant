@@ -18,7 +18,7 @@
             "mode": "LINKED",
             "weapons": {
                 "VML": "SCY_smallMrm",
-                "WS0002": "heatseeker",
+                "WS0002": "SCY_arcSmall",
             }
         },
         {

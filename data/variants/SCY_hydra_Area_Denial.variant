@@ -1,7 +1,7 @@
 {
     "displayName": "Area Denial",
     "fluxCapacitors": 20,
-    "fluxVents": 4,
+    "fluxVents": 9,
     "goalVariant": true,
     "hullId": "SCY_hydra",
     "hullMods": [

@@ -1,7 +1,7 @@
 {
     "displayName": "Assault",
     "fluxCapacitors": 10,
-    "fluxVents": 2,
+    "fluxVents": 5,
     "goalVariant": true,
     "hullId": "SCY_talos",
     "hullMods": [

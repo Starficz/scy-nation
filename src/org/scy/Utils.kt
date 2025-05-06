@@ -212,6 +212,62 @@ fun Float.isCloseTo(other: Float, epsilon: Float): Boolean {
     return abs(this - other) <= epsilon
 }
 
+/**
+ * Creates a new `Color` that is a brighter version of this
+ * `Color`.
+ *
+ *
+ * This method applies an arbitrary scale factor to each of the three RGB
+ * components of this `Color` to create a brighter version
+ * of this `Color`.
+ * The `alpha` value is preserved.
+ * Although `brighter` and
+ * `darker` are inverse operations, the results of a
+ * series of invocations of these two methods might be inconsistent
+ * because of rounding errors.
+ * @return     a new `Color` object that is
+ * a brighter version of this `Color`
+ * with the same `alpha` value.
+ * @see java.awt.Color.darker
+ *
+ * @since      JDK1.0
+ */
+fun brighter(color: Color, factor: Float): Color {
+    var r = color.red
+    var g = color.green
+    var b = color.blue
+    val alpha = color.alpha
+
+    /* From 2D group:
+         * 1. black.brighter() should return grey
+         * 2. applying brighter to blue will always return blue, brighter
+         * 3. non pure color (non zero rgb) will eventually return white
+         */
+    val i = (1.0 / (1.0 - factor)).toInt()
+    if (r == 0 && g == 0 && b == 0) {
+        return Color(i, i, i, alpha)
+    }
+    if (r > 0 && r < i) r = i
+    if (g > 0 && g < i) g = i
+    if (b > 0 && b < i) b = i
+
+    return Color(
+        min((r / factor).toInt(), 255),
+        min((g / factor).toInt(), 255),
+        min((b / factor).toInt(), 255),
+        alpha
+    )
+}
+
+fun darker(color: Color, factor: Float): Color {
+    return Color(
+        max((color.red * factor).toInt(), 0),
+        max((color.green * factor).toInt(), 0),
+        max((color.blue * factor).toInt(), 0),
+        color.alpha
+    )
+}
+
 private data class LMS(val L: Float, val M: Float, val S: Float)
 
 // sRGB <-> Linear sRGB Conversion

@@ -1,6 +1,6 @@
 {
     "displayName": "Area Denial",
-    "fluxCapacitors": 8,
+    "fluxCapacitors": 10,
     "fluxVents": 5,
     "goalVariant": true,
     "hullId": "SCY_lealaps",

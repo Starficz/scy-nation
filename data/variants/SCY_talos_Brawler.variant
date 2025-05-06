@@ -1,10 +1,12 @@
 {
     "displayName": "Brawler",
-    "fluxCapacitors": 9,
-    "fluxVents": 9,
+    "fluxCapacitors": 8,
+    "fluxVents": 8,
     "goalVariant": true,
     "hullId": "SCY_talos",
-    "hullMods": [],
+    "hullMods": [
+        "hardenedshieldemitter",
+    ],
     "permaMods": [],
     "sMods": [],
     "suppressedMods": [],

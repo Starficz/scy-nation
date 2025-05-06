@@ -1,7 +1,7 @@
 {
     "displayName": "Strike",
-    "fluxCapacitors": 9,
-    "fluxVents": 0,
+    "fluxCapacitors": 20,
+    "fluxVents": 4,
     "goalVariant": true,
     "hullId": "SCY_pyraemon",
     "hullMods": [

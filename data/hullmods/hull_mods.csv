@@ -1,19 +1,22 @@
 name,id,tier,rarity,tech/manufacturer,tags,uiTags,base value,unlocked,hidden,hiddenEverywhere,cost_frigate,cost_dest,cost_cruiser,cost_capital,script,desc,short,sprite
-Scyan Engineering,SCY_engineering,,,,,,,,TRUE,,0,0,0,0,org.scy.hullmods.SCY_engineering,"The hunter-killer designs from the Scyan Engineering College focus on powerful engines, great flux capacity, and exceptional active vent rates.
+Scyan Engineering,SCY_engineering,,,,,,,,TRUE,,0,0,0,0,org.scy.hullmods.ScyEngineering,"TThe Scyan Engineering College optimizes its designs for hunter-killer purposes.
 
-The standardized singular engine is %s sturdier and faster to repair than conventional engines but cannot support any further performance enhancement.
+Specialized flux-grids feature immense capacitor reserves and exceptionally strong active venting, limited by poor passive dissipation.
 
-Specialized flux grids provide %s more flux capacity, %s active vent rate with %s additional active vent rate per flux capacitor.","Faster ships that vent quickly, few weapons and little dissipation.",graphics/SCY/hullmods/SCY_engineering.png
+Custom Magneto-Aerospike engines boast exceptional thrust, high durability, fast repair times, and emergency restart functions, though incompatible with further upgrades.
+
+Stealth plating and ambush protocols allow for a lower maintenance and sensor signature when moving slowly, however visibility notably increases from the massive thrust bloom during active maneuvers.","Faster ships that vent quickly, few weapons and little dissipation.",graphics/SCY/hullmods/SCY_engineering.png
 #####,,,,,,,,,,,,,,,,,,
 #####,,,,,,,,,,,,,,,,,,
 #####,,,,,,,,,,,,,,,,,,
-Modular Armor,SCY_armorplating,,,,,,,,TRUE,,0,0,0,0,org.scy.hullmods.SCY_modularArmor,"This modular armor is a recent innovation that allows specially fitted ships to drop these extremely massive armored plates when they no longer provide effective protection.
+Modular Armor,SCY_armorplating,,,,,,,,TRUE,,0,0,0,0,org.scy.hullmods.SCY_modularArmor,"This modular armor is a recent innovation that allows specially fitted ships to drop these extremely massive armored plates when they no longer provide protection.
+
 Modifications to the ship may also affect the modules.
-The base speed is increased gradually as modules are lost. When all modules are lost, the base speed is %s higher in total.",Raises the speed of armored ships as they drop their protection plates.,graphics/SCY/hullmods/SCY_armor.png
+Increases the ship's top speed gradually as modules are lost, maxing out at %s higher when all armor is dropped.",Raises the speed of armored ships as they drop their protection plates.,graphics/SCY/hullmods/SCY_armor.png
 #####,,,,,,,,,,,,,,,,,,
 Modular Sections,SCY_modules,,,,,,,,TRUE,,0,0,0,0,org.scy.hullmods.SCY_modularArmor,"This massive ship cannot withstand heavy combat damage. Both the built-in gun barrel and the flight deck can be outright destroyed, disabling the main weapon of the ship or preventing fighter replenishment respectively.
 
-Shedding these large sections however increases the ship's base speed by up to %s percent.",Raises the speed of modular ships as sections get destroyed.,graphics/SCY/hullmods/SCY_armor.png
+Shedding these large sections however increases the ship's top speed, maxing out at %s percent.",Raises the speed of modular ships as sections get destroyed.,graphics/SCY/hullmods/SCY_armor.png
 ####,,,,,,,,,,,,,,,,,,
 ####,,,,,,,,,,,,,,,,,,
 ####,,,,,,,,,,,,,,,,,,

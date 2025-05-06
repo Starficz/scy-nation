@@ -1,7 +1,7 @@
 {
     "displayName": "Escort",
-    "fluxCapacitors": 11,
-    "fluxVents": 11,
+    "fluxCapacitors": 14,
+    "fluxVents": 13,
     "goalVariant": true,
     "hullId": "SCY_lamia",
     "hullMods": [

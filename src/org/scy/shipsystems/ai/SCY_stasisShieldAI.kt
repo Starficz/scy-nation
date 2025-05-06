@@ -5,14 +5,14 @@ import com.fs.starfarer.api.combat.*
 import org.lazywizard.lazylib.combat.AIUtils
 import org.lwjgl.util.vector.Vector2f
 import org.scy.StarficzAIUtils
-import org.scy.hullmods.SCY_engineering.SCYVentingAI
+import org.scy.hullmods.ScyEngineering.ScyVentingAI
 
 class SCY_stasisShieldAI: ShipSystemAIScript {
     lateinit var ship: ShipAPI
-    lateinit var ventingAI: SCYVentingAI
+    lateinit var ventingAI: ScyVentingAI
     override fun init(ship: ShipAPI, system: ShipSystemAPI?, flags: ShipwideAIFlags?, engine: CombatEngineAPI?) {
         this.ship = ship
-        ventingAI = ship.getListeners(SCYVentingAI::class.java).first()
+        ventingAI = ship.getListeners(ScyVentingAI::class.java).first()
     }
 
     override fun advance(amount: Float, missileDangerDir: Vector2f?, collisionDangerDir: Vector2f?, target: ShipAPI?) {

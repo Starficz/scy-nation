@@ -1,7 +1,7 @@
 {
     "displayName": "Brawler",
-    "fluxCapacitors": 10,
-    "fluxVents": 7,
+    "fluxCapacitors": 9,
+    "fluxVents": 10,
     "goalVariant": true,
     "hullId": "SCY_tisiphone",
     "hullMods": [],

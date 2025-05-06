@@ -1,7 +1,7 @@
 {
     "displayName": "Brawler",
     "fluxCapacitors": 20,
-    "fluxVents": 3,
+    "fluxVents": 8,
     "goalVariant": true,
     "hullId": "SCY_hydra",
     "hullMods": [

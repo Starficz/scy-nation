@@ -7,6 +7,7 @@ import com.fs.starfarer.api.loading.ProjectileWeaponSpecAPI;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.Pair;
 import kotlin.Triple;
+import org.json.JSONArray;
 import org.lazywizard.lazylib.*;
 import org.lazywizard.lazylib.combat.AIUtils;
 import org.lazywizard.lazylib.combat.DefenseUtils;
@@ -69,7 +70,7 @@ public class StarficzAIUtils {
                     continue; // skip to next object if not hit, this point should be a complete filter of mines
                 }
 
-                if (missile.isGuided() && missile.getFlightTime() < missile.getMaxFlightTime() && (missile.getWeapon() == null || !(missile.getWeapon().getId().equals("squall") && missile.getFlightTime() > 1f))){ // special case the squall
+                if ((missile.isGuided() || "CUSTOM".equals(missile.getBehaviorSpecParams().optString("behavior"))) && missile.getFlightTime() < missile.getMaxFlightTime() && (missile.getWeapon() == null || !(missile.getWeapon().getId().equals("squall") && missile.getFlightTime() > 1f))){ // special case the squall
                     boolean hit = false;
                     float travelTime = 0f;
                     float collisionSize = missile.getSpec().getExplosionSpec() == null ? missile.getCollisionRadius() : missile.getSpec().getExplosionSpec().getRadius();
@@ -78,9 +79,19 @@ public class StarficzAIUtils {
                         // I hate mirvs
                         float missileMaxSpeed = missile.isMirv() ? missile.getMaxSpeed()*4 :  missile.getMaxSpeed();
                         float missileAccel = missile.isMirv() ? missile.getAcceleration()*4 :  missile.getAcceleration();
-                        travelTime = missileTravelTime(missile.getMoveSpeed(), missileMaxSpeed, missileAccel, missile.getMaxTurnRate(),
-                                VectorUtils.getFacing(missile.getVelocity()), missile.getLocation(), testPoint, shipRadius + collisionSize);
-                        if (travelTime < (missile.getMaxFlightTime() + (missile.isArmedWhileFizzling() ? missile.getSpec().getFlameoutTime() : 0f) - missile.getFlightTime())) hit = true;
+
+                        // I *really* hate dems
+                        JSONArray missileTD = missile.getBehaviorSpecParams().optJSONArray("triggerDistance");
+                        if (missileTD != null){
+                            float demRange = (float) missileTD.optDouble(missileTD.length()-1, 0f);
+                            float travelDistanceLeft = MathUtils.getDistance(missile.getLocation(), testPoint) - (shipRadius + demRange);
+                            if(travelDistanceLeft < 50f) hit = true;
+                            travelTime = Math.max(travelDistanceLeft/missile.getMaxSpeed(), 0) + 0.3f; // always about to hit cus I have no clue how to get the laser status lmao
+                        } else{
+                            travelTime = missileTravelTime(missile.getMoveSpeed(), missileMaxSpeed, missileAccel, missile.getMaxTurnRate(),
+                                    VectorUtils.getFacing(missile.getVelocity()), missile.getLocation(), testPoint, shipRadius + collisionSize);
+                            if (travelTime < (missile.getMaxFlightTime() + (missile.isArmedWhileFizzling() ? missile.getSpec().getFlameoutTime() : 0f) - missile.getFlightTime())) hit = true;
+                        }
                     }
                     if(hit) {
                         futurehit.timeToHit = travelTime;
@@ -235,7 +246,7 @@ public class StarficzAIUtils {
             for(ShipAPI occlusion : nearbyEnemies){
                 if (occlusion == enemy) continue;
                 if (occlusion.getParentStation() == enemy) continue;
-                Vector2f closestPoint = MathUtils.getNearestPointOnLine(occlusion.getLocation(), ship.getLocation(), enemy.getLocation());
+                Vector2f closestPoint = MathUtils.getNearestPointOnLine(occlusion.getLocation(), testPoint, enemy.getLocation());
                 // bias the size down 75 units, hack to compensate for the fact that this assumes everything is static
                 if (MathUtils.getDistance(closestPoint, occlusion.getLocation()) < Misc.getTargetingRadius(closestPoint, occlusion, occlusion.getShield() != null && occlusion.getShield().isOn()) - 75f){
                     occluded = true;
@@ -258,7 +269,7 @@ public class StarficzAIUtils {
                     outOfRangeTime = (closingSpeed < 0) ? maxTime + 1f : (distanceFromWeapon - (actualRange + targetingRadius)) / closingSpeed;
                     distanceFromWeapon = actualRange;
                 }
-                float currentTime = Math.max(outOfRangeTime, ship.getSystem().getCooldownRemaining());
+                float currentTime = Math.max(outOfRangeTime, enemy.getSystem().getCooldownRemaining());
                 while(currentTime < maxTime){
                     FutureHit futurehit = new FutureHit();
                     futurehit.enemyId = enemy.getId();
@@ -582,71 +593,6 @@ public class StarficzAIUtils {
             }
         }
         return futureHits;
-    }
-
-    public static float getCurrentArmorRating(ShipAPI ship){
-
-        if (ship == null || !Global.getCombatEngine().isEntityInPlay(ship)) return 0f;
-
-        ArmorGridAPI armorGrid = ship.getArmorGrid();
-        float[][] armorGridGrid = armorGrid.getGrid();
-        List<Float> armorList = new ArrayList<>();
-        org.lwjgl.util.Point worstPoint = DefenseUtils.getMostDamagedArmorCell(ship);
-        if(worstPoint != null){
-            float totalArmor = 0;
-            for (int x = 0; x < armorGridGrid.length; x++) {
-                for (int y = 0; y < armorGridGrid[x].length; y++) {
-                    armorList.add(armorGridGrid[x][y]);
-                }
-            }
-            Collections.sort(armorList);
-            for(int i = 0; i < 21; i++){
-                if(i < 9) totalArmor += armorList.get(i);
-                else  totalArmor += armorList.get(i)/2;
-            }
-            return totalArmor;
-        } else{
-            return armorGrid.getMaxArmorInCell() * 15f;
-        }
-    }
-
-    public static Pair<Float, Float> damageAfterArmor(DamageType damageType, float damage, float hitStrength, float armorValue, ShipAPI ship){
-        MutableShipStatsAPI stats = ship.getMutableStats();
-
-        float armorMultiplier = stats.getArmorDamageTakenMult().getModifiedValue();
-        float effectiveArmorMult = stats.getEffectiveArmorBonus().getMult();
-        float hullMultiplier = stats.getHullDamageTakenMult().getModifiedValue();
-        float minArmor = stats.getMinArmorFraction().getModifiedValue();
-        float maxDR = stats.getMaxArmorDamageReduction().getModifiedValue();
-
-        switch (damageType) {
-            case FRAGMENTATION:
-                armorMultiplier *= (0.25f * stats.getFragmentationDamageTakenMult().getModifiedValue());
-                hullMultiplier *= stats.getFragmentationDamageTakenMult().getModifiedValue();
-                break;
-            case KINETIC:
-                armorMultiplier *= (0.5f * stats.getKineticDamageTakenMult().getModifiedValue());
-                hullMultiplier *= stats.getKineticDamageTakenMult().getModifiedValue();
-                break;
-            case HIGH_EXPLOSIVE:
-                armorMultiplier *= (2f * stats.getHighExplosiveDamageTakenMult().getModifiedValue());
-                hullMultiplier *= stats.getHighExplosiveDamageTakenMult().getModifiedValue();
-                break;
-            case ENERGY:
-                armorMultiplier *= stats.getEnergyDamageTakenMult().getModifiedValue();
-                hullMultiplier *= stats.getEnergyDamageTakenMult().getModifiedValue();
-                break;
-        }
-
-        damage *= Math.max((1f - maxDR), ((hitStrength * armorMultiplier) / (Math.max(minArmor * ship.getArmorGrid().getArmorRating(), armorValue) * effectiveArmorMult + hitStrength * armorMultiplier)));
-
-        float armorDamage = damage * armorMultiplier;
-        float hullDamage = 0;
-        if (armorDamage > armorValue){
-            hullDamage = ((armorDamage - armorValue)/armorDamage) * damage * hullMultiplier;
-        }
-
-        return new Pair<>(armorDamage, hullDamage);
     }
 
     public static float fluxToShield(DamageType damageType, float damage, ShipAPI ship){

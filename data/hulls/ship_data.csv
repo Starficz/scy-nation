@@ -1,9 +1,9 @@
 name,id,designation,tech/manufacturer,system id,fleet pts,hitpoints,armor rating,max flux,8/6/5/4%,flux dissipation,ordnance points,fighter bays,max speed,acceleration,deceleration,max turn rate,turn acceleration,mass,shield type,defense id,shield arc,shield upkeep,shield efficiency,phase cost,phase upkeep,min crew,max crew,cargo,fuel,fuel/ly,range,max burn,base value,cr %/day,CR to deploy,peak CR sec,CR loss/sec,supplies/rec,supplies/mo,hints,tags,rarity,breakProb,minPieces,maxPieces,number
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-Remote Probe,SCY_probe,,,,,300,25,400,,50,,,250,125,75,180,90,20,FRONT,,360,0,1,,,0,0,,,,,,,,,,,,,,,,0,,,904
-Automatos,SCY_automatos,,,,,200,50,500,,50,,,150,150,150,360,360,5,FRONT,,90,0,1.5,,,0,0,,,,,,,,,,,,,,,,0,,,903
-Anaplekte,SCY_anaplekte,,,,,400,100,750,,50,,,300,600,600,360,720,30,NONE,,,,,,,0,0,,,,,,,,,,,,,,,,0,,,904
+Remote Probe,SCY_probe,,,,,300,25,400,,50,,,250,125,75,180,90,20,FRONT,,360,0,1,,,0,0,,,,,,,,,,,,,,,,0,,,900
+Automatos,SCY_automatos,,,,,200,50,500,,50,,,150,150,150,360,360,5,FRONT,,90,0,1.5,,,0,0,,,,,,,,,,,,,,,,0,,,901
+Anaplekte,SCY_anaplekte,,,,,400,100,750,,50,,,300,600,600,360,720,30,NONE,,,,,,,0,0,,,,,,,,,,,,,,,,0,,,902
 Akhlys,SCY_akhlys,,Scyan Engineering,flarelauncher_active,,600,100,750,,50,,,175,125,75,180,180,50,NONE,,,,,,,2,2,,,,,,,,,,,,,,,,0,,,920
 Nosos,SCY_nosos,,Scyan Engineering,flarelauncher_single,,400,50,100,,20,,,220,220,100,120,120,40,FRONT,,90,0,1,,,1,1,,,,,,,,,,,,,,,,0,,,921
 Stygere,SCY_stygere,,Scyan Engineering,flarelauncher_fighter,,500,50,350,,50,,,180,180,100,90,90,60,FRONT,,120,0,1,,,2,2,,,,,,,,,,,,,,,,0,,,922
@@ -12,24 +12,24 @@ Eris,SCY_eris,,Scyan Engineering,,,350,25,400,,50,,,300,300,100,360,360,10,NONE,
 Panotti,SCY_panotti,,Scyan Engineering,,,400,25,400,,50,,,250,250,100,180,180,20,NONE,,0,0,0,,,1,1,,,,,,,,,,,,,,,,0,,,925
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-Centaur,SCY_centaur,Freighter,Scyan Engineering,,5,1000,100,1250,,100,30,,165,100,90,60,40,250,FRONT,,90,0.5,1.7,,,10,30,120,60,1,50,12,8000,8,20,120,0.25,4,4,"CIVILIAN, FREIGHTER",scy_bp,,0.4,2,2,930
-Alecto,SCY_alecto,Escort Frigate,Scyan Engineering,SCY_emp,5,1700,170,2800,,100,40,,160,120,90,60,90,250,OMNI,,180,0.5,1.7,,,15,30,60,30,1,30,12,9000,7,15,240,0.15,4,4,,scy_bp,,0.4,2,2,931
-Tisiphone,SCY_tisiphone,Brawler Frigate,Scyan Engineering,SCY_twinShield,7,1500,150,2950,,100,38,,200,200,150,120,240,180,OMNI,,100,0.5,1.7,,,5,5,0,5,1,5,12,16000,10,20,240,0.25,5,5,,scy_bp,,0.4,2,2,932
-Laelaps,SCY_lealaps,Hunter Frigate,Scyan Engineering,forgevats,6,1300,130,2375,,125,40,,190,180,110,120,240,175,OMNI,,100,0.5,1.7,,,7,7,0,5,1,5,12,12000,10,20,180,0.25,5,5,,scy_bp,,0.4,2,2,933
-Megaera,SCY_megaera,Heavy Frigate,Scyan Engineering,SCY_safeties,6,1800,190,3125,,100,45,,190,130,110,90,180,270,OMNI,,100,0.5,1.6,,,18,26,40,20,1,20,11,13000,8,15,240,0.25,6,6,,scy_adv_bp,,0.3,2,2,934
-Talos,SCY_talos,Heavy Frigate,Scyan Engineering,SCY_stasisShield,6,2000,210,3125,,100,45,,180,120,100,80,160,275,OMNI,,100,0.5,1.5,,,20,30,40,20,1,20,11,14000,8,15,300,0.25,6,6,,scy_adv_bp,,0.3,2,2,935
-Stymphalian Bird,SCY_stymphalianbird,SpecOps Frigate,Scyan Engineering,SCY_experimentalTeleporter,15,1600,160,2800,,100,35,,200,190,150,120,240,150,FRONT,,90,0.5,1.5,,,1,1,0,5,1,3,12,35000,10,30,180,0.33,10,10,,rare_bp,,0.5,2,2,936
+Centaur,SCY_centaur,Freighter,Scyan Engineering,,5,1000,100,1500,,100,30,,165,100,90,60,40,250,FRONT,,90,0.5,1.8,,,10,30,120,60,1,50,12,8000,8,20,120,0.25,4,4,"CIVILIAN, FREIGHTER",scy_bp,,0.4,2,2,930
+Alecto,SCY_alecto,Escort Frigate,Scyan Engineering,SCY_emp,5,1700,170,2800,,100,44,,160,120,90,60,90,250,OMNI,,180,0.5,1.7,,,15,30,60,30,1,30,12,9000,7,15,240,0.15,4,4,,scy_bp,,0.4,2,2,931
+Tisiphone,SCY_tisiphone,Brawler Frigate,Scyan Engineering,SCY_twinShield,7,1500,150,2950,,100,40,,200,200,150,120,240,180,OMNI,,100,0.5,1.6,,,5,5,0,5,1,5,12,16000,10,20,240,0.25,5,5,,scy_adv_bp,,0.4,2,2,932
+Laelaps,SCY_lealaps,Hunter Frigate,Scyan Engineering,forgevats,6,1300,130,2375,,100,42,,190,180,110,120,240,175,OMNI,,100,0.5,1.7,,,7,7,0,5,1,5,12,12000,10,20,180,0.25,5,5,,scy_bp,,0.4,2,2,933
+Talos,SCY_talos,Heavy Frigate,Scyan Engineering,SCY_stasisShield,6,2000,210,3450,,100,48,,180,120,100,80,160,275,OMNI,,100,0.5,1.5,,,20,30,40,20,1,20,11,14000,8,15,300,0.25,6,6,,scy_bp,,0.3,2,2,935
+Megaera,SCY_megaera,Heavy Frigate,Scyan Engineering,SCY_safeties,6,1800,190,3000,,100,45,,190,130,110,90,180,270,OMNI,,100,0.5,1.7,,,18,26,40,20,1,20,11,13000,8,15,240,0.25,6,6,,scy_adv_bp,,0.3,2,2,934
+Stymphalian Bird,SCY_stymphalianbird,SpecOps Frigate,Scyan Engineering,SCY_experimentalTeleporter,15,1600,160,3150,,100,35,,200,190,150,120,240,150,FRONT,,100,0.5,1.6,,,1,1,0,5,1,3,12,35000,10,30,180,0.33,10,10,,rare_bp,,0.5,2,2,936
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-Balius,SCY_baliusF,Freighter,Scyan Engineering,,5,2000,125,1350,,100,25,,100,55,35,30,20,300,OMNI,,100,0.5,1.7,,,10,20,400,100,1.5,66,10,15000,5,20,180,0.25,4,4,"CIVILIAN, FREIGHTER",scy_bp,,0.6,2,3,940
-Balius,SCY_baliusT,Tanker,Scyan Engineering,,5,2000,125,1350,,100,25,,100,55,35,30,20,300,OMNI,,100,0.5,1.7,,,10,20,30,650,1.5,166,10,15000,5,20,180,0.25,4,4,"CIVILIAN, TANKER",scy_bp,,0.6,2,3,941
-Telchine,SCY_telchine,Mining Ship,Scyan Engineering,,7,3000,300,2200,,100,35,1,90,45,30,30,20,350,OMNI,,45,0.5,1.7,,,35,45,150,250,1.5,166,10,16000,5,20,420,0.25,6,6,"CIVILIAN, FREIGHTER",scy_bp,,0.6,2,3,942
-Lamia,SCY_lamia,Destroyer,Scyan Engineering,SCY_twinShield,10,3500,350,6000,,200,70,,110,80,50,45,30,325,OMNI,,100,0.5,1.7,,,40,70,80,55,1.5,18,11,34000,5,15,300,0.25,8,8,,scy_bp,,0.5,2,3,943
-Lamia (Armored),SCY_lamiaA,Heavy Destroyer,Scyan Engineering,SCY_twinShield,11,3750,375,6000,,200,70,,100,50,35,35,20,350,OMNI,,100,0.5,1.6,,,45,60,75,50,2,25,10,40000,4,12,360,0.25,10,10,SHIP_WITH_MODULES,scy_adv_bp,,0.4,2,3,944
-Pyraemon,SCY_pyraemon,Heavy Destroyer,Scyan Engineering,SCY_stasisShield,11,3250,350,6250,,250,60,,100,70,40,45,35,400,OMNI,,100,0.5,1.7,,,50,70,75,60,1.5,20,10,37000,4,16,240,0.25,9,9,,scy_adv_bp,,0.5,2,3,945
-Hydra,SCY_hydra,Hunter Destroyer,Scyan Engineering,SCY_safeties,11,4000,400,7000,,300,75,,125,150,100,50,50,400,OMNI,,100,0.5,1.7,,,55,60,40,40,2,13,11,39000,5,15,360,0.25,9,9,,scy_adv_bp,,0.4,2,3,946
-Geryon,SCY_geryon,Missile Destroyer,Scyan Engineering,SCY_secondaryThrusters,10,3000,325,3375,,200,70,,105,75,45,45,35,325,OMNI,,100,0.5,1.6,,,40,60,50,50,1.5,17,10,36000,4,16,300,0.25,10,10,,scy_adv_bp,,0.5,2,3,947
-Argus,SCY_argus,Carrier,Scyan Engineering,SCY_probeDrones,9,3000,300,3000,,200,65,2,110,65,40,40,20,350,OMNI,,120,0.5,1.6,,,45,120,40,30,1.5,20,11,32000,4,12,360,0.25,10,10,CARRIER,scy_bp,,0.7,2,3,948
+Balius,SCY_baliusF,Freighter,Scyan Engineering,,5,2000,125,1650,,100,25,,100,55,35,30,20,300,OMNI,,100,0.5,1.8,,,10,20,400,100,1.5,66,10,15000,5,20,180,0.25,4,4,"CIVILIAN, FREIGHTER",scy_bp,,0.6,2,3,940
+Balius,SCY_baliusT,Tanker,Scyan Engineering,,5,2000,125,1650,,100,25,,100,55,35,30,20,300,OMNI,,100,0.5,1.8,,,10,20,30,650,1.5,166,10,15000,5,20,180,0.25,4,4,"CIVILIAN, TANKER",scy_bp,,0.6,2,3,941
+Telchine,SCY_telchine,Mining Ship,Scyan Engineering,,7,3000,300,2650,,100,35,1,90,45,30,30,20,350,OMNI,,50,0.5,1.8,,,35,45,150,250,1.5,166,10,16000,5,20,420,0.25,6,6,"CIVILIAN, FREIGHTER",scy_bp,,0.6,2,3,942
+Lamia,SCY_lamia,Destroyer,Scyan Engineering,SCY_twinShield,10,3500,350,6000,,200,75,,110,80,50,45,30,325,OMNI,,100,0.5,1.7,,,40,70,80,55,1.5,18,11,34000,5,15,300,0.25,8,8,,scy_bp,,0.5,2,3,943
+Lamia (Armored),SCY_lamiaA,Heavy Destroyer,Scyan Engineering,SCY_twinShield,11,3750,375,6000,,200,75,,100,50,35,35,20,350,OMNI,,100,0.5,1.6,,,45,60,75,50,2,25,10,40000,4,12,360,0.25,10,10,SHIP_WITH_MODULES,scy_adv_bp,,0.4,2,3,944
+Pyraemon,SCY_pyraemon,Heavy Destroyer,Scyan Engineering,SCY_stasisShield,11,3250,350,6300,,250,75,,100,70,40,45,35,400,OMNI,,100,0.5,1.7,,,50,70,75,60,1.5,20,10,37000,4,16,240,0.25,9,9,,scy_adv_bp,,0.5,2,3,945
+Hydra,SCY_hydra,Hunter Destroyer,Scyan Engineering,SCY_safeties,11,4000,400,6600,,300,80,,125,150,100,50,50,400,OMNI,,100,0.5,1.7,,,55,60,40,40,2,13,11,39000,5,15,360,0.25,9,9,,scy_adv_bp,,0.4,2,3,946
+Geryon,SCY_geryon,Missile Destroyer,Scyan Engineering,SCY_secondaryThrusters,10,3000,325,4050,,200,70,,105,75,45,45,35,325,OMNI,,100,0.5,1.7,,,40,60,50,50,1.5,17,10,36000,4,16,300,0.25,10,10,,scy_adv_bp,,0.5,2,3,947
+Argus,SCY_argus,Carrier,Scyan Engineering,SCY_probeDrones,9,3000,300,3600,,200,65,2,110,65,40,40,20,350,OMNI,,120,0.5,1.7,,,45,120,40,30,1.5,20,11,32000,4,12,360,0.25,10,10,CARRIER,scy_bp,,0.7,2,3,948
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 Front Armor,SCY_lamiaAF,,,,0,2500,250,0,,0,0,,50,50,50,50,50,225,NONE,,,,,,,,,,,,,,,,10,,,0,0,"UNBOARDABLE, HIDE_IN_CODEX",module_hull_bar_only,,1,2,2,1001.1
@@ -41,7 +41,7 @@ Dracanae,SCY_dracanae,Hunter Cruiser,Scyan Engineering,SCY_safeties,12,7500,700,
 Siren,SCY_siren,Light Cruiser,Scyan Engineering,SCY_teleport,14,6000,450,10000,,300,100,1,90,65,55,35,30,800,OMNI,,90,0.5,1.6,,,80,120,130,100,2,50,10,140000,4,14,420,0.25,20,20,,"scy_adv_bp, rare_bp",,0.6,2,3,951
 Corocotta,SCY_corocotta,Cruiser,Scyan Engineering,SCY_secondaryThrusters,14,7500,750,12500,,300,125,,80,50,40,30,25,1000,OMNI,,90,0.5,1.7,,,110,170,150,110,2.5,48,10,100000,5,15,420,0.25,20,20,,scy_bp,,0.6,2,3,952
 Corocotta (Armored),SCY_corocottaA,Heavy Cruiser,Scyan Engineering,SCY_twinShield,15,7500,750,12500,,300,125,,60,40,30,20,15,1200,OMNI,,90,0.5,1.7,,,140,200,120,100,3,33,9,130000,4,12,480,0.25,22,22,SHIP_WITH_MODULES,scy_adv_bp,,0.5,2,3,953
-Khalkotauroi,SCY_khalkotauroi,Beam Cruiser,Scyan Engineering,SCY_secondaryThrusters,15,7000,500,10500,,300,100,,80,60,50,30,25,875,OMNI,,90,0.5,1.7,,,90,115,70,80,2.5,32,10,140000,4,14,420,0.25,20,20,SHIP_WITH_MODULES,"scy_adv_bp, rare_bp",,0.7,2,3,954
+Khalkotauroi,SCY_khalkotauroi,Beam Cruiser,Scyan Engineering,SCY_secondaryThrusters,15,7000,500,10500,,300,110,,80,60,50,30,25,875,OMNI,,90,0.5,1.7,,,90,115,70,80,2.5,32,10,140000,4,14,420,0.25,20,20,SHIP_WITH_MODULES,"scy_adv_bp, rare_bp",,0.7,2,3,954
 Erymanthian Boar,SCY_erymanthianboar,Missile Cruiser,Scyan Engineering,forgevats,15,7000,600,7800,,300,110,,75,55,45,25,20,1300,OMNI,,90,0.5,1.7,,,115,175,140,100,2.5,40,9,135000,4,15,420,0.25,21,21,,scy_adv_bp,,0.6,2,3,955
 Androphagos,SCY_manticore,Carrier,Scyan Engineering,,15,6500,400,8500,,300,100,3,80,45,35,15,15,900,OMNI,,90,0.5,1.8,,,180,300,90,60,2.5,24,10,115000,4,12,420,0.25,20,20,CARRIER,scy_bp,,0.7,2,3,956
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,

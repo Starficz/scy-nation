@@ -1,6 +1,6 @@
 {
     "displayName": "Strike",
-    "fluxCapacitors": 6,
+    "fluxCapacitors": 8,
     "fluxVents": 0,
     "goalVariant": true,
     "hullId": "SCY_lealaps",

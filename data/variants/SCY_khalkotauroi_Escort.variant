@@ -1,7 +1,7 @@
 {
     "displayName": "Escort",
     "fluxCapacitors": 15,
-    "fluxVents": 20,
+    "fluxVents": 30,
     "goalVariant": true,
     "hullId": "SCY_khalkotauroi",
     "hullMods": [

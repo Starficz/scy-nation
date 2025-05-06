@@ -122,7 +122,6 @@ public class SCY_modPlugin extends BaseModPlugin {
         if (!haveNexerelin || SectorManager.getManager().isCorvusMode()) {
             new SCY_gen().generate(Global.getSector());
         }
-        Global.getSector().addScript(new SCY_shipsStealth());
     }
 
     @Override
@@ -171,6 +170,7 @@ public class SCY_modPlugin extends BaseModPlugin {
     public void onGameLoad(boolean newGame) {
         // register our listener that gets notified when battles complete
         Global.getSector().addTransientListener(new ReportPlayerEngagementCampaignEventListener());
+        Global.getSector().removeScriptsOfClass(data.scripts.SCY_shipsStealth.class); // this was redundant I think
         SCY_muzzleFlashesPlugin.cleanSlate();
         SCY_projectilesEffectPlugin.cleanSlate();
 

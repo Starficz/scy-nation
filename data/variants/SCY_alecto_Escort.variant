@@ -1,7 +1,7 @@
 {
     "displayName": "Escort",
-    "fluxCapacitors": 5,
-    "fluxVents": 6,
+    "fluxCapacitors": 7,
+    "fluxVents": 8,
     "goalVariant": true,
     "hullId": "SCY_alecto",
     "hullMods": [],

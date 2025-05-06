@@ -43,6 +43,10 @@
         "icons": {
             "scy_modules": "graphics/SCY/icons/hullsys/scy_modules_ico.png",
         },
+        "hullmodHeaders": {
+            "SCY_engines": "graphics/SCY/icons/hullmodHeaders/scy_engine_tooltip_quack.png",
+            "SCY_flux": "graphics/SCY/icons/hullmodHeaders/scy_fluxcoils_quack_64.png"
+        },
         "muzzle":{
             "SCY_minigun3_01":"graphics/SCY/weapons/SCY_minigun3/SCY_minigun3M_00.png",
             "SCY_minigun3_02":"graphics/SCY/weapons/SCY_minigun3/SCY_minigun3M_01.png",

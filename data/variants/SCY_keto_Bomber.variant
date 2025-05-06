@@ -1,7 +1,7 @@
 {
     "displayName": "Bomber",
     "fluxCapacitors": 0,
-    "fluxVents": 3,
+    "fluxVents": 19,
     "goalVariant": true,
     "hullId": "SCY_keto",
     "hullMods": [
@@ -31,11 +31,12 @@
             "autofire": true,
             "mode": "LINKED",
             "weapons": {
-                "WS0003": "flak",
                 "WS0002": "flak",
+                "WS0003": "flak",
+                "WS0004": "flak",
+                "WS0005": "flak",
                 "WS0009": "vulcan",
                 "WS0008": "vulcan",
-                "WS0005": "flak",
                 "WS0007": "vulcan",
                 "WS0006": "vulcan",
             }

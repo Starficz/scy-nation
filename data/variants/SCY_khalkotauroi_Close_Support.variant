@@ -1,7 +1,7 @@
 {
     "displayName": "Close Support",
-    "fluxCapacitors": 14,
-    "fluxVents": 15,
+    "fluxCapacitors": 19,
+    "fluxVents": 20,
     "goalVariant": true,
     "hullId": "SCY_khalkotauroi",
     "hullMods": [

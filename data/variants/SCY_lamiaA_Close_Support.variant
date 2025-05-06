@@ -1,6 +1,6 @@
 {
     "displayName": "Close Support",
-    "fluxCapacitors": 1,
+    "fluxCapacitors": 6,
     "fluxVents": 20,
     "goalVariant": true,
     "hullId": "SCY_lamiaA",
