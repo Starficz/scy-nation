@@ -25,37 +25,37 @@
 
 
 
-    "miningVariantsOrWings":["SCY_telchine_standard"],
+    "miningVariantsOrWings":["SCY_telchine_Standard"],
 
 
 
     "startShipsSolo":[
-        ["SCY_talos_combat"]
+        ["SCY_talos_Brawler"]
     ],
     "startShipsCombatSmall":[
-        ["SCY_pyraemon_combat", "SCY_talos_beamer", "SCY_alecto_escort"],
-        ["SCY_hydra_combat", "SCY_lealaps_combat", "SCY_centaur_combat"]
+        ["SCY_pyraemon_Brawler", "SCY_talos_Assault", "SCY_alecto_Escort"],
+        ["SCY_hydra_Brawler", "SCY_lealaps_Strike", "SCY_centaur_Standalone"]
     ],
     "startShipsCombatLarge":[
-        ["SCY_corocotta_combat", "SCY_lamiaA_combat", "SCY_tisiphone_assault"],
-        ["SCY_dracanae_combat", "SCY_geryon_combat", "SCY_megaera_support"],
-        ["SCY_khalkotauroi_beamer", "SCY_alecto_escort", "SCY_alecto_escort"]
+        ["SCY_corocotta_Brawler", "SCY_lamiaA_Brawler", "SCY_tisiphone_Assault"],
+        ["SCY_dracanae_Assault", "SCY_geryon_Bomber", "SCY_megaera_Brawler"],
+        ["SCY_khalkotauroi_Close_Support", "SCY_alecto_Escort", "SCY_alecto_Close_Support"]
     ],
     "startShipsTradeSmall":[
-        ["SCY_telchine_standard", "SCY_tisiphone_combat", "SCY_centaur_escort"]
+        ["SCY_telchine_Standard", "SCY_tisiphone_Brawler", "SCY_centaur_Standalone"]
     ],
     "startShipsTradeLarge":[
-        ["SCY_xanthus_standard", "SCY_lamia_combat", "SCY_alecto_harasser"]
+        ["SCY_xanthus_Standard", "SCY_lamia_Brawler", "SCY_alecto_Brawler"]
     ],
     "startShipsCarrierSmall":[
-        ["SCY_argus_longrange", "SCY_lealaps_bomber", "SCY_megaera_blaster"]
+        ["SCY_argus_Bomber", "SCY_lealaps_Strike", "SCY_megaera_Brawler"]
     ],
     "startShipsCarrierLarge":[
-        ["SCY_manticore_artillery", "SCY_geryon_support", "SCY_talos_brawler"]
+        ["SCY_manticore_Fighter", "SCY_geryon_Cluster", "SCY_talos_Brawler"]
     ],
     "startShipsSuper":[
-        ["SCY_stymphalianbird_hacker", "SCY_centaur_combat"],
-        ["SCY_siren_combat"]
+        ["SCY_stymphalianbird_Combat", "SCY_centaur_Standard"],
+        ["SCY_siren_Hunter"]
     ],
 
 
