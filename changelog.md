@@ -72,6 +72,7 @@
   - Fixed Nemean Lion Weapon Lock flux issues by moving away from Flux Mults (fixes VIC auto-replicators)
   - Improved Paperdoll Health color to be more accurate
   - Moved Scy Ship to their own Simulator tab
+
 ## Version 1.9.0
 - Integrated MagicPaintjob support for the Bluesky Skin
 - 0.98a release
