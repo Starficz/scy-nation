@@ -171,9 +171,9 @@ public class SCY_modPlugin extends BaseModPlugin {
         // register our listener that gets notified when battles complete
         Global.getSector().addTransientListener(new ReportPlayerEngagementCampaignEventListener());
         Global.getSector().removeScriptsOfClass(data.scripts.SCY_shipsStealth.class); // this was redundant I think
+        Global.getSector().getPlayerFleet().getStats().getDetectedRangeMod().unmodify("SCY_engineering");
         SCY_muzzleFlashesPlugin.cleanSlate();
         SCY_projectilesEffectPlugin.cleanSlate();
-
         if (!haveNexerelin || SectorManager.getManager().isCorvusMode()) {
             if (!Global.getSector().getMemoryWithoutUpdate().contains(MEMKEY_INTIALIZED)) {
                 addToOngoingGame();

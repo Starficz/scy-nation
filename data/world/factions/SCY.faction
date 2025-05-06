@@ -124,7 +124,7 @@
   },
 
   "knownShips": {
-    "tags": ["base_bp", "scy_bp", "scy_adv_bp"],
+    "tags": ["scy_bp", "scy_adv_bp"],
     "hulls": [
       "SCY_alecto",
       "SCY_tisiphone",
@@ -399,6 +399,9 @@
       "vsFreePort": false,
       "canBombard": false,
       "territorial": true,
+    },
+    "simulatorData":{
+      "showInSimulator":true,
     },
   },
 

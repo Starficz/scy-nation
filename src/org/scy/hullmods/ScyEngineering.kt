@@ -63,7 +63,7 @@ class ScyEngineering: BaseHullMod() {
 
     override fun advanceInCampaign(member: FleetMemberAPI?, amount: Float) {
         if(member == null) return
-        if(member.fleetData?.fleet?.let{ it.currBurnLevel < it.getGoSlowBurnLevel() } == true){
+        if(member.fleetData?.fleet?.let{ it.currBurnLevel <= it.getGoSlowBurnLevel() } == true){
             member.stats.sensorProfile.modifyPercent("scy_engineering", SLOW_PROFILE_PERCENT)
             member.stats.suppliesPerMonth.modifyPercent("scy_engineering", SLOW_SUPPLIES_PERCENT)
         } else{
