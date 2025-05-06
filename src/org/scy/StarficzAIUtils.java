@@ -70,7 +70,8 @@ public class StarficzAIUtils {
                     continue; // skip to next object if not hit, this point should be a complete filter of mines
                 }
 
-                if ((missile.isGuided() || "CUSTOM".equals(missile.getBehaviorSpecParams().optString("behavior"))) && missile.getFlightTime() < missile.getMaxFlightTime() && (missile.getWeapon() == null || !(missile.getWeapon().getId().equals("squall") && missile.getFlightTime() > 1f))){ // special case the squall
+                if ((missile.isGuided() || (missile.getSpec().getBehaviorSpec() != null && "CUSTOM".equals(missile.getBehaviorSpecParams().optString("behavior"))))
+                        && missile.getFlightTime() < missile.getMaxFlightTime() && (missile.getWeapon() == null || !(missile.getWeapon().getId().equals("squall") && missile.getFlightTime() > 1f))){ // special case the squall
                     boolean hit = false;
                     float travelTime = 0f;
                     float collisionSize = missile.getSpec().getExplosionSpec() == null ? missile.getCollisionRadius() : missile.getSpec().getExplosionSpec().getRadius();
@@ -81,7 +82,10 @@ public class StarficzAIUtils {
                         float missileAccel = missile.isMirv() ? missile.getAcceleration()*4 :  missile.getAcceleration();
 
                         // I *really* hate dems
-                        JSONArray missileTD = missile.getBehaviorSpecParams().optJSONArray("triggerDistance");
+                        JSONArray missileTD = null;
+                        if(missile.getSpec().getBehaviorSpec() != null){
+                            missileTD = missile.getBehaviorSpecParams().optJSONArray("triggerDistance");
+                        }
                         if (missileTD != null){
                             float demRange = (float) missileTD.optDouble(missileTD.length()-1, 0f);
                             float travelDistanceLeft = MathUtils.getDistance(missile.getLocation(), testPoint) - (shipRadius + demRange);

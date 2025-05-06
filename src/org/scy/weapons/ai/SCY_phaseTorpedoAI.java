@@ -39,7 +39,7 @@ public class SCY_phaseTorpedoAI implements MissileAIPlugin, GuidedMissileAI {
 
   // range under which the missile start to get progressively more precise in game units.
   private static float PRECISION_RANGE = 500;
-  private static final float DETONATION_RANGE = 800;
+  private static final float DETONATION_RANGE = 400;
 
   // Leading loss without ECCM hullmod. The higher, the less accurate the leading calculation will
   // be.
@@ -164,24 +164,25 @@ public class SCY_phaseTorpedoAI implements MissileAIPlugin, GuidedMissileAI {
 
       // mine trigger
       if (MathUtils.isWithinRange(target, MISSILE, DETONATION_RANGE * ECCM / 3)) {
+        Vector2f dampedVelocity = (Vector2f) (new Vector2f(MISSILE.getVelocity())).scale(0.5f);
         engine.spawnProjectile(
             MISSILE.getSource(),
             MISSILE.getWeapon(),
             "SCY_phase_mine",
             MISSILE.getLocation(),
             MISSILE.getFacing(),
-            new Vector2f(MISSILE.getVelocity()));
+                dampedVelocity);
         engine.addHitParticle(
-            MISSILE.getLocation(), MISSILE.getVelocity(), 50, 0.5f, 0.25f, Color.PINK);
+            MISSILE.getLocation(), dampedVelocity, 50, 0.5f, 0.25f, Color.PINK);
         engine.addHitParticle(
-            MISSILE.getLocation(), MISSILE.getVelocity(), 100, 1f, 0.1f, Color.WHITE);
+            MISSILE.getLocation(), dampedVelocity, 100, 1f, 0.1f, Color.WHITE);
         Global.getSoundPlayer()
             .playSound(
                 "system_phase_cloak_deactivate",
                 1,
                 0.5f,
                 MISSILE.getLocation(),
-                MISSILE.getVelocity());
+                    dampedVelocity);
         engine.removeEntity(MISSILE);
         return;
       }
