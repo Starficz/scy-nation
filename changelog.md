@@ -66,7 +66,7 @@ First of all, they have a 0 cooldown time, meaning they instantly despinned, eve
 
 Second of which is that the "Energy Hardflux" portion of their damage was from the result of spawning 10 damage, 
 KE/HE "splinter" projectiles randomly around where the beam hit (note that this has abysmal hit strength). This resulted in ~66 hardflux dps for the mk.1, 
-~125 hardflux dps for the mk.2, and ~225 hardflux dps for the mk.3 (also note that this isn't what the tooltips say at all).
+~125 hardflux dps for the mk.2, and ~450 hardflux dps for the mk.3 (also note that this isn't what the tooltips say at all).
 
 These issues resulted in me overhauling and rewriting this entire weapon line, fixing them. Now they have the following stats:
 
