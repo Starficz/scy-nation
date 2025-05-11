@@ -55,7 +55,7 @@ buffs have been applied to keep them viable into the endgame.
   
 - System Balancing
 - Stasis Shield
-    + 4 seconds active -> 5 seconds active
+  + 4 seconds active -> 5 seconds active
   + Much improved AI on when to smartly use it
   
 
