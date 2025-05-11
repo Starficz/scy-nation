@@ -1,6 +1,6 @@
 ## Version 1.10.0
 ### Ship Balance Changes
-In a past patch I introduced the bonus where caps gave 1% Active Vent Mult per cap, this however mad it such that the 
+In a past patch I introduced the bonus where caps gave 1% Active Vent Mult per cap, this however made it such that the 
 larger ship class' being able to mount more caps were able to disproportionally gain from this system. 
 As such, the base vent mult for SCY ships has been reduced, with vents now applying different percentages on each size class.
 
@@ -63,6 +63,7 @@ buffs have been applied to keep them viable into the endgame.
     
 Nano-needle's have always been very special weapons, as they are ballistic beams. This resulted in many different workarounds for their operation, 
 First of all, they have a 0 cooldown time, meaning they instantly despinned, even when the spin-up time was quite significant.
+
 Second of which is that the "Energy Hardflux" portion of their damage was from the result of spawning 10 damage, 
 KE/HE "splinter" projectiles randomly around where the beam hit (note that this has abysmal hit strength). This resulted in ~66 hardflux dps for the mk.1, 
 ~125 hardflux dps for the mk.2, and ~225 hardflux dps for the mk.3 (also note that this isn't what the tooltips say at all).
@@ -71,7 +72,7 @@ These issues resulted in me overhauling and rewriting this entire weapon line, f
 
 - All Nano-needle's
   + No longer instantly despin, but they still do stop firing when not at max spin. (adds some leyway when retargeting)
-  + No Energy Hardflux DPS is another beam now, hit strength is equivalent to normal beams with the same DPS.
+  + Energy Hardflux DPS is another beam now, hit strength is equivalent to normal beams with the same DPS.
 
 - Nano-needle Minigun mk.1
   + 0.5 seconds spin-up time -> 0.4 seconds spin-up time (to be better at being PD)
