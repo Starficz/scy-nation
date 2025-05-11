@@ -1,3 +1,14 @@
+## Version 1.11.0
+- Androphagos
+  + Given a pair of CIWS as a system
+  
+- Keto Astrapios
+  + Made the stat card accurate (It was 11 seconds refire on the card, but it was actually 21 seconds in combat)
+  + Refire Rate 21 seconds -> 15 seconds
+  - 3000 Damage/EMP -> 2500 Damage/EMP
+
+- Removed TADA hullmods that were accidentally in the previous version (hope you had a backup save! oops)
+
 ## Version 1.10.0
 ### Ship Balance Changes
 In a past patch I introduced the bonus where caps gave 1% Active Vent Mult per cap, this however made it such that the 

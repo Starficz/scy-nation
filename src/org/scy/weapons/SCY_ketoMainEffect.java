@@ -28,6 +28,7 @@ public class SCY_ketoMainEffect implements EveryFrameWeaponEffectPlugin, OnFireE
   private ShipAPI LEFT, RIGHT;
 
   private float warmup = 0;
+  private float warmupTime = 5f;
 
   @Override
   public void advance(float amount, CombatEngineAPI engine, WeaponAPI weapon) {
@@ -100,10 +101,10 @@ public class SCY_ketoMainEffect implements EveryFrameWeaponEffectPlugin, OnFireE
     } else if (!LDEATH
         && !SHIP.getFluxTracker().isOverloadedOrVenting()
         && !SHIP.getTravelDrive().isActive()
-        && ASTRAPIOS.getCooldownRemaining() == 0.0f) {
+        && ASTRAPIOS.getCooldownRemaining() <= warmupTime) {
       // weapon warms-up if the ship isn't overloaded, venting, travelling in and out and if the
       // weapon is ready to fire
-      warmup = Math.min(1, warmup + amount / 5);
+      warmup = Math.min(1, warmup + amount / (warmupTime/2));
       if (warmup > 0 && !sound) {
         sound = true;
         Global.getSoundPlayer()
@@ -125,7 +126,8 @@ public class SCY_ketoMainEffect implements EveryFrameWeaponEffectPlugin, OnFireE
       ASTRAPIOS.setAmmo(0);
     }
 
-    wCharge = ASTRAPIOS.getChargeLevel();
+    wCharge = ASTRAPIOS.getCooldownRemaining() == 0 ? ASTRAPIOS.getChargeLevel() :
+            Math.max((ASTRAPIOS.getCooldownRemaining() - warmupTime), 0) / (ASTRAPIOS.getCooldown() - warmupTime);
 
     // deco effects
     dot(warmup, wCharge, amount);

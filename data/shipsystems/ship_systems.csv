@@ -17,5 +17,6 @@ Secondary Thrusters,SCY_secondaryThrusters,,,,,,,,,,1,5,1,10,,,,,,,,,,,,graphics
 #
 # DRONE SYSTEMS
 Mining Drone,SCY_miningDrones,,,,,,,,20,0,0,,0,0,,,,,,,,,,,,graphics/icons/hullsys/drone_borer.png
+Mobile CIWS,SCY_ciwsDrones,,,,,,,,2,0.05,0,,0,0,,,,,,,,,,,,graphics/icons/hullsys/drone_pd_high.png
 Mobile CIWS,SCY_ciwsDrones4,,,,,,,,4,0.05,0,,0,0,,,,,,,,,,,,graphics/icons/hullsys/drone_pd_high.png
 AWACS Probe,SCY_probeDrones,,,,,,,,1,0.05,0,,0,0,,,,,,,,,,,,graphics/icons/hullsys/drone_pd_high.png

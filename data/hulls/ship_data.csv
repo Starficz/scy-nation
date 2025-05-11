@@ -43,7 +43,7 @@ Corocotta,SCY_corocotta,Cruiser,Scyan Engineering,SCY_secondaryThrusters,14,7500
 Corocotta (Armored),SCY_corocottaA,Heavy Cruiser,Scyan Engineering,SCY_twinShield,15,7500,750,12500,,300,125,,60,40,30,20,15,1200,OMNI,,90,0.5,1.7,,,140,200,120,100,3,33,9,130000,4,12,480,0.25,22,22,SHIP_WITH_MODULES,scy_adv_bp,,0.5,2,3,953
 Khalkotauroi,SCY_khalkotauroi,Beam Cruiser,Scyan Engineering,SCY_secondaryThrusters,15,7000,500,10500,,300,110,,80,60,50,30,25,875,OMNI,,90,0.5,1.7,,,90,115,70,80,2.5,32,10,140000,4,14,420,0.25,20,20,SHIP_WITH_MODULES,"scy_adv_bp, rare_bp",,0.7,2,3,954
 Erymanthian Boar,SCY_erymanthianboar,Missile Cruiser,Scyan Engineering,forgevats,15,7000,600,7800,,300,110,,75,55,45,25,20,1300,OMNI,,90,0.5,1.7,,,115,175,140,100,2.5,40,9,135000,4,15,420,0.25,21,21,,scy_adv_bp,,0.6,2,3,955
-Androphagos,SCY_manticore,Carrier,Scyan Engineering,,15,6500,400,8500,,300,100,3,80,45,35,15,15,900,OMNI,,90,0.5,1.8,,,180,300,90,60,2.5,24,10,115000,4,12,420,0.25,20,20,CARRIER,scy_bp,,0.7,2,3,956
+Androphagos,SCY_manticore,Carrier,Scyan Engineering,SCY_ciwsDrones,15,6500,400,8500,,300,100,3,80,45,35,15,15,900,OMNI,,90,0.5,1.8,,,180,300,90,60,2.5,24,10,115000,4,12,420,0.25,20,20,CARRIER,scy_bp,,0.7,2,3,956
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 Power Module,SCY_khalkPA,,,,0,1000,150,0,,0,0,,0,0,0,50,50,200,NONE,,,,,,,,,,,,,,,,1,,,0,0,"UNBOARDABLE, HIDE_IN_CODEX, MODULE",module_hull_bar_only,,0.1,2,2,1002.1
