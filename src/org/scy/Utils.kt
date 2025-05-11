@@ -1,13 +1,15 @@
 package org.scy
 
-import com.fs.starfarer.api.combat.ArmorGridAPI
-import com.fs.starfarer.api.combat.DamageType
-import com.fs.starfarer.api.combat.MutableShipStatsAPI
-import com.fs.starfarer.api.combat.ShipAPI
+import com.fs.starfarer.api.combat.*
+import com.fs.starfarer.api.combat.BoundsAPI.SegmentAPI
 import com.fs.starfarer.api.util.Misc
+import org.lazywizard.lazylib.MathUtils
+import org.lazywizard.lazylib.VectorUtils
+import org.lwjgl.util.vector.Vector2f
 import java.awt.Color
 import java.awt.Point
 import kotlin.math.*
+import kotlin.random.Random
 
 fun damageAfterArmor(
     damageType: DamageType,
@@ -212,6 +214,62 @@ fun Float.isCloseTo(other: Float, epsilon: Float): Boolean {
     return abs(this - other) <= epsilon
 }
 
+// Generic Linear Map of a number from an input range to an output range
+inline fun <reified T : Number> Number.linMap(minIn: Number, maxIn: Number, minOut: Number, maxOut: Number): T {
+    val value = this.toDouble()
+    val dMinIn = minIn.toDouble()
+    val dMaxIn = maxIn.toDouble()
+    val dMinOut = minOut.toDouble()
+    val dMaxOut = maxOut.toDouble()
+
+    val result = when {
+        value > dMaxIn -> dMaxOut
+        value < dMinIn -> dMinOut
+        else -> dMinOut + (value - dMinIn) * (dMaxOut - dMinOut) / (dMaxIn - dMinIn)
+    }
+    return when (T::class) {
+        Double::class -> result as T
+        Float::class -> result.toFloat() as T
+        Long::class -> result.toLong() as T
+        Int::class -> result.toInt() as T
+        Short::class -> result.toInt().toShort() as T
+        Byte::class -> result.toInt().toByte() as T
+        else -> throw IllegalArgumentException("Unsupported type")
+    }
+}
+
+// Why does this not exist????
+fun Random.nextFloat(from: Number, until: Number): Float {
+    return Random.nextDouble(from.toDouble(), until.toDouble()).toFloat()
+}
+
+fun getNearestSegmentOnBounds(source: Vector2f, entity: CombatEntityAPI): Pair<SegmentAPI?, Vector2f> {
+
+    // Fall back to closest point on collision radius if entity lacks a BoundsAPI
+    val bounds = entity.exactBounds ?: return Pair(null,
+        MathUtils.getPointOnCircumference(
+            entity.location,
+            entity.collisionRadius,
+            VectorUtils.getAngle(entity.location, source)
+        )
+    )
+
+    val closestPoint = Vector2f(entity.location)
+    var closestSegment = bounds.segments.firstOrNull()
+    var closestDistanceSquared = Float.MAX_VALUE
+    bounds.update(entity.location, entity.facing)
+    for (segment in bounds.segments) {
+        val tmp = MathUtils.getNearestPointOnLine(source, segment.p1, segment.p2)
+        val distanceSquared = MathUtils.getDistanceSquared(source, tmp)
+        if (distanceSquared < closestDistanceSquared) {
+            closestPoint.set(tmp)
+            closestSegment = segment
+            closestDistanceSquared = distanceSquared
+        }
+    }
+
+    return Pair(closestSegment, closestPoint)
+}
 /**
  * Creates a new `Color` that is a brighter version of this
  * `Color`.

@@ -26,11 +26,21 @@
         "BLINKER2": "SCY_ZblinkerA",
         "BLINKER3": "SCY_ZblinkerB",
         "BLINKER4": "SCY_ZblinkerB",
-        "D_HEAT_CENTER": "SCY_XcruiserHeat"
+        "D_HEAT_CENTER": "SCY_XcruiserHeat",
+        "SYSTEM": "SCY_YlamiaSystem"
     },
     "builtInWings": [],
     "builtInModules": null,
     "weaponSlots": [
+        {
+            "id": "SYSTEM",
+            "size": "SMALL",
+            "type": "DECORATIVE",
+            "mount": "HIDDEN",
+            "arc": 0,
+            "angle": 0,
+            "locations": [0, 0]
+        },
         {
             "id": "A_FLAME_CENTER",
             "size": "SMALL",

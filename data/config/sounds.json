@@ -203,6 +203,19 @@
 	[
 		{"file":"sounds/SCY/sfx_weapons/SCY_minigun_spinDown.ogg","pitch":1,"volume":0.7},
 	],
+
+	"SCY_minigun_shieldHit":
+	[
+	    {"file":"sounds/sfx_impacts/shield_hit_light_01.ogg","pitch":1,"volume":1},
+	    {"file":"sounds/sfx_impacts/shield_hit_light_02.ogg","pitch":1,"volume":1}
+	],
+
+	"SCY_minigun_hullHit":
+	[
+		{"file":"sounds/sfx_impacts/gun_hit_glancing_01.ogg","pitch":1,"volume":1},
+		{"file":"sounds/sfx_impacts/gun_hit_glancing_02.ogg","pitch":1,"volume":1},
+	    {"file":"sounds/sfx_impacts/gun_hit_glancing_03.ogg","pitch":1,"volume":1}
+	],
         
         "SCY_seb":
 	[

@@ -1,5 +1,5 @@
 name,id,tier,rarity,tech/manufacturer,tags,uiTags,base value,unlocked,hidden,hiddenEverywhere,cost_frigate,cost_dest,cost_cruiser,cost_capital,script,desc,short,sprite
-Scyan Engineering,SCY_engineering,,,,,,,,TRUE,,0,0,0,0,org.scy.hullmods.ScyEngineering,"TThe Scyan Engineering College optimizes its designs for hunter-killer purposes.
+Scyan Engineering,SCY_engineering,,,,,,,,TRUE,,0,0,0,0,org.scy.hullmods.ScyEngineering,"The Scyan Engineering College optimizes its designs for hunter-killer purposes.
 
 Specialized flux-grids feature immense capacitor reserves and exceptionally strong active venting, limited by poor passive dissipation.
 

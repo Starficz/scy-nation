@@ -5,6 +5,7 @@ import com.fs.starfarer.api.combat.EveryFrameWeaponEffectPlugin;
 import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.combat.ShipSystemAPI;
 import com.fs.starfarer.api.combat.WeaponAPI;
+import com.fs.starfarer.api.util.Misc;
 
 public class SCY_twinShieldSystem implements EveryFrameWeaponEffectPlugin {
 
@@ -27,13 +28,14 @@ public class SCY_twinShieldSystem implements EveryFrameWeaponEffectPlugin {
     }
 
     time += amount;
+    if(!system.isActive()) shieldArc = ship.getShield().getArc();
 
     if (time >= 1 / 30f) {
       time -= 1 / 30f;
       if (system.isActive()) {
         bonus = true;
         float level = system.getEffectLevel();
-        ship.getShield().setArc(shieldArc - (level * 2 * shieldArc / 3));
+        ship.getShield().setArc(Misc.interpolate(shieldArc, shieldArc/2, level));
       } else if (bonus) {
         bonus = false;
         ship.getShield().setArc(shieldArc);
