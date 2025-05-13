@@ -320,7 +320,7 @@ public class StarficzAIUtils {
                 // if not guided, calculate aim time if in arc, otherwise add time for ships to rotate (overestimates by allowing all weapons to hit, but better to over then underestimate)
                 float aimTime = 0f;
                 if(!(weapon.hasAIHint(WeaponAPI.AIHints.DO_NOT_AIM) || weapon.hasAIHint(WeaponAPI.AIHints.GUIDED_POOR))){
-                    Vector2f targetPoint = AIUtils.getBestInterceptPoint(weapon.getLocation(), weapon.getProjectileSpeed(), testPoint, ship.getVelocity());
+                    Vector2f targetPoint = AIUtils.getBestInterceptPoint(weapon.getLocation(), Math.min(weapon.getProjectileSpeed(), 1000000f), testPoint, ship.getVelocity());
                     if (targetPoint == null) aimTime = maxTime*2;
                     else {
                         float rotationNeeded = MathUtils.getShortestRotation(weapon.getCurrAngle(), VectorUtils.getAngle(weapon.getLocation(), targetPoint));
@@ -353,7 +353,7 @@ public class StarficzAIUtils {
                     AmmoTrackerAPI ammoTracker = weapon.getAmmoTracker();
                     if (ammoTracker.getAmmo() == 0) continue;
                 }
-                float beamDelay = 0f; //TODO: get real beam speed
+                float beamDelay = actualRange/weapon.getProjectileSpeed();
                 // normal beams
                 if(weapon.isBeam() && !weapon.isBurstBeam()){
                     float currentTime = preAimedTime;

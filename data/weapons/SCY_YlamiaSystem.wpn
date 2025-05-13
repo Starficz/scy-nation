@@ -18,5 +18,5 @@
 	"textureType":ROUGH,
 	"textureScrollSpeed":1.0,
 	"pixelsPerTexel":5.0,	
-        "everyFrameEffect":"org.scy.weapons.SCY_twinShieldSystem",
+    "everyFrameEffect":"org.scy.weapons.SCY_twinShieldSystem",
 }

@@ -2,7 +2,7 @@
 	"id":"SCY",
 	"name":"Scy Nation",
 	"author":"Created by Tartiflette. Music by Fastland. Maintained by Starficz. Originally created with the help of Debido, Mesotronik, Dark Revenant, Histidine, Silentstormpt, SniZupGun, Deathfly, 19_30 and many others.",
-	"version": {"major":"1", "minor":"11", "patch":"0"},
+	"version": {"major":"1", "minor":"11", "patch":"1"},
     "description":" Blood-thirsty pirates for some, ruthless slavers for others, treacherous spies for the rest... The Sector is a tough place to live in, and like many others the Scyan people have been forced to compromise their principles in order to survive.",
     "gameVersion": "0.98a-RC8",
     "dependencies": [

@@ -1,3 +1,8 @@
+## Version 1.11.1
+- Fixed Twin-Layer Shielding not resetting correctly
+- Added Missing Codex tags to blueprints
+- Fixed Venting AI not detecting some beams 
+
 ## Version 1.11.0
 - Androphagos
   + Given a pair of CIWS as a system
