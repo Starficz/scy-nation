@@ -3,9 +3,13 @@ package org.scy
 import java.lang.invoke.MethodHandle
 import java.lang.invoke.MethodHandles
 import java.lang.invoke.MethodType
+import java.util.concurrent.ConcurrentHashMap
+
+// Copyright Starficz, Licensed under LGPL-3.0-only
+// Credits to Lukas04 for his ReflectionUtils, Lyravega, Float, and Andylizi for the original idea.
 
 /**
- * An internal reflection utility designed specifically for Starsector modding.
+ * A reflection utility designed specifically for Starsector modding.
  *
  * This object provides functions to find and interact with fields, methods, and constructors
  * in potentially obfuscated code. It circumvents classloader restrictions on using `java.lang.reflect`
@@ -36,7 +40,6 @@ import java.lang.invoke.MethodType
  * @see ReflectedMethod
  * @see ReflectedConstructor
  */
-
 internal object ReflectionUtils {
     private val fieldClass =
         Class.forName("java.lang.reflect.Field", false, Class::class.java.classLoader)
@@ -77,6 +80,117 @@ internal object ReflectionUtils {
     private fun Class<*>.getHandle(name: String, returnType: Class<*>, vararg paramTypes: Class<*>?): MethodHandle {
         return MethodHandles.lookup().findVirtual(this, name, MethodType.methodType(returnType, paramTypes))
     }
+    private data class ReflectedFieldCacheKey(
+        val targetClass: Class<*>,
+        val fieldName: String?,
+        val fieldType: Class<*>?,
+        val fieldAssignableTo: Class<*>?,
+        val fieldAccepts: Class<*>?,
+        val searchSuperclass: Boolean
+    )
+    private val reflectedMethodsCache = ConcurrentHashMap<ReflectedMethodCacheKey, List<ReflectedMethod>>()
+
+    private data class ReflectedMethodCacheKey(
+        val targetClass: Class<*>,
+        val fieldName: String?,
+        val returnType: Class<*>?,
+        val numOfParams: Int?,
+        val parameterTypes: Array<Class<*>?>?
+    ) {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+
+            other as ReflectedMethodCacheKey
+
+            if (numOfParams != other.numOfParams) return false
+            if (targetClass != other.targetClass) return false
+            if (fieldName != other.fieldName) return false
+            if (returnType != other.returnType) return false
+            if (parameterTypes != null) {
+                if (other.parameterTypes == null) return false
+                if (!parameterTypes.contentEquals(other.parameterTypes)) return false
+            } else if (other.parameterTypes != null) return false
+
+            return true
+        }
+        override fun hashCode(): Int {
+            var result = numOfParams ?: 0
+            result = 31 * result + targetClass.hashCode()
+            result = 31 * result + (fieldName?.hashCode() ?: 0)
+            result = 31 * result + (returnType?.hashCode() ?: 0)
+            result = 31 * result + (parameterTypes?.contentHashCode() ?: 0)
+            return result
+        }
+    }
+    private val reflectedFieldsCache = ConcurrentHashMap<ReflectedFieldCacheKey, List<ReflectedField>>()
+
+    private data class ReflectedFieldWithMethodCacheKey(
+        val targetClass: Class<*>,
+        val methodName: String?,
+        val methodReturnType: Class<*>?,
+        val numOfMethodParams: Int?,
+        val methodParameterTypes: Array<Class<*>?>?,
+        val searchSuperclass: Boolean
+    ) {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+
+            other as ReflectedFieldWithMethodCacheKey
+
+            if (numOfMethodParams != other.numOfMethodParams) return false
+            if (searchSuperclass != other.searchSuperclass) return false
+            if (targetClass != other.targetClass) return false
+            if (methodName != other.methodName) return false
+            if (methodReturnType != other.methodReturnType) return false
+            if (methodParameterTypes != null) {
+                if (other.methodParameterTypes == null) return false
+                if (!methodParameterTypes.contentEquals(other.methodParameterTypes)) return false
+            } else if (other.methodParameterTypes != null) return false
+
+            return true
+        }
+        override fun hashCode(): Int {
+            var result = numOfMethodParams ?: 0
+            result = 31 * result + searchSuperclass.hashCode()
+            result = 31 * result + targetClass.hashCode()
+            result = 31 * result + (methodName?.hashCode() ?: 0)
+            result = 31 * result + (methodReturnType?.hashCode() ?: 0)
+            result = 31 * result + (methodParameterTypes?.contentHashCode() ?: 0)
+            return result
+        }
+    }
+    private val reflectedFieldsWithMethodCache = ConcurrentHashMap<ReflectedFieldWithMethodCacheKey, List<ReflectedField>>()
+
+    private data class ReflectedConstructorsCacheKey(
+        val targetClass: Class<*>,
+        val numOfParams: Int?,
+        val parameterTypes: Array<Class<*>?>?
+    ) {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+
+            other as ReflectedConstructorsCacheKey
+
+            if (numOfParams != other.numOfParams) return false
+            if (targetClass != other.targetClass) return false
+            if (parameterTypes != null) {
+                if (other.parameterTypes == null) return false
+                if (!parameterTypes.contentEquals(other.parameterTypes)) return false
+            } else if (other.parameterTypes != null) return false
+
+            return true
+        }
+        override fun hashCode(): Int {
+            var result = numOfParams ?: 0
+            result = 31 * result + targetClass.hashCode()
+            result = 31 * result + (parameterTypes?.contentHashCode() ?: 0)
+            return result
+        }
+    }
+    private val ReflectedConstructorsCache = ConcurrentHashMap<ReflectedConstructorsCacheKey, List<ReflectedConstructor>>()
 
     /**
      * Finds a unique field matching the name and/or type on the provided `instance`'s class (or optionally, superclass's) and returns its value.
@@ -286,35 +400,46 @@ internal object ReflectionUtils {
         fieldAccepts: Class<*>? = null,
         searchSuperclass: Boolean = false
     ): List<ReflectedField> {
-        return (if (searchSuperclass) getAllFields(this) else this.declaredFields.toSet()).filter { field ->
-            // 1. Check Name
-            // Use handle to get name and compare if a specific name is requested.
-            if (name != null && name != getFieldNameHandle.invoke(field)) return@filter false
+        val cacheKey = ReflectedFieldCacheKey(
+            targetClass = this,
+            fieldName = name,
+            fieldType = type,
+            fieldAssignableTo = fieldAssignableTo,
+            fieldAccepts = fieldAccepts,
+            searchSuperclass = searchSuperclass
+        )
 
-            // --- Field Checks ---
-            // Fetch actual field types using the handle *only if needed*.
-            if (type != null || fieldAccepts != null || fieldAssignableTo != null) {
-                val fieldType = getFieldTypeHandle.invoke(field) as Class<*>
-                // 2. Check the exact type
-                if (type != null && type != fieldType) return@filter false
+        return reflectedFieldsCache.getOrPut(cacheKey) {
+            (if (searchSuperclass) getAllFields(this) else this.declaredFields.toSet()).filter { field ->
+                // 1. Check Name
+                // Use handle to get name and compare if a specific name is requested.
+                if (name != null && name != getFieldNameHandle.invoke(field)) return@filter false
 
-                // 3. Check if we can (set with) / (get a) provided type
-                if (fieldAccepts != null && !isParameterCompatible(fieldType, fieldAccepts)) return@filter false
-                if (fieldAssignableTo != null && !fieldAssignableTo.isAssignableFrom(fieldType)) return@filter false
+                // --- Field Checks ---
+                // Fetch actual field types using the handle *only if needed*.
+                if (type != null || fieldAccepts != null || fieldAssignableTo != null) {
+                    val fieldType = getFieldTypeHandle.invoke(field) as Class<*>
+                    // 2. Check the exact type
+                    if (type != null && type != fieldType) return@filter false
 
-                // filter out object fields that arnt specifically matched for
-                if (fieldType == Object::class.java && // if the found field is object
-                    name == null && // and the name wasn't specified
-                    // and the user isn't trying to find an object
-                    type != Object::class.java &&
-                    fieldAssignableTo != Object::class.java &&
-                    fieldAccepts != Object::class.java)
-                // filter out the field
-                    return@filter false
-            }
-            // If all checks passed up to this point, keep the field
-            return@filter true
-        }.map { ReflectedField(it) }
+                    // 3. Check if we can (set with) / (get a) provided type
+                    if (fieldAccepts != null && !isParameterCompatible(fieldType, fieldAccepts)) return@filter false
+                    if (fieldAssignableTo != null && !fieldAssignableTo.isAssignableFrom(fieldType)) return@filter false
+
+                    // filter out object fields that arnt specifically matched for
+                    if (fieldType == Object::class.java && // if the found field is object
+                        name == null && // and the name wasn't specified
+                        // and the user isn't trying to find an object
+                        type != Object::class.java &&
+                        fieldAssignableTo != Object::class.java &&
+                        fieldAccepts != Object::class.java)
+                    // filter out the field
+                        return@filter false
+                }
+                // If all checks passed up to this point, keep the field
+                return@filter true
+            }.map { ReflectedField(it) }
+        }
     }
 
 
@@ -439,10 +564,21 @@ internal object ReflectionUtils {
         methodParameterTypes: Array<Class<*>?>? = null,
         searchSuperclass: Boolean = false
     ): List<ReflectedField> {
-        return (if (searchSuperclass) getAllFields(this) else this.declaredFields.toSet()).filter { fieldInstance ->
-            val fieldType = getFieldTypeHandle.invoke(fieldInstance) as Class<*>?
-            fieldType?.getMethodsMatching(methodName, methodReturnType, numOfMethodParams, methodParameterTypes)?.isNotEmpty() == true
-        }.map { ReflectedField(it) }
+        val cacheKey = ReflectedFieldWithMethodCacheKey(
+            targetClass = this,
+            methodName = methodName,
+            methodReturnType = methodReturnType,
+            numOfMethodParams = numOfMethodParams,
+            methodParameterTypes = methodParameterTypes,
+            searchSuperclass = searchSuperclass
+        )
+
+        return reflectedFieldsWithMethodCache.getOrPut(cacheKey){
+            (if (searchSuperclass) getAllFields(this) else this.declaredFields.toSet()).filter { fieldInstance ->
+                val fieldType = getFieldTypeHandle.invoke(fieldInstance) as Class<*>?
+                fieldType?.getMethodsMatching(methodName, methodReturnType, numOfMethodParams, methodParameterTypes)?.isNotEmpty() == true
+            }.map { ReflectedField(it) }
+        }
     }
 
     /**
@@ -759,45 +895,55 @@ internal object ReflectionUtils {
         numOfParams: Int? = null,
         parameterTypes: Array<Class<*>?>? = null // Types caller *intends to pass* (null element means passing null)
     ): List<ReflectedMethod> {
-        val accessibleMethods: Set<Any> = (this.declaredMethods + this.methods).toSet()
+        val cacheKey = ReflectedMethodCacheKey(
+            targetClass = this,
+            fieldName = name,
+            returnType = returnType,
+            numOfParams = numOfParams,
+            parameterTypes = parameterTypes
+        )
 
-        return accessibleMethods.filter { method ->
-            // 1. Check Name
-            // Use handle to get name and compare if a specific name is requested.
-            if (name != null && name != getMethodNameHandle.invoke(method)) return@filter false
+        return reflectedMethodsCache.getOrPut(cacheKey) {
+            val accessibleMethods: Set<Any> = (this.declaredMethods + this.methods).toSet()
 
-            // 2. Check Return Type
-            if (returnType != null) {
-                val actualReturnType = getMethodReturnHandle.invoke(method) as Class<*>
-                // Check: Can the method's actual return type be assigned to what the caller expects?
-                // (e.g., caller expects Number, method returns Integer -> OK)
-                if (!returnType.isAssignableFrom(actualReturnType)) return@filter false
-            }
+            accessibleMethods.filter { method ->
+                // 1. Check Name
+                // Use handle to get name and compare if a specific name is requested.
+                if (name != null && name != getMethodNameHandle.invoke(method)) return@filter false
 
-            // --- Parameter Checks ---
-            // Fetch actual parameter types using the handle *only if needed*.
-            if (numOfParams != null || parameterTypes != null){
-                @Suppress("UNCHECKED_CAST")
-                val actualParamTypes = getMethodParametersHandle.invoke(method) as Array<Class<*>>
+                // 2. Check Return Type
+                if (returnType != null) {
+                    val actualReturnType = getMethodReturnHandle.invoke(method) as Class<*>
+                    // Check: Can the method's actual return type be assigned to what the caller expects?
+                    // (e.g., caller expects Number, method returns Integer -> OK)
+                    if (!returnType.isAssignableFrom(actualReturnType)) return@filter false
+                }
 
-                // 3. Check Number of Parameters
-                if (numOfParams != null && numOfParams != actualParamTypes.size) return@filter false
+                // --- Parameter Checks ---
+                // Fetch actual parameter types using the handle *only if needed*.
+                if (numOfParams != null || parameterTypes != null){
+                    @Suppress("UNCHECKED_CAST")
+                    val actualParamTypes = getMethodParametersHandle.invoke(method) as Array<Class<*>>
 
-                // 4. Check Specific Parameter Types (using invoke compatibility rules via helper)
-                if (parameterTypes != null) {
-                    // First make sure that the number of params matches
-                    if (parameterTypes.size != actualParamTypes.size) return@filter false
+                    // 3. Check Number of Parameters
+                    if (numOfParams != null && numOfParams != actualParamTypes.size) return@filter false
 
-                    // Check each parameter pair for compatibility using the external helper function.
-                    parameterTypes.forEachIndexed { index, callerArgType ->
-                        if (!isParameterCompatible(actualParamTypes[index], callerArgType)) return@filter false
+                    // 4. Check Specific Parameter Types (using invoke compatibility rules via helper)
+                    if (parameterTypes != null) {
+                        // First make sure that the number of params matches
+                        if (parameterTypes.size != actualParamTypes.size) return@filter false
+
+                        // Check each parameter pair for compatibility using the external helper function.
+                        parameterTypes.forEachIndexed { index, callerArgType ->
+                            if (!isParameterCompatible(actualParamTypes[index], callerArgType)) return@filter false
+                        }
                     }
                 }
-            }
 
-            // If all checks passed up to this point, keep the method
-            return@filter true
-        }.map { method -> ReflectedMethod(method) } // Wrap the matching method objects
+                // If all checks passed up to this point, keep the method
+                return@filter true
+            }.map { method -> ReflectedMethod(method) } // Wrap the matching method objects
+        }
     }
 
     /**
@@ -910,26 +1056,35 @@ internal object ReflectionUtils {
         numOfParams: Int? = null,
         parameterTypes: Array<Class<*>?>? = null
     ): List<ReflectedConstructor> {
-        return this.declaredConstructors.filter { constructor ->
-            // Get actual parameters
-            @Suppress("UNCHECKED_CAST")
-            val actualParamTypes = getConstructorParametersHandle.invoke(constructor) as Array<Class<*>>
+        val cacheKey = ReflectedConstructorsCacheKey(
+            targetClass = this,
+            numOfParams = numOfParams,
+            parameterTypes = parameterTypes
+        )
 
-            // Check num of params
-            if (numOfParams != null && numOfParams != actualParamTypes.size) return@filter false
+        return ReflectedConstructorsCache.getOrPut(cacheKey){
+            this.declaredConstructors.filter { constructor ->
+                // Get actual parameters
+                @Suppress("UNCHECKED_CAST")
+                val actualParamTypes = getConstructorParametersHandle.invoke(constructor) as Array<Class<*>>
 
-            // Check specific parameter types using isParameterCompatible
-            if (parameterTypes != null) {
-                // First make sure that the number of params matches
-                if (parameterTypes.size != actualParamTypes.size) return@filter false
+                // Check num of params
+                if (numOfParams != null && numOfParams != actualParamTypes.size) return@filter false
 
-                // Check each parameter pair for compatibility using the external helper function.
-                parameterTypes.forEachIndexed { index, callerArgType ->
-                    if (!isParameterCompatible(actualParamTypes[index], callerArgType)) return@filter false
+                // Check specific parameter types using isParameterCompatible
+                if (parameterTypes != null) {
+                    // First make sure that the number of params matches
+                    if (parameterTypes.size != actualParamTypes.size) return@filter false
+
+                    // Check each parameter pair for compatibility using the external helper function.
+                    parameterTypes.forEachIndexed { index, callerArgType ->
+                        if (!isParameterCompatible(actualParamTypes[index], callerArgType)) return@filter false
+                    }
                 }
-            }
-            return@filter true
-        }.map { ReflectedConstructor(it) }
+                return@filter true
+            }.map { ReflectedConstructor(it) }
+        }
+
     }
 
 

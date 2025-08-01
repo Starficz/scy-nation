@@ -10,13 +10,15 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.util.IntervalUtil
 import com.fs.starfarer.api.util.Misc
 import com.fs.starfarer.combat.CombatEngine
+import org.lazywizard.lazylib.VectorUtils
 import org.lwjgl.util.vector.Vector2f
 import org.magiclib.kotlin.getGoSlowBurnLevel
 import org.magiclib.subsystems.MagicSubsystemsManager.addSubsystemToShip
 import org.magiclib.util.MagicIncompatibleHullmods
 import org.scy.*
-import org.scy.StarficzAIUtils.FutureHit
+import org.scy.StarficzAIUtilsV2.FutureHit
 import org.scy.subsystems.EngineJumpstart
+import java.awt.Color
 import kotlin.math.max
 
 class ScyEngineering: BaseHullMod() {
@@ -150,14 +152,14 @@ class ScyEngineering: BaseHullMod() {
     }
 
     class ScyVentingAI(val ship: ShipAPI): AdvanceableListener{
-        var damageTracker: IntervalUtil = IntervalUtil(0.2f, 0.3f)
+        var damageTracker: IntervalUtil = IntervalUtil(0.3f, 0.5f)
         var backupPoint: Vector2f? = null
-        var lastUpdatedTime: Float = 0f
         var incomingProjectiles: List<FutureHit> = ArrayList()
         var predictedWeaponHits: List<FutureHit> = ArrayList()
+        var incomingProjectilesIfBackup: List<FutureHit> = ArrayList()
+        var predictedWeaponHitsIfBackup: List<FutureHit> = ArrayList()
 
         val bufferTime = 0.1f
-        val forceBackOffLimit = 0.8f
         override fun advance(amount: Float) {
             val engine = Global.getCombatEngine()
             if (!ship.isAlive || ship.parentStation != null || engine == null || !engine.isEntityInPlay(ship)) return
@@ -166,41 +168,35 @@ class ScyEngineering: BaseHullMod() {
 
             damageTracker.advance(amount)
             if (damageTracker.intervalElapsed()) {
-                lastUpdatedTime = Global.getCombatEngine().getTotalElapsedTime(false)
-                incomingProjectiles = StarficzAIUtils.incomingProjectileHits(ship, ship.location)
-                val timeToPredict = ship.fluxTracker.timeToVent + shieldRaiseTime + damageTracker.maxInterval
-                predictedWeaponHits = StarficzAIUtils.generatePredictedWeaponHits(ship, ship.location, timeToPredict)
-                if (ship.fluxLevel > forceBackOffLimit - 0.1f) backupPoint = StarficzAIUtils.getBackingOffStrafePoint(ship)
+                incomingProjectiles = StarficzAIUtilsV2.incomingProjectileHits(ship, ship.location, ship.velocity)
+                predictedWeaponHits = StarficzAIUtilsV2.generatePredictedWeaponHits(ship, ship.location, ship.velocity)
+                backupPoint = StarficzAIUtils.getBackingOffStrafePoint(ship)
+                if (backupPoint != null){
+                    val backupVelocity = Misc.getUnitVectorAtDegreeAngle(VectorUtils.getAngle(ship.location, backupPoint)) * ship.maxSpeed
+                    incomingProjectilesIfBackup = StarficzAIUtilsV2.incomingProjectileHits(ship, ship.location, backupVelocity)
+                    predictedWeaponHitsIfBackup = StarficzAIUtilsV2.generatePredictedWeaponHits(ship, ship.location, backupVelocity)
+                }
             }
 
 
             // calculate how much damage the ship would take if vent
             val currentTime = Global.getCombatEngine().getTotalElapsedTime(false)
-            val timeElapsed = currentTime - lastUpdatedTime
 
-            val armorBase = ship.armorGrid.armorAtCell(ship.armorGrid.weakestArmorRegion()!!)!!
-            val armorMax = ship.armorGrid.armorRating
-            val armorMinLevel = ship.mutableStats.minArmorFraction.modifiedValue
-            var armorVent = armorBase
+            // normal calc
+            val (armorDamageLevelVent, hullDamageLevelVent, empDamageLevelVent) =
+                calculateDamageLevels(
+                    currentTime,
+                    ship.fluxTracker.timeToVent + shieldRaiseTime,
+                    incomingProjectiles + predictedWeaponHits
+                )
 
-            var hullDamageIfVent = 0f
-            var empDamageIfVent = 0f
-
-            for (hit in (incomingProjectiles + predictedWeaponHits)) {
-                val timeToHit = (hit.timeToHit - timeElapsed)
-                if (timeToHit < -bufferTime) continue  // skip hits that have already happened
-
-                if (timeToHit < ship.fluxTracker.timeToVent + shieldRaiseTime) {
-                    val trueDamage = org.scy.damageAfterArmor(hit.damageType, hit.damage, hit.hitStrength, armorVent, ship)
-                    armorVent = max(armorVent - trueDamage.first, armorMinLevel * armorMax)
-                    hullDamageIfVent += trueDamage.second
-                    empDamageIfVent += hit.empDamage
-                }
-            }
-
-            val armorDamageLevelVent = (armorBase - armorVent) / armorMax
-            val hullDamageLevelVent = hullDamageIfVent / (ship.hitpoints * ship.hullLevel)
-            val empDamageLevelVent = empDamageIfVent / ship.allWeapons.sumOf { it.currHealth.toDouble() }.toFloat()
+            val (armorDamageLevelBackoff, hullDamageLevelBackoff, empDamageLevelBackoff, fluxLevelBackoff) =
+                calculateDamageLevels(
+                    currentTime,
+                    100f,
+                    incomingProjectilesIfBackup + predictedWeaponHitsIfBackup,
+                    true,
+                )
 
             val variant = Global.getSettings().getVariant(ship.hullSpec.baseHullId + "_combat")
             val numModules = variant?.stationModules?.size ?: 0
@@ -208,7 +204,7 @@ class ScyEngineering: BaseHullMod() {
             val damageRiskMult = Misc.interpolate(1f, 5f, if (numModules > 0) aliveLevel else 0f)
 
 
-            if (!engine.isUIAutopilotOn || engine.playerShip !== ship) {
+             if (!engine.isUIAutopilotOn || engine.playerShip !== ship) {
                 // don't back off if not in danger
                 if (armorDamageLevelVent < 0.01f && hullDamageLevelVent < 0.01f && empDamageLevelVent < 0.5f) {
                     ship.aiFlags.setFlag(ShipwideAIFlags.AIFlags.DO_NOT_BACK_OFF, 0.05f)
@@ -216,25 +212,76 @@ class ScyEngineering: BaseHullMod() {
                 }
 
                 // vent control
-                if (ship.fluxLevel > 0.2f &&
+                if (ship.fluxLevel > 0.2f && !ship.fluxTracker.isOverloadedOrVenting &&
                     armorDamageLevelVent < (0.03f * damageRiskMult) &&
                     hullDamageLevelVent < (0.03f * damageRiskMult) &&
                     empDamageLevelVent < (0.5f * damageRiskMult))
                 {
                     ship.giveCommand(ShipCommand.VENT_FLUX, null, 0)
+                    Global.getCombatEngine().addSmoothParticle(ship.location,ship.velocity, 500f, 10000f, 10f, Color.MAGENTA)
                 }
                 else {
                     ship.blockCommandForOneFrame(ShipCommand.VENT_FLUX)
-                    // force back off
-                    if (ship.fluxLevel > forceBackOffLimit && backupPoint != null && !ship.fluxTracker.isVenting) {
-                        // make sure ship is not being commanded to eliminate some target
-                        val taskManager = (engine as CombatEngine).getTaskManager(ship.owner, ship.isAlly)
-                        if (taskManager?.getAssignmentFor(ship) == null || taskManager.getAssignmentFor(ship).type != CombatAssignmentType.INTERCEPT) {
+                }
+
+                // force back off (only for ships that arnt armor tanks)
+                if (backupPoint != null && !ship.fluxTracker.isVenting && !ship.isShipWithModules) {
+                    val taskManager = (engine as CombatEngine).getTaskManager(ship.owner, ship.isAlly)
+                    // make sure ship is not being commanded to eliminate some target
+                    if((taskManager?.getAssignmentFor(ship) == null || taskManager.getAssignmentFor(ship).type != CombatAssignmentType.INTERCEPT)){
+                        // back off when predicting 90% flux, otherwise force no backoff
+                        if(fluxLevelBackoff > 0.9f){
                             StarficzAIUtils.strafeToPointV2(ship, backupPoint)
+                        } else {
+                            ship.aiFlags.setFlag(ShipwideAIFlags.AIFlags.DO_NOT_BACK_OFF_EVEN_WHILE_VENTING, 0.1f)
                         }
                     }
                 }
             }
+        }
+
+        data class DamageResults(
+            val armorDamageLevel: Float,
+            val hullDamageLevel: Float,
+            val empDamageLevel: Float,
+            val fluxLevel: Float
+        )
+        private fun calculateDamageLevels(
+            currentTime: Float,
+            damageWindow: Float,
+            hits: List<FutureHit>,
+            shieldUp: Boolean = false,
+        ): DamageResults {
+            val armorBase = ship.armorGrid.armorAtCell(ship.armorGrid.weakestArmorRegion()!!)!!
+            val armorMax = ship.armorGrid.armorRating
+            val armorMinLevel = ship.mutableStats.minArmorFraction.modifiedValue
+            val fluxLeft = ship.maxFlux - ship.currFlux
+            var armorVent = armorBase
+
+            var hullDamage = 0f
+            var empDamage = 0f
+            var fluxGained = 0f
+
+            for (hit in hits) {
+                val timeUntilHit = (hit.timeToHit - currentTime)
+                if (timeUntilHit < -bufferTime) continue  // skip hits that have already happened
+
+                if (timeUntilHit < damageWindow) {
+                    if(shieldUp && fluxGained < fluxLeft){
+                        fluxGained += fluxToShield(hit.damageType, hit.damage, ship)
+                    } else{
+                        val trueDamage = damageAfterArmor(hit.damageType, hit.damage, hit.hitStrength, armorVent, ship)
+                        armorVent = max(armorVent - trueDamage.first, armorMinLevel * armorMax)
+                        hullDamage += trueDamage.second
+                        empDamage += hit.empDamage
+                    }
+                }
+            }
+
+            val armorDamageLevel = (armorBase - armorVent) / armorMax
+            val hullDamageLevel = hullDamage / ship.hitpoints
+            val empDamageLevel = empDamage / ship.allWeapons.sumOf { it.currHealth.toDouble() }.toFloat()
+            return DamageResults(armorDamageLevel, hullDamageLevel, empDamageLevel, (fluxGained+ship.currFlux)/ship.maxFlux)
         }
     }
 }

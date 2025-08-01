@@ -26,10 +26,6 @@ class MinigunEffect: EveryFrameWeaponEffectPlugin {
     val SPLINTER_HIT_OFFSET = 5f
 
     private var init = false
-    private lateinit var getWeaponTrackerMethod: ReflectionUtils.ReflectedMethod
-    private lateinit var chargeTrackerField: ReflectionUtils.ReflectedField
-    private lateinit var getChargeStateMethod: ReflectionUtils.ReflectedMethod
-    private lateinit var chargeTrackerAdvanceMethod: ReflectionUtils.ReflectedMethod
     private lateinit var minigunStats: MinigunStats
 
     private val beamTextureTimer = IntervalUtil(1/40f, 1/15f) // these timings are mostly arbitrary on what looks good
@@ -71,27 +67,28 @@ class MinigunEffect: EveryFrameWeaponEffectPlugin {
         if (!::minigunStats.isInitialized) minigunStats = getMinigunStats(weapon.size)
 
         // -------------------- Update Damages/Add muzzle fx --------------------
-        weapon.beams?.firstOrNull()?.let { energyBeam ->
-            energyBeam.damage.isForceHardFlux = true
-            energyBeam.damage.type = DamageType.ENERGY
-            energyBeam.damage.modifier.modifyMult("ScyMinigunVA", 2/3f) // 2/3 of half is 1/3 energy dps
-            // make energy beam invisible
-            energyBeam.coreColor = Color(0,0,0,0)
-            energyBeam.fringeColor = Color(0,0,0,0)
-        }
-        weapon.beams?.lastOrNull()?.let { fragBeam ->
-            fragBeam.damage.modifier.modifyMult("ScyMinigunVA", 2f) // double of half is listed frag dps
-            // add flashes
-            if (!addedMuzzleFlashes){
-                addedMuzzleFlashes = true
-                SCY_muzzleFlashesPlugin.addMuzzle(weapon, 0f, Random.nextFloat() > 0.5f)
+        weapon.beams?.forEachIndexed { index, beam ->
+            if (index % 2 == 0) { // energy beam
+                beam.damage.isForceHardFlux = true
+                beam.damage.type = DamageType.ENERGY
+                beam.damage.modifier.modifyMult("ScyMinigunVA", 2/3f) // 2/3 of half is 1/3 energy dps
+                // make energy beam invisible
+                beam.coreColor = Color(0,0,0,0)
+                beam.fringeColor = Color(0,0,0,0)
+            } else { // frag beam
+                beam.damage.modifier.modifyMult("ScyMinigunVA", 2f) // double of half is listed frag dps
+                // add flashes
+                if (!addedMuzzleFlashes){
+                    addedMuzzleFlashes = true
+                    SCY_muzzleFlashesPlugin.addMuzzle(weapon, 0f, Random.nextFloat() > 0.5f)
+                }
+
+                randomizeTextureLengthAndSpawnSmoke(amount, beam, engine, weapon)
+                playImpactSounds(amount, beam)
+                spawnImpactSplinters(amount, beam, engine, weapon)
             }
-
-            randomizeTextureLengthAndSpawnSmoke(amount, fragBeam, engine, weapon)
-            playImpactSounds(amount, fragBeam)
-            spawnImpactSplinters(amount, fragBeam, engine, weapon)
-
-        } ?: run {
+        }
+        if (weapon.beams?.isEmpty() != false){
             // remove flashes if no beam
             if (addedMuzzleFlashes){
                 addedMuzzleFlashes = false
@@ -99,31 +96,24 @@ class MinigunEffect: EveryFrameWeaponEffectPlugin {
             }
         }
 
-        // -------------------- Init for Charge/Sounds/Animations --------------------
-        if (!init) {
-            getWeaponTrackerMethod = weapon.getMethodsMatching("getWeaponTracker").firstOrNull() ?: return
-            val weaponTracker = weapon.invoke(getWeaponTrackerMethod) ?: return
-            chargeTrackerField = weaponTracker.getFieldsWithMethodsMatching(
-                methodParameterTypes = arrayOf(Boolean::class.java, Float::class.java)
-            ).firstOrNull() ?: return
-            val chargeTracker = weaponTracker.get(chargeTrackerField) ?: return
-            getChargeStateMethod = chargeTracker.getMethodsMatching(
-                returnType = Enum::class.java
-            ).firstOrNull() ?: return
-            chargeTrackerAdvanceMethod = chargeTracker.getMethodsMatching(
-                parameterTypes = arrayOf(Boolean::class.java, Float::class.java)
-            ).firstOrNull() ?: return
-            init = true
-        }
-
         // -------------------- Sync Charge and play sounds --------------------
 
         // we need actual chargedown time to be 0 to stop the beam from firing the second we let go,
         // but losing all spin feels really bad in gameplay, so we need to manually track """chargedown"""
 
-        val weaponTracker = weapon.invoke(getWeaponTrackerMethod) ?: return
-        val chargeTracker = weaponTracker.get(chargeTrackerField) ?: return
-        val chargeState = chargeTracker.invoke(getChargeStateMethod) as Enum<*>? ?: return
+        val weaponTracker = weapon.invoke("getWeaponTracker") ?: return
+
+        val chargeTracker = weaponTracker.get(
+            weaponTracker.getFieldsWithMethodsMatching(
+                methodParameterTypes = arrayOf(Boolean::class.java, Float::class.java)
+            ).firstOrNull() ?: return
+        ) ?: return
+
+        val chargeState = chargeTracker.invoke(
+            chargeTracker.getMethodsMatching(
+                returnType = Enum::class.java
+            ).firstOrNull() ?: return
+        ) as Enum<*>? ?: return
 
         syncChargeLevelAndPlaySpinSounds(chargeState, weapon, chargeTracker, amount)
 
@@ -158,7 +148,12 @@ class MinigunEffect: EveryFrameWeaponEffectPlugin {
             if (currentChargeLevel <= weapon.chargeLevel) currentChargeLevel = weapon.chargeLevel
             else {
                 val chargeLevelNeeded = currentChargeLevel - weapon.chargeLevel
-                chargeTracker.invoke(chargeTrackerAdvanceMethod, true, chargeLevelNeeded * chargeUpTime)
+                chargeTracker.invoke(
+                    chargeTracker.getMethodsMatching(
+                        parameterTypes = arrayOf(Boolean::class.java, Float::class.java)
+                    ).firstOrNull() ?: return,
+                    true, chargeLevelNeeded * chargeUpTime
+                )
             }
         } else {
             // play spinDown sound when first spinning down
@@ -171,7 +166,6 @@ class MinigunEffect: EveryFrameWeaponEffectPlugin {
                     weapon.ship.velocity
                 )
             }
-
             // sync local and weapon charge levels
             currentChargeLevel = (currentChargeLevel - amount / chargeUpTime).coerceAtLeast(0f)
         }
@@ -342,7 +336,6 @@ class MinigunEffect: EveryFrameWeaponEffectPlugin {
 
             if (weapon.size == WeaponSize.SMALL) spawnSplinter("SCY_splinterS")
             else spawnSplinter("SCY_splinterM")
-            if (weapon.size == WeaponSize.LARGE) spawnSplinter("SCY_splinterM")
 
         }
     }
