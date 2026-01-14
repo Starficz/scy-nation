@@ -73,17 +73,19 @@ public class SCY_khalkotauroiBeamEffect implements BeamEffectPlugin {
         beam.setPixelsPerTexel((6 + 2 * thePods.size()) * (0.5f + pow / 2));
         // beam damage
         float OUTPUT = 10f;
-        if (beam.getDamageTarget() != null) {
-          engine.applyDamage(
-              beam.getDamageTarget(),
-              beam.getTo(),
-              thePods.size() * OUTPUT,
-              DamageType.ENERGY,
-              0f,
-              false,
-              true,
-              beam.getSource());
-        }
+//        if (beam.getDamageTarget() != null) {
+//          engine.applyDamage(
+//              beam.getDamageTarget(),
+//              beam.getTo(),
+//              thePods.size() * OUTPUT,
+//              DamageType.ENERGY,
+//              0f,
+//              false,
+//              true,
+//              beam.getSource());
+//        }
+
+        beam.getWeapon().getDamage().setDamage(400+thePods.size()*100);
         beam.getSource().getFluxTracker().increaseFlux(thePods.size() * OUTPUT, false);
 
         if (MagicRender.screenCheck(0.25f, beam.getFrom())) {

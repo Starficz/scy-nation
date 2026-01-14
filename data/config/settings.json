@@ -2,7 +2,8 @@
     "plugins":{
         "SCY_projectilesEffectPlugin":"org.scy.plugins.SCY_projectilesEffectPlugin",
         "SCY_muzzleFlashesPlugin":"org.scy.plugins.SCY_muzzleFlashesPlugin",
-        "SCY_ArmorPaperdollsPlugin": "org.scy.plugins.SCY_ArmorPaperdollsPlugin"
+        "SCY_ArmorPaperdollsPlugin": "org.scy.plugins.SCY_ArmorPaperdollsPlugin",
+        "SCY_FlightPathPredictorPlugin": "org.scy.plugins.FlightPathPredictorPlugin"
     },
 
     "designTypeColors":{

@@ -27,46 +27,34 @@ public class MissionDefinition implements MissionDefinitionPlugin {
 		// Set up the player's fleet  
                 
                 
-		api.addToFleet(FleetSide.PLAYER, "SCY_centaur_combat", FleetMemberType.SHIP, "SNS Carcasses", false);
-		api.addToFleet(FleetSide.PLAYER, "SCY_alecto_combat", FleetMemberType.SHIP, "SNS Paté", false);	
-		api.addToFleet(FleetSide.PLAYER, "SCY_tisiphone_combat", FleetMemberType.SHIP, "SNS Foie-gras", false);	
-		api.addToFleet(FleetSide.PLAYER, "SCY_lealaps_combat", FleetMemberType.SHIP, "SNS Vin", false);
-		api.addToFleet(FleetSide.PLAYER, "SCY_talos_combat", FleetMemberType.SHIP, "SNS Gauffre", false);
-		api.addToFleet(FleetSide.PLAYER, "SCY_megaera_combat", FleetMemberType.SHIP, "SNS Saucisson", false);
-                api.addToFleet(FleetSide.PLAYER, "SCY_stymphalianbird_combat", FleetMemberType.SHIP, "SNS Free Buffet", false);                
-                api.addToFleet(FleetSide.PLAYER, "SCY_argus_combat", FleetMemberType.SHIP, "SNS Café", false);
-                        
-//                                    
-//                api.addToFleet(FleetSide.PLAYER, "SCY_automatos_miner", FleetMemberType.SHIP, false);            
-//                api.addToFleet(FleetSide.PLAYER, "SCY_anaplekte_ciws", FleetMemberType.SHIP, false);            
-//                api.addToFleet(FleetSide.PLAYER, "SCY_akhlys_escort", FleetMemberType.SHIP, false);            
-//                api.addToFleet(FleetSide.PLAYER, "SCY_nosos_interceptor", FleetMemberType.SHIP, false);            
-//                api.addToFleet(FleetSide.PLAYER, "SCY_stygere_attack", FleetMemberType.SHIP, false);         
-//                api.addToFleet(FleetSide.PLAYER, "SCY_ker_bomber", FleetMemberType.SHIP, false);               
-//                        
-                api.addToFleet(FleetSide.PLAYER, "SCY_lamiaA_combat", FleetMemberType.SHIP, "SNS Chocolatine", false);
-                api.addToFleet(FleetSide.PLAYER, "SCY_lamia_combat", FleetMemberType.SHIP, "SNS Omelette", false);
-		api.addToFleet(FleetSide.PLAYER, "SCY_pyraemon_combat", FleetMemberType.SHIP, "SNS Confiture", false);
-		api.addToFleet(FleetSide.PLAYER, "SCY_geryon_combat", FleetMemberType.SHIP, "SNS Confit de canard", false);
-                api.addToFleet(FleetSide.PLAYER, "SCY_argus_combat", FleetMemberType.SHIP, "SNS Café", false);
-		api.addToFleet(FleetSide.PLAYER, "SCY_telchine_standard", FleetMemberType.SHIP, "SNS Truffe", false);
-                api.addToFleet(FleetSide.PLAYER, "SCY_baliusF_auxiliary", FleetMemberType.SHIP, "SNS Rillettes", false);
-                api.addToFleet(FleetSide.PLAYER, "SCY_baliusT_auxiliary", FleetMemberType.SHIP, "SNS Croque-monsieur", false);
-		api.addToFleet(FleetSide.PLAYER, "SCY_hydra_combat", FleetMemberType.SHIP, "SNS Fromage", false);
-                        
+		api.addToFleet(FleetSide.PLAYER, "SCY_centaur_Standard", FleetMemberType.SHIP, "SNS Carcasses", false);
+		api.addToFleet(FleetSide.PLAYER, "SCY_alecto_Brawler", FleetMemberType.SHIP, "SNS Paté", false);
+		api.addToFleet(FleetSide.PLAYER, "SCY_tisiphone_Brawler", FleetMemberType.SHIP, "SNS Foie-gras", false);
+		api.addToFleet(FleetSide.PLAYER, "SCY_lealaps_Strike", FleetMemberType.SHIP, "SNS Vin", false);
+		api.addToFleet(FleetSide.PLAYER, "SCY_talos_Brawler", FleetMemberType.SHIP, "SNS Gauffre", false);
+		api.addToFleet(FleetSide.PLAYER, "SCY_megaera_Brawler", FleetMemberType.SHIP, "SNS Saucisson", false);
+		api.addToFleet(FleetSide.PLAYER, "SCY_stymphalianbird_Combat", FleetMemberType.SHIP, "SNS Free Buffet", false);
+		api.addToFleet(FleetSide.PLAYER, "SCY_argus_Fighter", FleetMemberType.SHIP, "SNS Café", false);
+
+		api.addToFleet(FleetSide.PLAYER, "SCY_lamiaA_Brawler", FleetMemberType.SHIP, "SNS Chocolatine", false);
+		api.addToFleet(FleetSide.PLAYER, "SCY_lamia_Brawler", FleetMemberType.SHIP, "SNS Omelette", false);
+		api.addToFleet(FleetSide.PLAYER, "SCY_pyraemon_Brawler", FleetMemberType.SHIP, "SNS Confiture", false);
+		api.addToFleet(FleetSide.PLAYER, "SCY_geryon_Bomber", FleetMemberType.SHIP, "SNS Confit de canard", false);
+		api.addToFleet(FleetSide.PLAYER, "SCY_argus_Bomber", FleetMemberType.SHIP, "SNS Café", false);
+		api.addToFleet(FleetSide.PLAYER, "SCY_hydra_Brawler", FleetMemberType.SHIP, "SNS Fromage", false);
                 
-                api.addToFleet(FleetSide.PLAYER, "SCY_corocotta_combat", FleetMemberType.SHIP, "SNS Fondue", false);
-                api.addToFleet(FleetSide.PLAYER, "SCY_corocottaA_combat", FleetMemberType.SHIP, "SNS Tarte", false);
-		api.addToFleet(FleetSide.PLAYER, "SCY_dracanae_combat", FleetMemberType.SHIP, "SNS Reblochon", false);
-                api.addToFleet(FleetSide.PLAYER, "SCY_manticore_combat", FleetMemberType.SHIP, "SNS Aligot", false);
-		api.addToFleet(FleetSide.PLAYER, "SCY_erymanthianboar_combat", FleetMemberType.SHIP, "SNS Fouet Catalan", false);
-                api.addToFleet(FleetSide.PLAYER, "SCY_siren_combat", FleetMemberType.SHIP, "SNS Gratin Dauphinois", false);
-		api.addToFleet(FleetSide.PLAYER, "SCY_khalkotauroi_combat", FleetMemberType.SHIP, "SNS Lasagnes", false);
-                
-                
-                api.addToFleet(FleetSide.PLAYER, "SCY_xanthus_standard", FleetMemberType.SHIP, "SNS Daube", false);
-                api.addToFleet(FleetSide.PLAYER, "SCY_keto_combat", FleetMemberType.SHIP, "SNS Croustade", false);
-                api.addToFleet(FleetSide.PLAYER, "SCY_nemeanlion_combat", FleetMemberType.SHIP, "SNS Crêpe", true);
+		api.addToFleet(FleetSide.PLAYER, "SCY_corocotta_Brawler", FleetMemberType.SHIP, "SNS Fondue", false);
+		api.addToFleet(FleetSide.PLAYER, "SCY_corocottaA_Elite", FleetMemberType.SHIP, "SNS Tarte", false);
+		api.addToFleet(FleetSide.PLAYER, "SCY_dracanae_Assault", FleetMemberType.SHIP, "SNS Reblochon", false);
+		api.addToFleet(FleetSide.PLAYER, "SCY_manticore_Fighter", FleetMemberType.SHIP, "SNS Aligot", false);
+		api.addToFleet(FleetSide.PLAYER, "SCY_manticore_Bomber", FleetMemberType.SHIP, "SNS Aligot", false);
+		api.addToFleet(FleetSide.PLAYER, "SCY_erymanthianboar_Close_Support", FleetMemberType.SHIP, "SNS Fouet Catalan", false);
+		api.addToFleet(FleetSide.PLAYER, "SCY_siren_Hunter", FleetMemberType.SHIP, "SNS Gratin Dauphinois", false);
+		api.addToFleet(FleetSide.PLAYER, "SCY_khalkotauroi_Close_Support", FleetMemberType.SHIP, "SNS Lasagnes", false);
+
+		api.addToFleet(FleetSide.PLAYER, "SCY_keto_Bomber", FleetMemberType.SHIP, "SNS Croustade", false);
+		api.addToFleet(FleetSide.PLAYER, "SCY_keto_Fighter", FleetMemberType.SHIP, "SNS Croustade", false);
+		api.addToFleet(FleetSide.PLAYER, "SCY_nemeanlion_Elite", FleetMemberType.SHIP, "SNS Crêpe", true);
 		
 		// Set up the enemy fleet
                 
@@ -76,31 +64,31 @@ public class MissionDefinition implements MissionDefinitionPlugin {
 		api.addToFleet(FleetSide.ENEMY, "SCY_lealaps_combat", FleetMemberType.SHIP, false);
 		api.addToFleet(FleetSide.ENEMY, "SCY_talos_combat", FleetMemberType.SHIP, false);
 		api.addToFleet(FleetSide.ENEMY, "SCY_megaera_combat", FleetMemberType.SHIP, false);
-                api.addToFleet(FleetSide.ENEMY, "SCY_stymphalianbird_combat", FleetMemberType.SHIP, false);                
-                api.addToFleet(FleetSide.ENEMY, "SCY_argus_combat", FleetMemberType.SHIP, false); 
-                        
-                api.addToFleet(FleetSide.ENEMY, "SCY_lamiaA_combat", FleetMemberType.SHIP, false);
-                api.addToFleet(FleetSide.ENEMY, "SCY_lamia_combat", FleetMemberType.SHIP, false);
+		api.addToFleet(FleetSide.ENEMY, "SCY_stymphalianbird_combat", FleetMemberType.SHIP, false);
+		api.addToFleet(FleetSide.ENEMY, "SCY_argus_combat", FleetMemberType.SHIP, false);
+
+		api.addToFleet(FleetSide.ENEMY, "SCY_lamiaA_combat", FleetMemberType.SHIP, false);
+		api.addToFleet(FleetSide.ENEMY, "SCY_lamia_combat", FleetMemberType.SHIP, false);
 		api.addToFleet(FleetSide.ENEMY, "SCY_geryon_combat", FleetMemberType.SHIP, false);
-                api.addToFleet(FleetSide.ENEMY, "SCY_argus_combat", FleetMemberType.SHIP, false);
+		api.addToFleet(FleetSide.ENEMY, "SCY_argus_combat", FleetMemberType.SHIP, false);
 		api.addToFleet(FleetSide.ENEMY, "SCY_telchine_standard", FleetMemberType.SHIP, false);
-                api.addToFleet(FleetSide.ENEMY, "SCY_baliusF_auxiliary", FleetMemberType.SHIP, false);
-                api.addToFleet(FleetSide.ENEMY, "SCY_baliusT_auxiliary", FleetMemberType.SHIP, false);
+		api.addToFleet(FleetSide.ENEMY, "SCY_baliusF_auxiliary", FleetMemberType.SHIP, false);
+		api.addToFleet(FleetSide.ENEMY, "SCY_baliusT_auxiliary", FleetMemberType.SHIP, false);
 		api.addToFleet(FleetSide.ENEMY, "SCY_hydra_combat", FleetMemberType.SHIP, false);
                         
                 
-                api.addToFleet(FleetSide.ENEMY, "SCY_corocotta_combat", FleetMemberType.SHIP, false);
-                api.addToFleet(FleetSide.ENEMY, "SCY_corocottaA_combat", FleetMemberType.SHIP, false);
+		api.addToFleet(FleetSide.ENEMY, "SCY_corocotta_combat", FleetMemberType.SHIP, false);
+		api.addToFleet(FleetSide.ENEMY, "SCY_corocottaA_combat", FleetMemberType.SHIP, false);
 		api.addToFleet(FleetSide.ENEMY, "SCY_dracanae_combat", FleetMemberType.SHIP, false);
-                api.addToFleet(FleetSide.ENEMY, "SCY_manticore_combat", FleetMemberType.SHIP, false);
+		api.addToFleet(FleetSide.ENEMY, "SCY_manticore_combat", FleetMemberType.SHIP, false);
 		api.addToFleet(FleetSide.ENEMY, "SCY_erymanthianboar_combat", FleetMemberType.SHIP, false);
-                api.addToFleet(FleetSide.ENEMY, "SCY_siren_combat", FleetMemberType.SHIP, false);
+		api.addToFleet(FleetSide.ENEMY, "SCY_siren_combat", FleetMemberType.SHIP, false);
 		api.addToFleet(FleetSide.ENEMY, "SCY_khalkotauroi_combat", FleetMemberType.SHIP, false);
                 
                 
-                api.addToFleet(FleetSide.ENEMY, "SCY_xanthus_standard", FleetMemberType.SHIP, false);
-                api.addToFleet(FleetSide.ENEMY, "SCY_keto_combat", FleetMemberType.SHIP, false);
-                api.addToFleet(FleetSide.ENEMY, "SCY_nemeanlion_combat", FleetMemberType.SHIP, true); 
+		api.addToFleet(FleetSide.ENEMY, "SCY_xanthus_standard", FleetMemberType.SHIP, false);
+		api.addToFleet(FleetSide.ENEMY, "SCY_keto_combat", FleetMemberType.SHIP, false);
+		api.addToFleet(FleetSide.ENEMY, "SCY_nemeanlion_combat", FleetMemberType.SHIP, true);
 		
 		
 		// Set up the map.

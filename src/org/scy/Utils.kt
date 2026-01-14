@@ -12,8 +12,11 @@ import kotlin.math.*
 import kotlin.random.Random
 
 fun fluxToShield(damageType: DamageType, damage: Float, ship: ShipAPI): Float {
+    if (ship.shield == null) return 0f
+
     val stats = ship.mutableStats
-    var shieldMultiplier = stats.shieldDamageTakenMult.modifiedValue
+    // trying to ignore systems that change shieldDamageTakenMult, as we don't know when they will change
+    var shieldMultiplier = stats.shieldDamageTakenMult.base
     shieldMultiplier *= when (damageType) {
         DamageType.FRAGMENTATION -> 0.25f * stats.fragmentationDamageTakenMult.modifiedValue
         DamageType.KINETIC -> 2f * stats.kineticDamageTakenMult.modifiedValue
@@ -22,7 +25,7 @@ fun fluxToShield(damageType: DamageType, damage: Float, ship: ShipAPI): Float {
         DamageType.OTHER -> 1f
     }
 
-    return (damage * ship.shield.fluxPerPointOfDamage * shieldMultiplier)
+    return damage * ship.shield.fluxPerPointOfDamage * shieldMultiplier
 }
 
 fun damageAfterArmor(
@@ -393,7 +396,15 @@ fun interpolateColorNicely(from: Color, to: Color, progress: Float): Color {
 }
 
 operator fun Vector2f.plus(other: Vector2f): Vector2f = Vector2f(this.x + other.x, this.y + other.y)
+operator fun Vector2f.plusAssign(other: Vector2f) {
+    this.x += other.x
+    this.y += other.y
+}
 operator fun Vector2f.minus(other: Vector2f): Vector2f = Vector2f(this.x - other.x, this.y - other.y)
+operator fun Vector2f.minusAssign(other: Vector2f) {
+    this.x -= other.x
+    this.y -= other.y
+}
 operator fun Vector2f.times(scalar: Float): Vector2f = Vector2f(this.x * scalar, this.y * scalar)
 
 fun Vector2f.dot(other: Vector2f): Float {
