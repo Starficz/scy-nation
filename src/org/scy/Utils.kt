@@ -11,6 +11,51 @@ import java.awt.Point
 import kotlin.math.*
 import kotlin.random.Random
 
+fun accelerateInDirection(
+    ship: ShipAPI,
+    targetAngle: Float,
+    targetSpeed: Float = ship.mutableStats.maxSpeed.modifiedValue
+) {
+    // 1. Calculate the DESIRED velocity vector in global space
+    // We multiply by PI / 180 to convert degrees to radians quickly without casting to Double
+    val targetAngleRad = targetAngle * (PI.toFloat() / 180f)
+    val desiredVx = cos(targetAngleRad) * targetSpeed
+    val desiredVy = sin(targetAngleRad) * targetSpeed
+
+    // 2. Calculate Delta V (Error Vector)
+    // This tells us exactly how much velocity we need to add to correct our trajectory
+    val deltaVx = desiredVx - ship.velocity.x
+    val deltaVy = desiredVy - ship.velocity.y
+
+    // 3. Rotate the global Delta V into the ship's LOCAL coordinate space
+    val facingRad = ship.facing * (PI.toFloat() / 180f)
+    val cosF = cos(facingRad)
+    val sinF = sin(facingRad)
+
+    // Standard 2D rotation matrix math
+    val localDeltaVx = deltaVx * cosF + deltaVy * sinF
+    val localDeltaVy = -deltaVx * sinF + deltaVy * cosF
+
+    // 4. Apply thrusters (The PWM Logic)
+    // A deadzone of ~3.0 speed units prevents thruster micro-stuttering (thrashing
+    // back and forth on the exact same frame) while keeping the PWM tight and responsive.
+    val deadzone = 3f
+
+    // Forward / Backward
+    if (localDeltaVx > deadzone) {
+        ship.giveCommand(ShipCommand.ACCELERATE, null, 0)
+    } else if (localDeltaVx < -deadzone) {
+        ship.giveCommand(ShipCommand.ACCELERATE_BACKWARDS, null, 0)
+    }
+
+    // Left / Right Strafing (+Y is Left in local Starsector coordinates)
+    if (localDeltaVy > deadzone) {
+        ship.giveCommand(ShipCommand.STRAFE_LEFT, null, 0)
+    } else if (localDeltaVy < -deadzone) {
+        ship.giveCommand(ShipCommand.STRAFE_RIGHT, null, 0)
+    }
+}
+
 fun fluxToShield(damageType: DamageType, damage: Float, ship: ShipAPI): Float {
     if (ship.shield == null) return 0f
 

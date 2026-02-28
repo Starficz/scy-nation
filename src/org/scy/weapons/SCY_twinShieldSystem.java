@@ -16,7 +16,7 @@ public class SCY_twinShieldSystem implements EveryFrameWeaponEffectPlugin {
 
   @Override
   public void advance(float amount, CombatEngineAPI engine, WeaponAPI weapon) {
-    if (engine.isPaused()) return;
+    if (engine.isPaused() || !engine.isEntityInPlay(weapon.getShip())) return;
 
 
     if (!runOnce) {

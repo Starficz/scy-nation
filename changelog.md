@@ -1,3 +1,31 @@
+## Version 1.12.0
+### Ship Balance Changes
+- Scyan Engineering Hullmod (All Ships)
+  + Improved Engagement/Retreat/Venting AI
+
+
+- Khalkotauroi
+  + Gamma Ray Radiation Reactor
+    + 1000 Range -> 1050 Range
+    + Modules now add Base DPS instead of Flat DPS
+
+### Weapon Balance Changes
+- Nano-needle Minigun mk.3
+  - Split the Damage back into 2 beams, hit strength was too strong as a single beam.
+  - 950 Range -> 900 Range
+
+SCY's Small ballistics have always felt a bit weak after the vanilla buffs, 
+so a small adjustment has been made to keep these weapons relevant in the modern game.
+- KAcc mk.1
+  + 600 Range -> 650 Range
+  + 150 Damage/Shot -> 165 Damage/Shot (now at 1.0 efficiency)
+- HEMor mk.1
+  + 550 Range -> 600 Range
+  
+###  Bugfixes/Misc
+- Fixed refit screen displaying half shield arc for twin-shield system ships
+
+
 ## Version 1.11.1
 - Fixed Twin-Layer Shielding not resetting correctly
 - Added Missing Codex tags to blueprints
@@ -36,17 +64,22 @@ so to make the lineup more viable, a smattering of various buffs have been appli
   + 90 degree shield arc -> 100 degree shield arc
   + Increased Flux Capacity by x1.25
   - All Shield Efficiency worse by 0.2 flux/damage (similar effective Shield HP, but deeper flux for weapons)
+  
 - Alecto
   + 40 OP -> 44 OP
+  
 - Tisiphone
   + 6 DP -> 5 DP
   + 38 OP -> 40 OP
+  
 - Laelaps
   + Given Missile Autoforge System
   + 40 OP -> 42 OP
+  
 - Talos 
   - 5 DP -> 6 DP
   - 45 OP -> 48 OP
+  
 - Megaera
   - 5 DP -> 6 DP
 
@@ -57,15 +90,19 @@ buffs have been applied to keep them viable into the endgame.
   + 90 degree shield arc -> 100 degree shield arc
   + Increased Flux Capacity by x1.2
   - All Shield Efficiency worse by 0.1 flux/damage (slighly higher effective Shield HP, and deeper flux for weapons)
+
 - Lamia / Lamia (Armored) / Hydra
   + Increased OP by 5
+
 - Pyraemon
   + 60 OP -> 75 OP
   + 200 Dissipation -> 250 Dissipation
   
+
 - Cruisers
 - Corocotta (Armored)
   + Given the Twin Shield System (Pending testing if this is too strong)
+  
 - Khalkotauroi
   + 100 OP -> 110 OP
   

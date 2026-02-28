@@ -155,19 +155,25 @@ class ScyEngineering: BaseHullMod() {
     }
 
     class ScyAiV2(val ship: ShipAPI) : AdvanceableListener {
-        var backupPoint: Vector2f? = null
+
+        enum class BehaviorState {
+            STANDOFF,
+            HARASS,
+            BACKOFF,
+            VENT
+        }
+
         private val interval = IntervalUtil(0.05f, 0.1f)
 
-        private val baseLevel: Float
+        private val harassLevel: Float
         private val backoffLevel: Float
+        private var backoffDirection: Float? = null
 
-        // Internal AI States
-        private var shouldHarass = false
-        private var shouldBackoff = false
-        private var shouldVent = false
+        // Internal AI State
+        private var currentState = BehaviorState.STANDOFF
 
         init {
-            val (base, backoff) = when (ship.captain?.personalityAPI?.id) {
+            val (harass, backoff) = when (ship.captain?.personalityAPI?.id) {
                 Personalities.TIMID -> 0.2f to 0.4f
                 Personalities.CAUTIOUS -> 0.4f to 0.6f
                 Personalities.STEADY -> 0.6f to 0.8f
@@ -175,7 +181,7 @@ class ScyEngineering: BaseHullMod() {
                 Personalities.RECKLESS -> 0.8f to 1.0f
                 else -> 0.6f to 0.8f
             }
-            baseLevel = base
+            harassLevel = harass
             backoffLevel = backoff
         }
 
@@ -186,82 +192,76 @@ class ScyEngineering: BaseHullMod() {
                 val engine = Global.getCombatEngine()
                 if (engine != null) {
                     val predictor = FlightPathPredictorManager.getInstance(engine)
-                    evaluateCurrentPosition(predictor)
-                    evaluateRetreatPosition(predictor)
+                    evaluateState(predictor)
                 } else {
-                    shouldHarass = false
-                    shouldBackoff = false
+                    currentState = BehaviorState.STANDOFF
                 }
             }
 
-            enforceFlags(amount)
+            enforceState()
 
-            if (shouldVent) {
-                ship.giveCommand(ShipCommand.VENT_FLUX, null, 0)
-                shouldVent = false // One-shot trigger
-            }
+            if (currentState == BehaviorState.VENT) ship.giveCommand(ShipCommand.VENT_FLUX, null, 0)
         }
 
-        private fun evaluateCurrentPosition(predictor: FlightPathPredictorManager) {
+        private fun evaluateState(predictor: FlightPathPredictorManager) {
+            // 1. Check current position damage
             predictor.queueRequest(ship, Misc.ZERO)
-            val baseDamage = predictor.getResult(ship, Misc.ZERO)
+            val baseDamage = predictor.getResult(ship, Misc.ZERO) ?: return
 
-            // Fix: If we don't have a result yet, DO NOT drop states.
-            // Just return early and let the old state persist until the background sim catches up!
-            if (baseDamage == null) return
+            // 2. Check retreat position damage
+            val safePoint = StarficzAIUtils.getBackingOffStrafePoint(ship)
+            var runawayDamage: DamageProfile? = null
+
+            if (safePoint != null) {
+                val backupVector = VectorUtils.getDirectionalVector(ship.location, safePoint)
+                predictor.queueRequest(ship, backupVector)
+                backoffDirection = Misc.getAngleInDegrees(backupVector)
+
+                runawayDamage = predictor.getResult(ship, backupVector)
+
+                if (runawayDamage == null) return
+            } else{
+                backoffDirection = null
+            }
 
             val baseFluxGained = calculateShieldFlux(baseDamage)
+            val backoffFluxGained = calculateShieldFlux(runawayDamage)
             ship.setCustomData("baseFluxGained", baseFluxGained)
 
-            val fluxRatio = (baseFluxGained + ship.currFlux) / ship.maxFlux
-
-            shouldHarass = fluxRatio < baseLevel
-            shouldVent = isSafeToVent(baseFluxGained)
-        }
-
-        private fun evaluateRetreatPosition(predictor: FlightPathPredictorManager) {
-            val safePoint = StarficzAIUtils.getBackingOffStrafePoint(ship)
-            if (safePoint == null) {
-                shouldBackoff = false
-                return
+            currentState = when {
+                isSafeToVent(baseFluxGained + backoffFluxGained) -> BehaviorState.VENT
+                ((backoffFluxGained + ship.currFlux) / ship.maxFlux) > backoffLevel -> BehaviorState.BACKOFF
+                ((baseFluxGained + ship.currFlux) / ship.maxFlux) < harassLevel -> BehaviorState.HARASS
+                else -> BehaviorState.STANDOFF
             }
-
-            backupPoint = safePoint
-            val backupVector = VectorUtils.getDirectionalVector(ship.location, safePoint)
-            predictor.queueRequest(ship, backupVector)
-
-            val runawayDamage = predictor.getResult(ship, backupVector)
-
-            // Fix: Do not instantly set backoff to false while simulating
-            if (runawayDamage == null) return
-
-            val backoffFluxGained = calculateShieldFlux(runawayDamage)
-            val fluxRatio = (backoffFluxGained + ship.currFlux) / ship.maxFlux
-
-            shouldBackoff = fluxRatio > backoffLevel
         }
 
-        private fun enforceFlags(amount: Float) {
+        private fun enforceState() {
             val flagDuration = 0.1f
 
             ship.aiFlags.apply {
-                if (shouldHarass) {
-                    setFlag(ShipwideAIFlags.AIFlags.HARASS_MOVE_IN, flagDuration)
-                    setFlag(ShipwideAIFlags.AIFlags.DO_NOT_BACK_OFF, flagDuration)
-                    setFlag(ShipwideAIFlags.AIFlags.DO_NOT_BACK_OFF_EVEN_WHILE_VENTING, flagDuration)
-                    unsetFlag(ShipwideAIFlags.AIFlags.HARASS_MOVE_IN_COOLDOWN)
-                    unsetFlag(ShipwideAIFlags.AIFlags.BACK_OFF)
-                }
-
-                if (shouldBackoff) {
-                    setFlag(ShipwideAIFlags.AIFlags.BACK_OFF, flagDuration)
-                    setFlag(ShipwideAIFlags.AIFlags.DO_NOT_PURSUE, flagDuration)
-                    unsetFlag(ShipwideAIFlags.AIFlags.DO_NOT_BACK_OFF)
+                when (currentState) {
+                    BehaviorState.HARASS -> {
+                        setFlag(ShipwideAIFlags.AIFlags.HARASS_MOVE_IN, flagDuration)
+                        setFlag(ShipwideAIFlags.AIFlags.DO_NOT_BACK_OFF, flagDuration)
+                        setFlag(ShipwideAIFlags.AIFlags.DO_NOT_BACK_OFF_EVEN_WHILE_VENTING, flagDuration)
+                        unsetFlag(ShipwideAIFlags.AIFlags.HARASS_MOVE_IN_COOLDOWN)
+                        unsetFlag(ShipwideAIFlags.AIFlags.BACK_OFF)
+                    }
+                    BehaviorState.BACKOFF, BehaviorState.VENT -> {
+                        backoffDirection?.let { accelerateInDirection(ship, it) }
+                        setFlag(ShipwideAIFlags.AIFlags.BACK_OFF, flagDuration)
+                        setFlag(ShipwideAIFlags.AIFlags.DO_NOT_PURSUE, flagDuration)
+                        unsetFlag(ShipwideAIFlags.AIFlags.DO_NOT_BACK_OFF)
+                    }
+                    BehaviorState.STANDOFF -> {
+                    }
                 }
             }
         }
 
-        private fun calculateShieldFlux(damage: DamageProfile): Float {
+        private fun calculateShieldFlux(damage: DamageProfile?): Float {
+            if (damage == null) return 0f
             return fluxToShield(DamageType.ENERGY, damage.energy, ship) +
                     fluxToShield(DamageType.KINETIC, damage.kinetic, ship) +
                     fluxToShield(DamageType.HIGH_EXPLOSIVE, damage.highExplosive, ship) +
