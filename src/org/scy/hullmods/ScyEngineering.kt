@@ -249,8 +249,9 @@ class ScyEngineering: BaseHullMod() {
                         unsetFlag(ShipwideAIFlags.AIFlags.BACK_OFF)
                     }
                     BehaviorState.BACKOFF, BehaviorState.VENT -> {
-                        backoffDirection?.let { accelerateInDirection(ship, it) }
+                        //backoffDirection?.let { accelerateInDirection(ship, it) }
                         setFlag(ShipwideAIFlags.AIFlags.BACK_OFF, flagDuration)
+                        setFlag(ShipwideAIFlags.AIFlags.NEEDS_HELP, flagDuration)
                         setFlag(ShipwideAIFlags.AIFlags.DO_NOT_PURSUE, flagDuration)
                         unsetFlag(ShipwideAIFlags.AIFlags.DO_NOT_BACK_OFF)
                     }
