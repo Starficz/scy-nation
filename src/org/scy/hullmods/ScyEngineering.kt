@@ -242,7 +242,7 @@ class ScyEngineering: BaseHullMod() {
             ship.aiFlags.apply {
                 when (currentState) {
                     BehaviorState.HARASS -> {
-                        setFlag(ShipwideAIFlags.AIFlags.MANEUVER_TARGET, flagDuration)
+                        //setFlag(ShipwideAIFlags.AIFlags.MANEUVER_TARGET, flagDuration)
                         setFlag(ShipwideAIFlags.AIFlags.HARASS_MOVE_IN, flagDuration)
                         setFlag(ShipwideAIFlags.AIFlags.DO_NOT_BACK_OFF, flagDuration)
                         setFlag(ShipwideAIFlags.AIFlags.DO_NOT_BACK_OFF_EVEN_WHILE_VENTING, flagDuration)
