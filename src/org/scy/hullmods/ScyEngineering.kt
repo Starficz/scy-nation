@@ -242,6 +242,7 @@ class ScyEngineering: BaseHullMod() {
             ship.aiFlags.apply {
                 when (currentState) {
                     BehaviorState.HARASS -> {
+                        setFlag(ShipwideAIFlags.AIFlags.MANEUVER_TARGET, flagDuration)
                         setFlag(ShipwideAIFlags.AIFlags.HARASS_MOVE_IN, flagDuration)
                         setFlag(ShipwideAIFlags.AIFlags.DO_NOT_BACK_OFF, flagDuration)
                         setFlag(ShipwideAIFlags.AIFlags.DO_NOT_BACK_OFF_EVEN_WHILE_VENTING, flagDuration)
@@ -251,7 +252,7 @@ class ScyEngineering: BaseHullMod() {
                     BehaviorState.BACKOFF, BehaviorState.VENT -> {
                         //backoffDirection?.let { accelerateInDirection(ship, it) }
                         setFlag(ShipwideAIFlags.AIFlags.BACK_OFF, flagDuration)
-                        setFlag(ShipwideAIFlags.AIFlags.NEEDS_HELP, flagDuration)
+                        //setFlag(ShipwideAIFlags.AIFlags.NEEDS_HELP, flagDuration)
                         setFlag(ShipwideAIFlags.AIFlags.DO_NOT_PURSUE, flagDuration)
                         unsetFlag(ShipwideAIFlags.AIFlags.DO_NOT_BACK_OFF)
                     }
