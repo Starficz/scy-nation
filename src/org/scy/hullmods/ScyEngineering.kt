@@ -61,9 +61,6 @@ class ScyEngineering: BaseHullMod() {
             addSubsystemToShip(ship, EngineJumpstart(ship))
             if (!ship.hasListenerOfClass(ScyAiV2::class.java)) ship.addListener(ScyAiV2(ship))
         }
-
-        // set the custom flag to enable DamagePredictor
-        Global.getCombatEngine().customData["NeedsDamagePredictor"] = true
     }
 
     override fun advanceInCampaign(member: FleetMemberAPI?, amount: Float) {
@@ -183,6 +180,8 @@ class ScyEngineering: BaseHullMod() {
             }
             harassLevel = harass
             backoffLevel = backoff
+            // we need custom damage predictor
+            Global.getCombatEngine().customData["NeedsDamagePredictor"] = true
         }
 
         override fun advance(amount: Float) {
