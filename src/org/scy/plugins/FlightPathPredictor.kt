@@ -4,9 +4,12 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.BaseEveryFrameCombatPlugin
 import com.fs.starfarer.api.combat.CombatEngineAPI
 import com.fs.starfarer.api.combat.DamageType
+import com.fs.starfarer.api.combat.MissileAPI
+import com.fs.starfarer.api.combat.ShieldAPI
 import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.ShipwideAIFlags
 import com.fs.starfarer.api.combat.ViewportAPI
+import com.fs.starfarer.api.combat.WeaponAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.loading.BeamWeaponSpecAPI
 import com.fs.starfarer.api.loading.MissileSpecAPI
@@ -57,46 +60,200 @@ object PredictorThreadPool {
 // 1. DATA MODELS (Immutable Snapshots)
 // ==========================================
 
-data class RequestKey(val shipId: String, val accel: Vector2f?)
+data class MobilityProfile(
+    val maxSpeedOverride1: Float,
+    val accelOverride1: Float,
+    val decelOverride1: Float,
+    val phase1Duration: Float? = null,
+    val maxSpeedOverride2: Float? = null,
+    val accelOverride2: Float? = null,
+    val decelOverride2: Float? = null
+)
 
-data class DamageProfile(
-    var kinetic: Float = 0f,
-    var highExplosive: Float = 0f,
-    var fragmentation: Float = 0f,
-    var energy: Float = 0f,
-    var emp: Float = 0f
-) {
-    fun addScaled(amount: Float, scale: Float, type: DamageType, empAmount: Float) {
+data class RequestKey(
+    val shipId: String,
+    val accelDir: Vector2f?,
+    val mobility: MobilityProfile?
+)
+
+data class DamageInstance(
+    val time: Float,
+    val amount: Float,
+    val empAmount: Float,
+    val type: DamageType
+)
+
+class DamageTimeline {
+    val instances = mutableListOf<DamageInstance>()
+
+    fun addInstance(time: Float, amount: Float, scale: Float, type: DamageType, empAmount: Float) {
         val finalVal = amount * scale
-        when (type) {
-            DamageType.KINETIC -> kinetic += finalVal
-            DamageType.HIGH_EXPLOSIVE -> highExplosive += finalVal
-            DamageType.ENERGY -> energy += finalVal
-            DamageType.FRAGMENTATION -> fragmentation += finalVal
-            else -> {}
+        val finalEmp = empAmount * scale
+        if (finalVal > 0f || finalEmp > 0f) {
+            instances.add(DamageInstance(time, finalVal, finalEmp, type))
         }
-        this.emp += empAmount * scale
+    }
+
+    /**
+     * Gets the total raw damage expected within the next X seconds.
+     * REQUIRES the current absolute engine time.
+     */
+    fun getTotalDamage(currentTime: Float, nextXSeconds: Float = 5f): Float {
+        var total = 0f
+        val endTime = currentTime + nextXSeconds
+        for (inst in instances) {
+            // Must fall exactly between NOW and the end of the window
+            if (inst.time in currentTime..endTime) {
+                total += inst.amount
+            }
+        }
+        return total
+    }
+
+    /**
+     * Calculates the estimated flux the ship's shields will take over the next X seconds.
+     * REQUIRES the current absolute engine time.
+     */
+    fun fluxToShield(currentTime: Float, nextXSeconds: Float = 5f, ship: ShipAPI, useModifiedShieldMult: Boolean = false): Float {
+        if (ship.shield == null || ship.shield.type == ShieldAPI.ShieldType.NONE) {
+            return 0f
+        }
+
+        val stats = ship.mutableStats ?: return 0f
+        val shieldMultiplier = if (useModifiedShieldMult) stats.shieldDamageTakenMult.modifiedValue else stats.shieldDamageTakenMult.base
+
+        var totalFlux = 0f
+        val shieldEfficiency = ship.shield.fluxPerPointOfDamage
+        val endTime = currentTime + nextXSeconds
+
+        for (inst in instances) {
+            // Check absolute bounds
+            if (inst.time < currentTime || inst.time > endTime) continue
+
+            var mult = shieldMultiplier
+            mult *= when (inst.type) {
+                DamageType.FRAGMENTATION -> 0.25f * stats.fragmentationDamageTakenMult.modifiedValue
+                DamageType.KINETIC -> 2f * stats.kineticDamageTakenMult.modifiedValue
+                DamageType.HIGH_EXPLOSIVE -> 0.5f * stats.highExplosiveDamageTakenMult.modifiedValue
+                DamageType.ENERGY -> stats.energyDamageTakenMult.modifiedValue
+                else -> 1f
+            }
+
+            totalFlux += inst.amount * shieldEfficiency * mult
+        }
+
+        return totalFlux
     }
 }
 
 class ShipStateSnapshot(
-    val id: String, val owner: Int, val collisionRadius: Float, val hullSize: ShipAPI.HullSize,
-    val location: Vector2f, val velocity: Vector2f, val acceleration: Float, val deceleration: Float,
-    val facing: Float, val angularVelocity: Float, val turnAcceleration: Float,
-    val maxSpeed: Float, val maxTurnRate: Float,
-    val engineAccel: Boolean, val engineBack: Boolean, val engineLeft: Boolean, val engineRight: Boolean,
-    val isOverloaded: Boolean, val overloadTime: Float, val isVenting: Boolean, val ventTime: Float,
-    val parentId: String?, val moduleOffsetDist: Float, val moduleOffsetAngle: Float, val moduleFacingOffset: Float
+    val id: String,
+    val owner: Int,
+    val collisionRadius: Float,
+    val hullSize: ShipAPI.HullSize,
+    val shieldRadius: Float,
+    val location: Vector2f,
+    val velocity: Vector2f,
+    val acceleration: Float,
+    val deceleration: Float,
+    val facing: Float,
+    val angularVelocity: Float,
+    val turnAcceleration: Float,
+    val maxSpeed: Float,
+    val maxTurnRate: Float,
+    val engineAccel: Boolean,
+    val engineBack: Boolean,
+    val engineLeft: Boolean,
+    val engineRight: Boolean,
+    val isOverloaded: Boolean,
+    val overloadTime: Float,
+    val isVenting: Boolean,
+    val ventTime: Float,
+    val parentId: String?,
+    val moduleOffsetDist: Float,
+    val moduleOffsetAngle: Float,
+    val moduleFacingOffset: Float
 )
 
-class WeaponSnapshot(
-    val localMountOffset: Vector2f, val localRestingAngle: Float, val localCurrentAngle: Float,
-    val arc: Float, val range: Float, val maxSpread: Float, val projectileSpeed: Float,
-    val turnRate: Float, val damageType: DamageType,
-    val empPerBurst: Float, val damagePerBurst: Float, val damagePerHitForArmor: Float,
-    val firingTime: Float, val cooldownTime: Float, val currentlyFiring: Boolean, val timeLeftInState: Float,
+sealed class WeaponSnapshot(
+    val localMountOffset: Vector2f,
+    val localRestingAngle: Float,
+    val localCurrentAngle: Float,
+    val arc: Float,
+    val range: Float,
+    val turnRate: Float,
+    val damageType: DamageType,
+    val empPerBurst: Float,
+    val damagePerBurst: Float,
+    val damagePerHitForArmor: Float,
+    val firingTime: Float,
+    val cooldownTime: Float,
+    val currentlyFiring: Boolean,
+    val timeLeftInState: Float,
     val disabledTime: Float
 )
+
+class ProjectileWeaponSnapshot(
+    localMountOffset: Vector2f,
+    localRestingAngle: Float,
+    localCurrentAngle: Float,
+    arc: Float,
+    range: Float,
+    turnRate: Float,
+    damageType: DamageType,
+    empPerBurst: Float,
+    damagePerBurst: Float,
+    damagePerHitForArmor: Float,
+    firingTime: Float,
+    cooldownTime: Float,
+    currentlyFiring: Boolean,
+    timeLeftInState: Float,
+    disabledTime: Float,
+    val projectileSpeed: Float,
+    val maxSpread: Float
+) : WeaponSnapshot(
+    localMountOffset, localRestingAngle, localCurrentAngle, arc, range, turnRate,
+    damageType, empPerBurst, damagePerBurst, damagePerHitForArmor, firingTime,
+    cooldownTime, currentlyFiring, timeLeftInState, disabledTime
+)
+
+class MissileWeaponSnapshot(
+    localMountOffset: Vector2f, localRestingAngle: Float, localCurrentAngle: Float,
+    arc: Float, range: Float, turnRate: Float, damageType: DamageType,
+    empPerBurst: Float, damagePerBurst: Float, damagePerHitForArmor: Float,
+    firingTime: Float, cooldownTime: Float, currentlyFiring: Boolean, timeLeftInState: Float,
+    disabledTime: Float,
+    val missileAccel: Float, val missileMaxSpeed: Float,
+    val missileTurnRate: Float, val missileTurnAccel: Float,
+    val maxFlightTime: Float,
+    val doNotAim: Boolean
+) : WeaponSnapshot(
+    localMountOffset, localRestingAngle, localCurrentAngle, arc, range, turnRate,
+    damageType, empPerBurst, damagePerBurst, damagePerHitForArmor, firingTime,
+    cooldownTime, currentlyFiring, timeLeftInState, disabledTime
+)
+
+class MissileSnapshot(
+    val location: Vector2f,
+    val velocity: Vector2f,
+    val facing: Float,
+    val angularVelocity: Float,
+    val owner: Int,
+    val damageAmount: Float,
+    val empAmount: Float,
+    val damageType: DamageType,
+    val isMine: Boolean,
+    val mineExplosionRange: Float,
+    val acceleration: Float,
+    val maxSpeed: Float,
+    val maxTurnRate: Float,
+    val turnAcceleration: Float,
+    val flightTime: Float,
+    val maxFlightTime: Float,
+    val targetId: String?
+)
+
+private data class FiringSolution(val isValid: Boolean, val hitChance: Float, val distance: Float)
 
 data class FutureShipState(
     val timestamp: Float,
@@ -110,10 +267,11 @@ class SimulationInput(
     val time: Float,
     val ships: List<ShipStateSnapshot>,
     val weaponSnaps: Map<String, List<WeaponSnapshot>>,
+    val missiles: List<MissileSnapshot>,
     val requests: List<RequestKey>
 )
 
-data class RequestResult(val profile: DamageProfile, val timeline: List<FutureShipState>)
+data class RequestResult(val damageTimeline: DamageTimeline, val shipTimeline: List<FutureShipState>)
 
 class SimulationOutput(
     val enemyTimelines: Map<String, List<FutureShipState>>,
@@ -140,17 +298,70 @@ fun captureShipState(ship: ShipAPI): ShipStateSnapshot {
     }
 
     return ShipStateSnapshot(
-        id = ship.id, owner = ship.owner, collisionRadius = ship.collisionRadius, hullSize = ship.hullSize,
-        location = Vector2f(ship.location), velocity = Vector2f(ship.velocity),
-        acceleration = ship.acceleration, deceleration = ship.deceleration,
-        facing = ship.facing, angularVelocity = ship.angularVelocity, turnAcceleration = ship.turnAcceleration,
-        maxSpeed = ship.maxSpeed, maxTurnRate = ship.maxTurnRate,
-        engineAccel = engine?.isAccelerating == true, engineBack = engine?.isAcceleratingBackwards == true,
-        engineLeft = engine?.isStrafingLeft == true, engineRight = engine?.isStrafingRight == true,
-        isOverloaded = flux.isOverloaded, overloadTime = flux.overloadTimeRemaining,
-        isVenting = flux.isVenting, ventTime = flux.timeToVent,
-        parentId = parent?.id, moduleOffsetDist = modDist, moduleOffsetAngle = modAngle, moduleFacingOffset = modFacing
+        id = ship.id,
+        owner = ship.owner,
+        collisionRadius = ship.collisionRadius,
+        hullSize = ship.hullSize,
+        shieldRadius = ship.shieldRadiusEvenIfNoShield, // <--- ADDED
+        location = Vector2f(ship.location),
+        velocity = Vector2f(ship.velocity),
+        acceleration = ship.acceleration,
+        deceleration = ship.deceleration,
+        facing = ship.facing,
+        angularVelocity = ship.angularVelocity,
+        turnAcceleration = ship.turnAcceleration,
+        maxSpeed = ship.maxSpeed,
+        maxTurnRate = ship.maxTurnRate,
+        engineAccel = engine?.isAccelerating == true,
+        engineBack = engine?.isAcceleratingBackwards == true,
+        engineLeft = engine?.isStrafingLeft == true,
+        engineRight = engine?.isStrafingRight == true,
+        isOverloaded = flux.isOverloaded,
+        overloadTime = flux.overloadTimeRemaining,
+        isVenting = flux.isVenting,
+        ventTime = flux.timeToVent,
+        parentId = parent?.id,
+        moduleOffsetDist = modDist,
+        moduleOffsetAngle = modAngle,
+        moduleFacingOffset = modFacing
     )
+}
+
+fun captureMissileState(engine: CombatEngineAPI): List<MissileSnapshot> {
+    val snaps = ArrayList<MissileSnapshot>()
+    for (proj in engine.projectiles) {
+        if (proj !is MissileAPI || proj.isFading || proj.isFlare) continue
+
+        var targetId: String? = null
+        val ai = proj.missileAI
+        if (ai is com.fs.starfarer.api.combat.GuidedMissileAI) {
+            val target = ai.target
+            if (target is ShipAPI) targetId = target.id
+        }
+
+        snaps.add(
+            MissileSnapshot(
+                location = Vector2f(proj.location),
+                velocity = Vector2f(proj.velocity),
+                facing = proj.facing,
+                angularVelocity = proj.angularVelocity,
+                owner = proj.owner,
+                damageAmount = proj.damageAmount,
+                empAmount = proj.empAmount,
+                damageType = proj.damageType,
+                isMine = proj.isMine,
+                mineExplosionRange = if (proj.isMine) proj.mineExplosionRange else 0f,
+                acceleration = proj.acceleration,
+                maxSpeed = proj.maxSpeed,
+                maxTurnRate = proj.maxTurnRate,
+                turnAcceleration = proj.turnAcceleration,
+                flightTime = proj.flightTime,
+                maxFlightTime = proj.maxFlightTime,
+                targetId = targetId
+            )
+        )
+    }
+    return snaps
 }
 
 fun captureWeaponState(ship: ShipAPI): List<WeaponSnapshot> {
@@ -158,7 +369,6 @@ fun captureWeaponState(ship: ShipAPI): List<WeaponSnapshot> {
         val spec = weapon.spec
         if (weapon.slot.isHidden || weapon.isDecorative) return@mapNotNull null
         if (weapon.usesAmmo() && weapon.ammo == 0 && weapon.ammoPerSecond < 0.01f) return@mapNotNull null
-        if (spec.projectileSpec is MissileSpecAPI) return@mapNotNull null
         if (weapon.derivedStats.dps < 1f && weapon.derivedStats.empPerSecond < 1f) return@mapNotNull null
 
         val localMountOffset = (weapon.location - ship.location).rotate(-ship.facing)
@@ -223,18 +433,61 @@ fun captureWeaponState(ship: ShipAPI): List<WeaponSnapshot> {
             }
         }
 
-        WeaponSnapshot(
-            localMountOffset = localMountOffset, localRestingAngle = weapon.arcFacing,
-            localCurrentAngle = localCurrentAngle, arc = effArc, range = weapon.range,
-            maxSpread = if (isHardpoint) spec.maxSpread / 2f else spec.maxSpread,
-            projectileSpeed = if (spec is BeamWeaponSpecAPI) spec.beamSpeed else weapon.projectileSpeed.coerceAtLeast(100f),
-            turnRate = effTurnRate, damageType = weapon.damageType,
-            empPerBurst = empPerBurst, damagePerBurst = damagePerBurst, damagePerHitForArmor = weapon.damage.damage,
-            firingTime = firingTime.coerceAtLeast(0.1f),
-            cooldownTime = cooldownTime.coerceAtLeast(0.0f),
-            currentlyFiring = currentlyFiring, timeLeftInState = timeLeftInState.coerceAtLeast(0.01f),
-            disabledTime = if (weapon.isDisabled) weapon.disabledDuration else 0f
-        )
+        if (spec.projectileSpec is MissileSpecAPI) {
+            val mSpec = spec.projectileSpec as MissileSpecAPI
+            val engineSpec = mSpec.hullSpec?.engineSpec
+
+            val mMaxSpeed = engineSpec?.maxSpeed ?: weapon.projectileSpeed.coerceAtLeast(100f)
+            val mAccel = engineSpec?.acceleration ?: (mMaxSpeed * 2f)
+            val mTurnRate = engineSpec?.maxTurnRate ?: 0f
+            val mTurnAccel = engineSpec?.turnAcceleration ?: (mTurnRate * 2f)
+
+            val doNotAim = spec.aiHints.contains(WeaponAPI.AIHints.DO_NOT_AIM)
+
+            // If the missile can track (turn rate > 0) or is a VLS (doNotAim), simulate it kinematically.
+            if (doNotAim) {
+                MissileWeaponSnapshot(
+                    localMountOffset = localMountOffset, localRestingAngle = weapon.arcFacing,
+                    localCurrentAngle = localCurrentAngle, arc = effArc, range = weapon.range + weapon.projectileFadeRange/2,
+                    turnRate = effTurnRate, damageType = weapon.damageType,
+                    empPerBurst = empPerBurst, damagePerBurst = damagePerBurst, damagePerHitForArmor = weapon.damage.damage,
+                    firingTime = firingTime.coerceAtLeast(0.1f), cooldownTime = cooldownTime.coerceAtLeast(0.0f),
+                    currentlyFiring = currentlyFiring, timeLeftInState = timeLeftInState.coerceAtLeast(0.01f),
+                    disabledTime = if (weapon.isDisabled) weapon.disabledDuration else 0f,
+                    missileAccel = mAccel, missileMaxSpeed = mMaxSpeed,
+                    missileTurnRate = mTurnRate, missileTurnAccel = mTurnAccel,
+                    maxFlightTime = mSpec.maxFlightTime,
+                    doNotAim = doNotAim
+                )
+            } else {
+                // Otherwise, it's an unguided rocket. Treat it identically to a standard projectile,
+                // using its max speed as the constant projectile speed.
+                ProjectileWeaponSnapshot(
+                    localMountOffset = localMountOffset, localRestingAngle = weapon.arcFacing,
+                    localCurrentAngle = localCurrentAngle, arc = effArc, range = weapon.range + weapon.projectileFadeRange/2,
+                    turnRate = effTurnRate, damageType = weapon.damageType,
+                    empPerBurst = empPerBurst, damagePerBurst = damagePerBurst, damagePerHitForArmor = weapon.damage.damage,
+                    firingTime = firingTime.coerceAtLeast(0.1f), cooldownTime = cooldownTime.coerceAtLeast(0.0f),
+                    currentlyFiring = currentlyFiring, timeLeftInState = timeLeftInState.coerceAtLeast(0.01f),
+                    disabledTime = if (weapon.isDisabled) weapon.disabledDuration else 0f,
+                    projectileSpeed = mMaxSpeed,
+                    maxSpread = if (isHardpoint) spec.maxSpread / 2f else spec.maxSpread
+                )
+            }
+        } else {
+            // Standard Energy/Ballistic weapon
+            ProjectileWeaponSnapshot(
+                localMountOffset = localMountOffset, localRestingAngle = weapon.arcFacing,
+                localCurrentAngle = localCurrentAngle, arc = effArc, range = weapon.range + weapon.projectileFadeRange/2,
+                turnRate = effTurnRate, damageType = weapon.damageType,
+                empPerBurst = empPerBurst, damagePerBurst = damagePerBurst, damagePerHitForArmor = weapon.damage.damage,
+                firingTime = firingTime.coerceAtLeast(0.1f), cooldownTime = cooldownTime.coerceAtLeast(0.0f),
+                currentlyFiring = currentlyFiring, timeLeftInState = timeLeftInState.coerceAtLeast(0.01f),
+                disabledTime = if (weapon.isDisabled) weapon.disabledDuration else 0f,
+                projectileSpeed = if (spec is BeamWeaponSpecAPI) spec.beamSpeed else weapon.projectileSpeed.coerceAtLeast(100f),
+                maxSpread = if (isHardpoint) spec.maxSpread / 2f else spec.maxSpread
+            )
+        }
     }
 }
 
@@ -242,57 +495,84 @@ fun captureWeaponState(ship: ShipAPI): List<WeaponSnapshot> {
 // 3. PHYSICS PREDICTION
 // ==========================================
 
-fun generateFlightPaths(ship: ShipStateSnapshot, startTime: Float, accel: Vector2f? = null): Array<FutureShipState> {
+fun generateFlightPaths(
+    ship: ShipStateSnapshot,
+    startTime: Float,
+    accelDir: Vector2f? = null,
+    mobility: MobilityProfile? = null
+): Array<FutureShipState> {
     if (ship.parentId != null) {
         return Array(FlightPathPredictor.TOTAL_FUTURE_STATES) { i ->
             FutureShipState(startTime + (i + 1) * FlightPathPredictor.TIME_STEP, Vector2f(ship.location), ship.facing)
         }
     }
 
-    val strafeAccel = when (ship.hullSize) {
-        ShipAPI.HullSize.FIGHTER, ShipAPI.HullSize.FRIGATE -> 1.0f * ship.acceleration
-        ShipAPI.HullSize.DESTROYER -> 0.75f * ship.acceleration
-        ShipAPI.HullSize.CRUISER -> 0.50f * ship.acceleration
-        ShipAPI.HullSize.CAPITAL_SHIP -> 0.25f * ship.acceleration
-        else -> 1.0f
-    }
-
     val fwdUnitVector = Misc.getUnitVectorAtDegreeAngle(ship.facing)
     val leftUnitVector = Misc.getUnitVectorAtDegreeAngle(ship.facing + 90f)
-    val shipAccel = Vector2f()
 
-    if (accel == null) {
-        if (ship.engineAccel) shipAccel += fwdUnitVector * ship.acceleration
-        else if (ship.engineBack) shipAccel += fwdUnitVector * -ship.deceleration
-        if (ship.engineLeft) shipAccel += leftUnitVector * strafeAccel
-        else if (ship.engineRight) shipAccel += leftUnitVector * -strafeAccel
-    } else if (accel.lengthSquared() > 0.01f) {
-        val accelNormalized = accel.normalized()
-        val fwdComponent = Vector2f.dot(accelNormalized, fwdUnitVector)
-        val latComponent = Vector2f.dot(accelNormalized, leftUnitVector)
+    // Pre-calculate the acceleration vector for a given multiplier
+    fun calcAccel(accelOverride: Float?, decelOverride: Float?): Vector2f {
+        val accel = accelOverride ?: ship.acceleration
+        val decel = decelOverride ?: ship.deceleration
 
-        val maxFwdThrust = if (fwdComponent >= 0) ship.acceleration else ship.deceleration
-        val limitByFwd = if (abs(fwdComponent) > 0.0001f) maxFwdThrust / abs(fwdComponent) else Float.MAX_VALUE
-        val limitByLat = if (abs(latComponent) > 0.0001f) strafeAccel / abs(latComponent) else Float.MAX_VALUE
+        val strafeAccel = when (ship.hullSize) {
+            ShipAPI.HullSize.FIGHTER, ShipAPI.HullSize.FRIGATE -> 1.0f * accel
+            ShipAPI.HullSize.DESTROYER -> 0.75f * accel
+            ShipAPI.HullSize.CRUISER -> 0.50f * accel
+            ShipAPI.HullSize.CAPITAL_SHIP -> 0.25f * accel
+            else -> 1.0f
+        }
 
-        accelNormalized.scale(min(limitByFwd, limitByLat))
-        shipAccel.set(accelNormalized)
+        val shipAccel = Vector2f()
+
+        if (accelDir == null) {
+            if (ship.engineAccel) shipAccel += fwdUnitVector * accel
+            else if (ship.engineBack) shipAccel += fwdUnitVector * -accel
+            if (ship.engineLeft) shipAccel += leftUnitVector * strafeAccel
+            else if (ship.engineRight) shipAccel += leftUnitVector * -strafeAccel
+        } else if (accelDir.lengthSquared() > 0.01f) {
+            val accelNormalized = accelDir.normalized()
+            val fwdComponent = Vector2f.dot(accelNormalized, fwdUnitVector)
+            val latComponent = Vector2f.dot(accelNormalized, leftUnitVector)
+
+            val maxFwdThrust = if (fwdComponent >= 0) accel else decel
+            val limitByFwd = if (abs(fwdComponent) > 0.0001f) maxFwdThrust / abs(fwdComponent) else Float.MAX_VALUE
+            val limitByLat = if (abs(latComponent) > 0.0001f) strafeAccel / abs(latComponent) else Float.MAX_VALUE
+
+            accelNormalized.scale(min(limitByFwd, limitByLat))
+            shipAccel.set(accelNormalized)
+        }
+        return shipAccel
     }
+
+    val spd1 = mobility?.maxSpeedOverride1 ?: ship.maxSpeed
+    val duration1 = mobility?.phase1Duration ?: Float.MAX_VALUE
+
+    val spd2 = mobility?.maxSpeedOverride2 ?: ship.maxSpeed
+
+    val shipAccel1 = calcAccel(mobility?.accelOverride1, mobility?.decelOverride1)
+    val shipAccel2 = calcAccel(mobility?.accelOverride2, mobility?.decelOverride2)
 
     val futureLocation = Vector2f(ship.location)
     val futureVelocity = Vector2f(ship.velocity)
 
     return Array(FlightPathPredictor.TOTAL_FUTURE_STATES) { i ->
-        val t = startTime + ((i + 1) * FlightPathPredictor.TIME_STEP)
+        val elapsedTime = (i + 1) * FlightPathPredictor.TIME_STEP
+        val t = startTime + elapsedTime
+
+        val inPhase1 = elapsedTime <= duration1
+        val currentMaxSpeed = if (inPhase1) spd1 else spd2
+        val currentAccel = if (inPhase1) shipAccel1 else shipAccel2
 
         futureLocation += (futureVelocity * FlightPathPredictor.TIME_STEP)
-        if ((i + 1) * FlightPathPredictor.TIME_STEP < FlightPathPredictor.ENGINE_COAST_ASSUMPTION || accel != null) {
-            futureVelocity += (shipAccel * FlightPathPredictor.TIME_STEP)
+
+        if (elapsedTime < FlightPathPredictor.ENGINE_COAST_ASSUMPTION || accelDir != null) {
+            futureVelocity += (currentAccel * FlightPathPredictor.TIME_STEP)
         }
 
-        if (futureVelocity.length() > ship.maxSpeed) {
+        if (futureVelocity.length() > currentMaxSpeed) {
             futureVelocity.normalise()
-            futureVelocity.scale(ship.maxSpeed)
+            futureVelocity.scale(currentMaxSpeed)
         }
 
         FutureShipState(t, Vector2f(futureLocation))
@@ -377,13 +657,18 @@ suspend fun simulateFlightPathsCoroutines(input: SimulationInput): SimulationOut
     val deferredResults = input.requests.map { req ->
         async {
             val targetData = input.ships.find { it.id == req.shipId } ?: return@async null
-            val resultProfile = DamageProfile()
+            val resultDamage = DamageTimeline()
 
             val reqPaths = basePositionalPaths.mapValues { entry ->
                 Array(FlightPathPredictor.TOTAL_FUTURE_STATES) { i -> entry.value[i].deepCopy() }
             }.toMutableMap()
 
-            reqPaths[targetData.id] = generateFlightPaths(targetData, input.time, req.accel)
+            reqPaths[targetData.id] = generateFlightPaths(
+                ship = targetData,
+                startTime = input.time,
+                accelDir = req.accelDir,
+                mobility = req.mobility
+            )
             updateFlightPathFacings(reqPaths, input.ships)
 
             // Rigid Body Module Pass
@@ -405,6 +690,9 @@ suspend fun simulateFlightPathsCoroutines(input: SimulationInput): SimulationOut
 
             val targetTimeline = reqPaths[targetData.id]!!
 
+            // Temporary list to hold newly fired future-missiles
+            val predictedMissiles = mutableListOf<MissileSnapshot>()
+
             for (enemyData in input.ships) {
                 if (enemyData.owner == targetData.owner || enemyData.id == targetData.id) continue
 
@@ -418,11 +706,25 @@ suspend fun simulateFlightPathsCoroutines(input: SimulationInput): SimulationOut
                     simulateWeaponTimeline(
                         snap = snap, enemyData = enemyData, enemyTimeline = enemyTimeline,
                         targetData = targetData, targetTimeline = targetTimeline,
-                        shipSilenceTime = shipSilenceTime, outProfile = resultProfile
+                        shipSilenceTime = shipSilenceTime, outDamage = resultDamage,
+                        generatedMissiles = predictedMissiles, // <--- PASS IT HERE
+                        startTime = input.time
                     )
                 }
             }
-            req to RequestResult(resultProfile, targetTimeline.toList())
+
+            // Combine real in-flight missiles with predicted future missiles
+            val allMissilesToSimulate = input.missiles + predictedMissiles
+
+            simulateMissileTimelines(
+                missiles = allMissilesToSimulate,
+                targetData = targetData,
+                targetTimeline = targetTimeline,
+                allShipTimelines = reqPaths,
+                outDamage = resultDamage
+            )
+
+            req to RequestResult(resultDamage, targetTimeline.toList())
         }
     }
 
@@ -431,9 +733,15 @@ suspend fun simulateFlightPathsCoroutines(input: SimulationInput): SimulationOut
 }
 
 private fun simulateWeaponTimeline(
-    snap: WeaponSnapshot, enemyData: ShipStateSnapshot, enemyTimeline: Array<FutureShipState>,
-    targetData: ShipStateSnapshot, targetTimeline: Array<FutureShipState>,
-    shipSilenceTime: Float, outProfile: DamageProfile
+    snap: WeaponSnapshot,
+    enemyData: ShipStateSnapshot,
+    enemyTimeline: Array<FutureShipState>,
+    targetData: ShipStateSnapshot,
+    targetTimeline: Array<FutureShipState>,
+    shipSilenceTime: Float,
+    outDamage: DamageTimeline,
+    generatedMissiles: MutableList<MissileSnapshot>,
+    startTime: Float
 ) {
     var t = snap.disabledTime
     var isFiring = snap.currentlyFiring
@@ -449,7 +757,52 @@ private fun simulateWeaponTimeline(
 
             if (solution.isValid) {
                 val fraction = burstDuration / snap.firingTime
-                outProfile.addScaled(snap.damagePerBurst * fraction, solution.hitChance, snap.damageType, snap.empPerBurst * fraction)
+
+                if (snap is MissileWeaponSnapshot) {
+                    val frameIdx = (sampleTime / FlightPathPredictor.TIME_STEP).toInt().coerceIn(0, FlightPathPredictor.TOTAL_FUTURE_STATES - 1)
+                    val spawnerState = enemyTimeline[frameIdx]
+
+                    val rad = (spawnerState.facing ?: enemyData.facing) * (Math.PI / 180.0)
+                    val globalMountLocX = spawnerState.location.x + (snap.localMountOffset.x * cos(rad).toFloat() - snap.localMountOffset.y * sin(rad).toFloat())
+                    val globalMountLocY = spawnerState.location.y + (snap.localMountOffset.x * sin(rad).toFloat() + snap.localMountOffset.y * cos(rad).toFloat())
+
+                    generatedMissiles.add(
+                        MissileSnapshot(
+                            location = Vector2f(globalMountLocX, globalMountLocY),
+                            velocity = Vector2f(enemyData.velocity),
+                            facing = spawnerState.facing ?: enemyData.facing,
+                            angularVelocity = enemyData.angularVelocity,
+                            owner = enemyData.owner,
+                            damageAmount = snap.damagePerBurst * fraction,
+                            empAmount = snap.empPerBurst * fraction,
+                            damageType = snap.damageType,
+                            isMine = false,
+                            mineExplosionRange = 0f,
+                            acceleration = snap.missileAccel,
+                            maxSpeed = snap.missileMaxSpeed,
+                            maxTurnRate = snap.missileTurnRate,
+                            turnAcceleration = snap.missileTurnAccel,
+                            flightTime = -sampleTime, // Keeps it dormant via relative logic
+                            maxFlightTime = snap.maxFlightTime,
+                            targetId = targetData.id
+                        )
+                    )
+                } else if (snap is ProjectileWeaponSnapshot) {
+                    val travelTime = solution.distance / snap.projectileSpeed
+
+                    val hitTimeRelative = sampleTime + travelTime
+                    val hitTimeAbsolute = startTime + hitTimeRelative
+
+                    if (hitTimeRelative <= FlightPathPredictor.PREDICTION_DURATION) {
+                        outDamage.addInstance(
+                            time = hitTimeAbsolute,
+                            amount = snap.damagePerBurst * fraction,
+                            scale = solution.hitChance,
+                            type = snap.damageType,
+                            empAmount = snap.empPerBurst * fraction
+                        )
+                    }
+                }
             }
 
             t += timeInState
@@ -491,8 +844,6 @@ private fun findNextFiringWindow(
     return null
 }
 
-private data class FiringSolution(val isValid: Boolean, val hitChance: Float)
-
 private fun getFiringSolution(
     timeElapsed: Float, snap: WeaponSnapshot, enemyData: ShipStateSnapshot, enemyTimeline: Array<FutureShipState>,
     targetData: ShipStateSnapshot, targetTimeline: Array<FutureShipState>
@@ -503,7 +854,6 @@ private fun getFiringSolution(
     val enemyState = enemyTimeline[frameIdx]
     val enemyFacing = enemyState.facing ?: enemyData.facing
 
-    // Inline math to prevent allocating thousands of Vector2f per frame for garbage collection
     val rad = enemyFacing * (Math.PI / 180.0)
     val cosF = cos(rad).toFloat()
     val sinF = sin(rad).toFloat()
@@ -515,27 +865,140 @@ private fun getFiringSolution(
     val dy = targetState.location.y - globalMountLocY
     val dist = kotlin.math.sqrt(dx * dx + dy * dy)
 
-    if (dist > snap.range + targetData.collisionRadius) return FiringSolution(false, 0f)
+    if (dist > snap.range + targetData.collisionRadius) return FiringSolution(false, 0f, dist)
+
+    // VLS missiles can fire at anything in range
+    if (snap is MissileWeaponSnapshot && snap.doNotAim) {
+        return FiringSolution(true, 1f, dist)
+    }
 
     val angleToTarget = Math.toDegrees(kotlin.math.atan2(dy.toDouble(), dx.toDouble())).toFloat()
     val globalRestingAngle = MathUtils.clampAngle(enemyFacing + snap.localRestingAngle)
     val angleDiffResting = abs(MathUtils.getShortestRotation(globalRestingAngle, angleToTarget))
 
-    if (angleDiffResting > snap.arc * 0.5f) return FiringSolution(false, 0f)
+    if (angleDiffResting > snap.arc * 0.5f) return FiringSolution(false, 0f, dist)
 
     val effectiveTurnTime = max(0f, timeElapsed - snap.disabledTime)
     val maxPossibleTurn = snap.turnRate * effectiveTurnTime
     val startGlobalAngle = enemyData.facing + snap.localCurrentAngle
     val requiredTurn = abs(MathUtils.getShortestRotation(startGlobalAngle, angleToTarget))
 
-    if (requiredTurn > maxPossibleTurn + 5f) return FiringSolution(false, 0f)
+    if (requiredTurn > maxPossibleTurn + 5f) return FiringSolution(false, 0f, dist)
 
+    // Missiles track perfectly once fired
+    if (snap is MissileWeaponSnapshot) {
+        return FiringSolution(true, 1f, dist)
+    }
+
+    snap as ProjectileWeaponSnapshot
     val halfSpreadRad = Math.toRadians((snap.maxSpread / 2f).toDouble())
     val spreadRadius = dist * kotlin.math.tan(halfSpreadRad).toFloat()
 
     val hitChance = if (spreadRadius <= targetData.collisionRadius) 1f else targetData.collisionRadius / spreadRadius
 
-    return FiringSolution(true, hitChance)
+    return FiringSolution(true, hitChance, dist)
+}
+
+private fun simulateMissileTimelines(
+    missiles: List<MissileSnapshot>,
+    targetData: ShipStateSnapshot,
+    targetTimeline: Array<FutureShipState>,
+    allShipTimelines: Map<String, Array<FutureShipState>>,
+    outDamage: DamageTimeline
+) {
+    val timeStep = FlightPathPredictor.TIME_STEP
+
+    for (missile in missiles) {
+        if (missile.owner == targetData.owner) continue
+
+        // Fast cull: if it's tracking someone else entirely, ignore it to save CPU
+        if (!missile.isMine && missile.targetId != null && missile.targetId != targetData.id) continue
+
+        val loc = Vector2f(missile.location)
+        val vel = Vector2f(missile.velocity)
+        var facing = missile.facing
+        var angVel = missile.angularVelocity
+
+        // Local state for the simulation loop
+        var currentFlightTime = missile.flightTime
+
+        for (i in 0 until FlightPathPredictor.TOTAL_FUTURE_STATES) {
+
+            // Dormant check: If it's still negative, skip physics calculation for this frame
+            if (currentFlightTime < 0f) {
+                currentFlightTime += timeStep
+                continue
+            }
+            if (currentFlightTime >= missile.maxFlightTime) break // Missile fizzles out
+
+            val targetState = targetTimeline[i]
+
+            if (missile.isMine) {
+                // Mines mostly drift along their velocity
+                loc.x += vel.x * timeStep
+                loc.y += vel.y * timeStep
+
+                val distSq = MathUtils.getDistanceSquared(loc, targetState.location)
+                val triggerRadius = targetData.shieldRadius + missile.mineExplosionRange * 1.1f
+
+                if (distSq <= triggerRadius * triggerRadius) {
+                    outDamage.addInstance(targetState.timestamp, missile.damageAmount, 1f, missile.damageType, missile.empAmount)
+                    break // Mine exploded
+                }
+            } else {
+                // Determine where the target is going to be in this exact frame
+                var guideTargetLoc: Vector2f? = null
+                if (missile.targetId != null) {
+                    val guideTimeline = allShipTimelines[missile.targetId]
+                    if (guideTimeline != null) guideTargetLoc = guideTimeline[i].location
+                }
+
+                // 1. Angular Kinematics (Tracking)
+                if (guideTargetLoc != null) {
+                    val angleToTarget = VectorUtils.getAngle(loc, guideTargetLoc)
+                    val rotationNeeded = MathUtils.getShortestRotation(facing, angleToTarget)
+
+                    val effTurnAccel = missile.turnAcceleration.coerceAtLeast(1f)
+                    val stoppingDist = (angVel * angVel) / (2f * effTurnAccel)
+                    val movingTowards = (sign(rotationNeeded) == sign(angVel)) && abs(angVel) > 0.1f
+
+                    if (movingTowards && abs(rotationNeeded) <= stoppingDist) {
+                        val change = effTurnAccel * timeStep
+                        if (abs(angVel) <= change) angVel = 0f else angVel -= sign(angVel) * change
+                    } else {
+                        angVel += sign(rotationNeeded) * effTurnAccel * timeStep
+                    }
+                } else {
+                    // Lost track: dampen rotation
+                    val change = missile.turnAcceleration * timeStep
+                    if (abs(angVel) <= change) angVel = 0f else angVel -= sign(angVel) * change
+                }
+
+                angVel = MathUtils.clamp(angVel, -missile.maxTurnRate, missile.maxTurnRate)
+                facing = MathUtils.clampAngle(facing + angVel * timeStep)
+
+                // 2. Forward Kinematics (Acceleration)
+                val accelVector = Misc.getUnitVectorAtDegreeAngle(facing)
+                accelVector.scale(missile.acceleration * timeStep)
+                vel.translate(accelVector.x, accelVector.y)
+
+                if (vel.length() > missile.maxSpeed) {
+                    vel.normalise()
+                    vel.scale(missile.maxSpeed)
+                }
+
+                loc.translate(vel.x * timeStep, vel.y * timeStep)
+
+                // 3. Collision Check
+                val distSq = MathUtils.getDistanceSquared(loc, targetState.location)
+                if (distSq <= (targetData.shieldRadius + 100f) * (targetData.shieldRadius + 100f)) {
+                    outDamage.addInstance(targetState.timestamp, missile.damageAmount, 1f, missile.damageType, missile.empAmount)
+                    break // Missile hit, destroy it from timeline
+                }
+            }
+            currentFlightTime += timeStep
+        }
+    }
 }
 
 // ==========================================
@@ -563,12 +1026,22 @@ class FlightPathPredictorManager private constructor() {
     private val resultTimestamps = HashMap<RequestKey, Float>()
     private val timelineTimestamps = HashMap<String, Float>()
 
-    fun queueRequest(target: ShipAPI, accel: Vector2f?) {
+    private fun isMatch(val1: Float?, val2: Float?, tolerance: Float): Boolean {
+        if (val1 == val2) return true
+        if (val1 == null && val2 == null) return true
+        if (val1 == null || val2 == null) return false
+        return abs(val1 - val2) <= tolerance
+    }
+
+    fun queueRequest(
+        target: ShipAPI,
+        accelDir: Vector2f?,
+        mobility: MobilityProfile? = null
+    ) {
         val engine = Global.getCombatEngine() ?: return
-        val newKey = RequestKey(target.id, accel)
+        val newKey = RequestKey(target.id, accelDir, mobility)
 
         // SMART CULLING: Prevent vector-spam bloat.
-        // If this ship already asked for a similar vector, overwrite it with this fresher one.
         val iterator = pendingRequests.iterator()
         while (iterator.hasNext()) {
             val entry = iterator.next()
@@ -580,29 +1053,82 @@ class FlightPathPredictorManager private constructor() {
         pendingRequests[newKey] = engine.getTotalElapsedTime(false)
     }
 
-    fun getResult(target: ShipAPI, accel: Vector2f): DamageProfile? {
-        val targetAngle = VectorUtils.getAngle(Vector2f(0f, 0f), accel)
-        val isZero = accel.lengthSquared() == 0f
+    fun getResult(
+        target: ShipAPI,
+        accelDir: Vector2f,
+        mobility: MobilityProfile? = null
+    ): DamageTimeline? {
+        val targetAngle = VectorUtils.getAngle(Vector2f(0f, 0f), accelDir)
+        val isZero = accelDir.lengthSquared() == 0f
 
-        var bestProfile: DamageProfile? = null
+        var bestDamage: DamageTimeline? = null
         var bestError = Float.MAX_VALUE
 
         for ((key, result) in latestResults) {
             if (key.shipId != target.id) continue
 
-            val keyIsZero = key.accel == null || key.accel.lengthSquared() == 0f
-            if (isZero && keyIsZero) return result.profile
+            val m1 = key.mobility
+            val m2 = mobility
+
+            if ((m1 == null) != (m2 == null)) continue
+
+            if (m1 != null && m2 != null) {
+                // Validate the engine modifiers match the request
+                if (!isMatch(m1.phase1Duration, m2.phase1Duration, 0.1f)) continue
+                if (!isMatch(m1.maxSpeedOverride1, m2.maxSpeedOverride1, 5f)) continue
+                if (!isMatch(m1.accelOverride1, m2.accelOverride1, 5f)) continue
+                if (!isMatch(m1.decelOverride1, m2.decelOverride1, 5f)) continue
+
+                if (!isMatch(m1.maxSpeedOverride2, m2.maxSpeedOverride2, 5f)) continue
+                if (!isMatch(m1.accelOverride2, m2.accelOverride2, 5f)) continue
+                if (!isMatch(m1.decelOverride2, m2.decelOverride2, 5f)) continue
+            }
+
+            val keyIsZero = key.accelDir == null || key.accelDir.lengthSquared() == 0f
+            if (isZero && keyIsZero) return result.damageTimeline
             if (isZero != keyIsZero) continue
 
-            val keyAngle = VectorUtils.getAngle(Vector2f(0f, 0f), key.accel)
+            val keyAngle = VectorUtils.getAngle(Vector2f(0f, 0f), key.accelDir)
             val diff = abs(MathUtils.getShortestRotation(targetAngle, keyAngle))
 
             if (diff < bestError && diff < 10f) {
                 bestError = diff
-                bestProfile = result.profile
+                bestDamage = result.damageTimeline
             }
         }
-        return bestProfile
+        return bestDamage
+    }
+
+    private fun isNear(k1: RequestKey, k2: RequestKey): Boolean {
+        if (k1.shipId != k2.shipId) return false
+
+        val m1 = k1.mobility
+        val m2 = k2.mobility
+
+        if ((m1 == null) != (m2 == null)) return false
+
+        if (m1 != null && m2 != null) {
+            // Check for parameter drifting in the culling logic
+            if (!isMatch(m1.phase1Duration, m2.phase1Duration, 0.1f)) return false
+            if (!isMatch(m1.maxSpeedOverride1, m2.maxSpeedOverride1, 5f)) return false
+            if (!isMatch(m1.accelOverride1, m2.accelOverride1, 5f)) return false
+            if (!isMatch(m1.decelOverride1, m2.decelOverride1, 5f)) return false
+
+            if (!isMatch(m1.maxSpeedOverride2, m2.maxSpeedOverride2, 5f)) return false
+            if (!isMatch(m1.accelOverride2, m2.accelOverride2, 5f)) return false
+            if (!isMatch(m1.decelOverride2, m2.decelOverride2, 5f)) return false
+        }
+
+        val isZero1 = k1.accelDir == null || k1.accelDir.lengthSquared() == 0f
+        val isZero2 = k2.accelDir == null || k2.accelDir.lengthSquared() == 0f
+
+        if (isZero1 && isZero2) return true
+        if (isZero1 != isZero2) return false
+
+        val angle1 = VectorUtils.getAngle(Vector2f(0f, 0f), k1.accelDir)
+        val angle2 = VectorUtils.getAngle(Vector2f(0f, 0f), k2.accelDir)
+        val diff = abs(MathUtils.getShortestRotation(angle1, angle2))
+        return diff < 10f
     }
 
     fun updateFrame(engine: CombatEngineAPI) {
@@ -656,7 +1182,9 @@ class FlightPathPredictorManager private constructor() {
                     weaponSnaps[ship.id] = captureWeaponState(ship)
                 }
 
-                val input = SimulationInput(currentTime, shipSnaps, weaponSnaps, freshestRequests)
+                val missileSnaps = captureMissileState(engine)
+
+                val input = SimulationInput(currentTime, shipSnaps, weaponSnaps, missileSnaps, freshestRequests)
 
                 isSimulating = true
                 PredictorThreadPool.scope.launch {
@@ -699,19 +1227,6 @@ class FlightPathPredictorManager private constructor() {
         return merged
     }
 
-    private fun isNear(k1: RequestKey, k2: RequestKey): Boolean {
-        if (k1.shipId != k2.shipId) return false
-        val isZero1 = k1.accel == null || k1.accel.lengthSquared() == 0f
-        val isZero2 = k2.accel == null || k2.accel.lengthSquared() == 0f
-
-        if (isZero1 && isZero2) return true
-        if (isZero1 != isZero2) return false
-
-        val angle1 = VectorUtils.getAngle(Vector2f(0f, 0f), k1.accel)
-        val angle2 = VectorUtils.getAngle(Vector2f(0f, 0f), k2.accel)
-        val diff = abs(MathUtils.getShortestRotation(angle1, angle2))
-        return diff < 10f
-    }
 
     fun renderDebug(viewport: ViewportAPI) {
         val engine = Global.getCombatEngine() ?: return
@@ -737,14 +1252,26 @@ class FlightPathPredictorManager private constructor() {
 
             drawnShips.add(key.shipId)
 
-            val profile = result.profile
-            val shieldMult = ship.mutableStats?.shieldDamageTakenMult?.modifiedValue ?: 1f
-            val shieldEfficiency = ship.shield?.fluxPerPointOfDamage ?: 1f
+            val damageTimeline = result.damageTimeline
 
-            val fluxGained = if (ship.shield != null && ship.shield.type != com.fs.starfarer.api.combat.ShieldAPI.ShieldType.NONE) {
-                (profile.kinetic * 2.0f + profile.highExplosive * 0.5f + profile.energy * 1.0f + profile.fragmentation * 0.25f) * shieldEfficiency * shieldMult
+            // Calculate total flux over the full prediction duration for the heat map
+            val fluxGained = if (ship.shield != null && ship.shield.type != ShieldAPI.ShieldType.NONE) {
+                damageTimeline.fluxToShield(
+                    engine.getTotalElapsedTime(false),
+                    FlightPathPredictor.PREDICTION_DURATION,
+                    ship, useModifiedShieldMult = true)
             } else {
-                (profile.kinetic * 0.5f + profile.highExplosive * 2.0f + profile.energy + profile.fragmentation * 0.25f) * 10f
+                // Approximate raw armor/hull impact if unshielded
+                damageTimeline.instances.sumOf { inst ->
+                    val mult = when (inst.type) {
+                        DamageType.KINETIC -> 0.5f
+                        DamageType.HIGH_EXPLOSIVE -> 2.0f
+                        DamageType.ENERGY -> 1.0f
+                        DamageType.FRAGMENTATION -> 0.25f
+                        else -> 1.0f
+                    }
+                    (inst.amount * mult * 10f).toDouble()
+                }.toFloat()
             }
 
             val dangerRatio = (ship.currFlux + fluxGained) / ship.maxFlux.coerceAtLeast(1f)
@@ -753,7 +1280,7 @@ class FlightPathPredictorManager private constructor() {
             val heatmapColor = Color.getHSBColor(hue, 1f, 1f)
 
             GL11.glColor4f(heatmapColor.red / 255f, heatmapColor.green / 255f, heatmapColor.blue / 255f, 0.8f)
-            drawTimeline(result.timeline)
+            drawTimeline(result.shipTimeline)
         }
 
         GL11.glLineWidth(4f)
@@ -818,6 +1345,6 @@ class FlightPathPredictorPlugin : BaseEveryFrameCombatPlugin() {
         val engine = Global.getCombatEngine() ?: return
         if (engine.customData["NeedsDamagePredictor"] != true) return
 
-        //FlightPathPredictorManager.getInstance(engine).renderDebug(viewport)
+        FlightPathPredictorManager.getInstance(engine).renderDebug(viewport)
     }
 }

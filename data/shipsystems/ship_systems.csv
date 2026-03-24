@@ -14,6 +14,7 @@ Burst EMP Emitter,SCY_emp,,,,,,,,,,0,1,0,2,,,,,,,,,,,,graphics/icons/hullsys/emp
 #
 # MOBILITY SYSTEMS
 Secondary Thrusters,SCY_secondaryThrusters,,,,,,,,,,1,5,1,10,,,,,,,,,,,,graphics/icons/hullsys/maneuvering_jets.png
+Armor Switch,SCY_armorSwitch,,,,,,,,,,1,,1,,TRUE,,,,,,,,,,,graphics/SCY/icons/hullsys/SCY_ping.png
 #
 # DRONE SYSTEMS
 Mining Drone,SCY_miningDrones,,,,,,,,20,0,0,,0,0,,,,,,,,,,,,graphics/icons/hullsys/drone_borer.png

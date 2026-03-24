@@ -6,19 +6,23 @@ import com.fs.starfarer.api.combat.ShipAPI.HullSize
 import com.fs.starfarer.api.combat.listeners.AdvanceableListener
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.impl.campaign.ids.Personalities
+import com.fs.starfarer.api.loading.WeaponSlotAPI
 import com.fs.starfarer.api.ui.Alignment
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.util.IntervalUtil
 import com.fs.starfarer.api.util.Misc
 import org.lazywizard.lazylib.VectorUtils
-import org.lazywizard.lazylib.combat.AIUtils
-import org.lwjgl.util.vector.Vector2f
 import org.magiclib.kotlin.getGoSlowBurnLevel
 import org.magiclib.subsystems.MagicSubsystemsManager.addSubsystemToShip
 import org.magiclib.util.MagicIncompatibleHullmods
 import org.scy.*
-import org.scy.plugins.DamageProfile
+import org.scy.ReflectionUtils.getFieldsMatching
+import org.scy.ReflectionUtils.getMethodsMatching
+import org.scy.ReflectionUtils.invoke
+import org.scy.plugins.DamageTimeline
+import org.scy.plugins.FlightPathPredictor
 import org.scy.plugins.FlightPathPredictorManager
+import org.scy.plugins.MobilityProfile
 import org.scy.subsystems.EngineJumpstart
 
 class ScyEngineering: BaseHullMod() {
@@ -40,7 +44,7 @@ class ScyEngineering: BaseHullMod() {
         return 0
     }
 
-    override fun applyEffectsBeforeShipCreation(hullSize: ShipAPI.HullSize?, stats: MutableShipStatsAPI?, id: String?) {
+    override fun applyEffectsBeforeShipCreation(hullSize: HullSize?, stats: MutableShipStatsAPI?, id: String?) {
         if(stats == null) return
         stats.ventRateMult.modifyMult(id, VENT_MULT)
         if (hullSize != HullSize.FIGHTER) stats.fluxCapacity.modifyMult(id, CAP_MULT)
@@ -57,6 +61,57 @@ class ScyEngineering: BaseHullMod() {
         }
 
         ship.mutableStats.ventRateMult.modifyPercent(id, ship.variant.numFluxCapacitors * VENTING_BONUS[ship.hullSize]!!)
+    }
+
+    override fun applyEffectsAfterShipAddedToCombatEngine(ship: ShipAPI, id: String?) {
+        // changing weapon mount arcs sure is complicated
+        if (ship.hullSpec.hullId == "SCY_orthrus") {
+
+            val originalVariant = ship.variant ?: return
+            val originalHullSpec = ship.hullSpec ?: return
+
+            // Clone the Variant
+            val cloneVariantMethod = originalVariant.getMethodsMatching(
+                name = "clone",
+                returnType = ShipVariantAPI::class.java,
+                numOfParams = 0
+            ).firstOrNull() ?: return
+
+            val clonedVariant = originalVariant.invoke(cloneVariantMethod) as ShipVariantAPI
+
+            // Clone the HullSpec
+            val cloneHullMethod = originalHullSpec.getMethodsMatching(
+                name = "clone",
+                returnType = ShipHullSpecAPI::class.java,
+                numOfParams = 0
+            ).firstOrNull() ?: return
+
+            val clonedHullSpec = originalHullSpec.invoke(cloneHullMethod) as ShipHullSpecAPI
+
+            // Inject the cloned HullSpec into our isolated variant
+            clonedVariant.invoke("setHullSpec", clonedHullSpec)
+
+            // Inject the isolated variant back into the Ship instance
+            val variantFields = ship.getFieldsMatching(
+                fieldAccepts = originalVariant::class.java,
+                searchSuperclass = true
+            )
+            val specField = variantFields.firstOrNull { it.get(ship) === originalVariant }
+            specField?.set(ship, clonedVariant)
+
+            // Update the instantiated Weapon objects to point to the newly cloned slots
+            ship.allWeapons.forEach { w ->
+                val originalSlot = w.slot
+
+                val newSlot = clonedHullSpec.getWeaponSlotAPI(originalSlot.id) ?: return@forEach
+
+                w.getFieldsMatching(fieldAssignableTo = WeaponSlotAPI::class.java, searchSuperclass = true)
+                    .filter { it.get(w) === originalSlot }
+                    .forEach { it.set(w, newSlot) }
+            }
+        }
+
+        // engine jumpstart and custom SCY ai
         if (ship.hullSize != HullSize.FIGHTER && ship.parentStation == null) {
             addSubsystemToShip(ship, EngineJumpstart(ship))
             if (!ship.hasListenerOfClass(ScyAiV2::class.java)) ship.addListener(ScyAiV2(ship))
@@ -89,7 +144,7 @@ class ScyEngineering: BaseHullMod() {
 
     override fun addPostDescriptionSection(tooltip: TooltipMakerAPI, hullSize: HullSize, ship: ShipAPI?, width: Float, isForModSpec: Boolean) {
 
-        val HEIGHT = 64f
+        val imageHeight = 64f
         val headingPad = 20f
         val underHeadingPad = 10f
         val listPad = 3f
@@ -100,55 +155,59 @@ class ScyEngineering: BaseHullMod() {
         val activeHeaderTextColor = brighter(Misc.getButtonTextColor(), 0.8f)
         val activeHighlightColor = Misc.getHighlightColor()
 
+        // Scy Engines
         tooltip.addSectionHeading("Scyan Engines", activeHeaderTextColor, activeHeaderBannerColor , Alignment.MID, headingPad)
-        val scyEngines = tooltip.beginImageWithText(Global.getSettings().getSpriteName("hullmodHeaders", "SCY_engines"), HEIGHT*2)
-        scyEngines.setBulletedListMode("•")
-        scyEngines.setBulletWidth(15f)
-        scyEngines.addPara("Increases engine durability by ${ENGINE_HEALTH_PERCENT.toInt()}%%.",
-            listPad, activeTextColor, activeHighlightColor, "${ENGINE_HEALTH_PERCENT.toInt()}%")
-        scyEngines.addPara("Cuts engine repair time by ${ENGINE_HEALTH_PERCENT.toInt()}%%.",
-            listPad, activeTextColor, activeHighlightColor, "${ENGINE_HEALTH_PERCENT.toInt()}%")
-        scyEngines.addPara("Engine Jumpstart subsystem instantly reignites flamed out engines. (20 second cooldown)",
-            listPad, activeTextColor, activeHighlightColor, "Engine Jumpstart")
-        scyEngines.addPara("Incompatible with further engine modifications.",
-            activeNegativeColor, listPad)
-        scyEngines.addPara("When moving slowly:", listPad)
-        scyEngines.setBulletedListMode("    -")
-        scyEngines.setBulletWidth(25f)
-        scyEngines.addPara("Reduces sensor profile by ${-SLOW_PROFILE_PERCENT.toInt()}%%.",
-            1f, activeTextColor, activeHighlightColor, "${-SLOW_PROFILE_PERCENT.toInt()}%")
-        scyEngines.addPara("Cuts maintenance costs (supplies/mo) by 50%%.",
-            1f, activeTextColor, activeHighlightColor, "${-SLOW_SUPPLIES_PERCENT.toInt()}%")
-        scyEngines.setBulletedListMode("•")
-        scyEngines.setBulletWidth(15f)
-        scyEngines.addPara("Otherwise:", listPad)
-        scyEngines.setBulletedListMode("    -")
-        scyEngines.setBulletWidth(25f)
-        scyEngines.addPara("Increases sensor profile by ${BURN_PROFILE_PERCENT.toInt()}%%.",
-            1f, activeTextColor, activeNegativeColor, "${BURN_PROFILE_PERCENT.toInt()}%")
+        tooltip.beginImageWithText(Global.getSettings().getSpriteName("hullmodHeaders", "SCY_engines"), imageHeight*2)
+        .apply {
+            setBulletedListMode("•")
+            setBulletWidth(15f)
+            addPara("Increases engine durability by ${ENGINE_HEALTH_PERCENT.toInt()}%%.",
+                listPad, activeTextColor, activeHighlightColor, "${ENGINE_HEALTH_PERCENT.toInt()}%")
+            addPara("Cuts engine repair time by ${ENGINE_HEALTH_PERCENT.toInt()}%%.",
+                listPad, activeTextColor, activeHighlightColor, "${ENGINE_HEALTH_PERCENT.toInt()}%")
+            addPara("Engine Jumpstart subsystem instantly reignites flamed out engines. (20 second cooldown)",
+                listPad, activeTextColor, activeHighlightColor, "Engine Jumpstart")
+            addPara("Incompatible with further engine modifications.",
+                activeNegativeColor, listPad)
+            addPara("When moving slowly:", listPad)
+            setBulletedListMode("    -")
+            setBulletWidth(25f)
+            addPara("Reduces sensor profile by ${-SLOW_PROFILE_PERCENT.toInt()}%%.",
+                1f, activeTextColor, activeHighlightColor, "${-SLOW_PROFILE_PERCENT.toInt()}%")
+            addPara("Cuts maintenance costs (supplies/mo) by 50%%.",
+                1f, activeTextColor, activeHighlightColor, "${-SLOW_SUPPLIES_PERCENT.toInt()}%")
+            setBulletedListMode("•")
+            setBulletWidth(15f)
+            addPara("Otherwise:", listPad)
+            setBulletedListMode("    -")
+            setBulletWidth(25f)
+            addPara("Increases sensor profile by ${BURN_PROFILE_PERCENT.toInt()}%%.",
+                1f, activeTextColor, activeNegativeColor, "${BURN_PROFILE_PERCENT.toInt()}%")
+        }
         tooltip.addImageWithText(underHeadingPad)
-        //scyEngines.position.setXAlignOffset(-5f)
 
+        // Scy Flux
         tooltip.addSectionHeading("Scyan Flux Grid", activeHeaderTextColor, activeHeaderBannerColor , Alignment.MID, headingPad)
-        val scyFluxGrid = tooltip.beginImageWithText(Global.getSettings().getSpriteName("hullmodHeaders", "SCY_flux"), HEIGHT)
-        scyFluxGrid.setBulletedListMode("•")
-        scyFluxGrid.setBulletWidth(15f)
-        scyFluxGrid.addPara("Increases flux capacity by x${CAP_MULT.toInt()} from all sources.",
-            listPad, activeTextColor, activeHighlightColor, "x${CAP_MULT.toInt()}")
-        scyFluxGrid.addPara("Increases flux dissipation rate while actively venting by x${VENT_MULT.toInt()}. (x6 base dissipation rate)",
-            listPad, activeTextColor, activeHighlightColor, "x${VENT_MULT.toInt()}", "x2", "x6")
-        scyFluxGrid.addPara("Further increases flux dissipation rate while actively venting by " +
-                "${VENTING_BONUS[HullSize.FRIGATE]!!.toInt()}%%/" +
-                "${VENTING_BONUS[HullSize.DESTROYER]!!.toInt()}%%/" +
-                "${VENTING_BONUS[HullSize.CRUISER]!!.toInt()}%%/" +
-                "${VENTING_BONUS[HullSize.CAPITAL_SHIP]!!.toInt()}%% per flux capacitor.",
-            listPad, activeTextColor, activeHighlightColor,
-            "${VENTING_BONUS[HullSize.FRIGATE]!!.toInt()}%",
-            "${VENTING_BONUS[HullSize.DESTROYER]!!.toInt()}%",
-            "${VENTING_BONUS[HullSize.CRUISER]!!.toInt()}%",
-            "${VENTING_BONUS[HullSize.CAPITAL_SHIP]!!.toInt()}%")
+        tooltip.beginImageWithText(Global.getSettings().getSpriteName("hullmodHeaders", "SCY_flux"), imageHeight)
+        .apply {
+            setBulletedListMode("•")
+            setBulletWidth(15f)
+            addPara("Increases flux capacity by x${CAP_MULT.toInt()} from all sources.",
+                listPad, activeTextColor, activeHighlightColor, "x${CAP_MULT.toInt()}")
+            addPara("Increases flux dissipation rate while actively venting by x${VENT_MULT.toInt()}. (x6 base dissipation rate)",
+                listPad, activeTextColor, activeHighlightColor, "x${VENT_MULT.toInt()}", "x2", "x6")
+            addPara("Further increases flux dissipation rate while actively venting by " +
+                    "${VENTING_BONUS[HullSize.FRIGATE]!!.toInt()}%%/" +
+                    "${VENTING_BONUS[HullSize.DESTROYER]!!.toInt()}%%/" +
+                    "${VENTING_BONUS[HullSize.CRUISER]!!.toInt()}%%/" +
+                    "${VENTING_BONUS[HullSize.CAPITAL_SHIP]!!.toInt()}%% per flux capacitor.",
+                listPad, activeTextColor, activeHighlightColor,
+                "${VENTING_BONUS[HullSize.FRIGATE]!!.toInt()}%",
+                "${VENTING_BONUS[HullSize.DESTROYER]!!.toInt()}%",
+                "${VENTING_BONUS[HullSize.CRUISER]!!.toInt()}%",
+                "${VENTING_BONUS[HullSize.CAPITAL_SHIP]!!.toInt()}%")
+        }
         tooltip.addImageWithText(underHeadingPad)
-        //scyFluxGrid.position.setXAlignOffset(-5f)
     }
 
     class ScyAiV2(val ship: ShipAPI) : AdvanceableListener {
@@ -164,20 +223,21 @@ class ScyEngineering: BaseHullMod() {
 
         private val harassLevel: Float
         private val backoffLevel: Float
-        private var backoffDirection: Float? = null
+        private val ventLevel: Float
 
         // Internal AI State
         private var currentState = BehaviorState.STANDOFF
 
         init {
-            val (harass, backoff) = when (ship.captain?.personalityAPI?.id) {
-                Personalities.TIMID -> 0.2f to 0.4f
-                Personalities.CAUTIOUS -> 0.4f to 0.6f
-                Personalities.STEADY -> 0.6f to 0.8f
-                Personalities.AGGRESSIVE -> 0.7f to 0.9f
-                Personalities.RECKLESS -> 0.8f to 1.0f
-                else -> 0.6f to 0.8f
+            val (vent, harass, backoff) = when (ship.captain?.personalityAPI?.id) {
+                Personalities.TIMID -> Triple(0.2f, 0.2f, 0.4f)
+                Personalities.CAUTIOUS -> Triple(0.3f, 0.4f, 0.6f)
+                Personalities.STEADY -> Triple(0.4f, 0.6f, 0.8f)
+                Personalities.AGGRESSIVE -> Triple(0.5f, 0.7f, 0.9f)
+                Personalities.RECKLESS -> Triple(0.6f, 0.8f, 1.0f)
+                else -> Triple(0.4f, 0.6f, 0.8f)
             }
+            ventLevel = vent
             harassLevel = harass
             backoffLevel = backoff
             // we need custom damage predictor
@@ -199,44 +259,99 @@ class ScyEngineering: BaseHullMod() {
 
             enforceState()
 
-            if (currentState == BehaviorState.VENT) ship.giveCommand(ShipCommand.VENT_FLUX, null, 0)
+            if (currentState == BehaviorState.VENT && !ship.fluxTracker.isVenting)
+                ship.giveCommand(ShipCommand.VENT_FLUX, null, 0)
         }
 
         private fun evaluateState(predictor: FlightPathPredictorManager) {
-            // 1. Check current position damage
+            val safePoint = StarficzAIUtils.getBackingOffStrafePoint(ship)
+
+            if (safePoint == null) {
+                currentState = BehaviorState.HARASS
+                return
+            }
+
             predictor.queueRequest(ship, Misc.ZERO)
             val baseDamage = predictor.getResult(ship, Misc.ZERO) ?: return
+            val currentTime = Global.getCombatEngine().getTotalElapsedTime(false)
+            val baseFluxGained = baseDamage.fluxToShield(currentTime, FlightPathPredictor.PREDICTION_DURATION, ship)
+            val baseRatio = (baseFluxGained + ship.currFlux) / ship.maxFlux
 
-            // 2. Check retreat position damage
-            val safePoint = StarficzAIUtils.getBackingOffStrafePoint(ship)
-            var runawayDamage: DamageProfile? = null
+            val backupVector = VectorUtils.getDirectionalVector(ship.location, safePoint)
+            val systemId = ship.system?.specAPI?.id ?: ""
+            val isSecondaryThrusters = systemId == "SCY_secondaryThrusters"
+            val isArmorSwitch = systemId == "SCY_armorSwitch"
 
-            if (safePoint != null) {
-                val backupVector = VectorUtils.getDirectionalVector(ship.location, safePoint)
+            // Evaluate mobility systems and return the standard (no-system) backoff damage to be used globally
+            val backoffDamage = if (isSecondaryThrusters || isArmorSwitch) {
+                val systemModEffectID = "$systemId effect" // string copied from obf code
+                val noSysSpeed = ship.mutableStats.maxSpeed.getModifiedValueWithout(systemModEffectID)
+                val noSysAccel = ship.mutableStats.acceleration.getModifiedValueWithout(systemModEffectID)
+                val noSysDecel = ship.mutableStats.deceleration.getModifiedValueWithout(systemModEffectID)
+
+                val profileNoSys = MobilityProfile(noSysSpeed, noSysAccel, noSysDecel)
+
+                val profileSys = if (isSecondaryThrusters) {
+                    // Normal Ability (Active + Cooldown)
+                    val sys = ship.system
+                    val activeTime = sys.chargeUpDur + sys.chargeActiveDur + sys.chargeDownDur
+                    MobilityProfile(
+                        maxSpeedOverride1 = noSysSpeed + 100f,
+                        accelOverride1 = noSysAccel * 2.5f,
+                        decelOverride1 = noSysDecel * 2.5f,
+                        phase1Duration = activeTime,
+                        maxSpeedOverride2 = noSysSpeed,
+                        accelOverride2 = noSysAccel,
+                        decelOverride2 = noSysDecel
+                    )
+                } else {
+                    // Toggle Ability (Always Active when on)
+                    MobilityProfile(
+                        maxSpeedOverride1 = noSysSpeed + 40f,
+                        accelOverride1 = noSysAccel * 2.0f,
+                        decelOverride1 = noSysDecel * 2.0f
+                    )
+                }
+
+                predictor.queueRequest(ship, backupVector, profileNoSys)
+                predictor.queueRequest(ship, backupVector, profileSys)
+
+                val noSysDamageResult = predictor.getResult(ship, backupVector, profileNoSys)
+                val sysDamageResult = predictor.getResult(ship, backupVector, profileSys)
+
+                // Evaluate if we need the system to survive the backoff
+                val backoffSysFlux = sysDamageResult?.fluxToShield(currentTime, FlightPathPredictor.PREDICTION_DURATION, ship)
+                    ?: noSysDamageResult?.fluxToShield(currentTime, FlightPathPredictor.PREDICTION_DURATION, ship)
+                    ?: 0f
+
+                val sysRatio = (backoffSysFlux + ship.currFlux) / ship.maxFlux
+                ship.setCustomData("SCY_useMobilitySystemToBackoff", sysRatio > backoffLevel)
+
+                noSysDamageResult // Return No-Sys damage to process generic state handling
+            } else {
                 predictor.queueRequest(ship, backupVector)
-                backoffDirection = Misc.getAngleInDegrees(backupVector)
-
-                runawayDamage = predictor.getResult(ship, backupVector)
-
-                if (runawayDamage == null) return
-            } else{
-                backoffDirection = null
+                predictor.getResult(ship, backupVector)
             }
+            val timeToRaiseShields =  ship.shield?.let{ it.unfoldTime * (60f/it.arc).coerceAtMost(1f) } ?: 0f
 
-            val baseFluxGained = calculateShieldFlux(baseDamage)
-            val backoffFluxGained = calculateShieldFlux(runawayDamage)
-            ship.setCustomData("baseFluxGained", baseFluxGained)
+            val backoffFlux = backoffDamage?.fluxToShield(currentTime, FlightPathPredictor.PREDICTION_DURATION, ship) ?: 0f
+            val ventDamageTaken = backoffDamage?.getTotalDamage(currentTime, ship.fluxTracker.timeToVent + timeToRaiseShields) ?: Float.MAX_VALUE
+            val backoffRatio = (backoffFlux + ship.currFlux) / ship.maxFlux
 
             currentState = when {
-                isSafeToVent(baseFluxGained + backoffFluxGained) -> BehaviorState.VENT
-                ((backoffFluxGained + ship.currFlux) / ship.maxFlux) > backoffLevel -> BehaviorState.BACKOFF
-                ((baseFluxGained + ship.currFlux) / ship.maxFlux) < harassLevel -> BehaviorState.HARASS
+                ship.fluxTracker.isVenting -> BehaviorState.BACKOFF
+                ventDamageTaken < 100f && ship.fluxLevel > ventLevel && !ship.fluxTracker.isVenting -> BehaviorState.VENT
+                backoffRatio > backoffLevel -> BehaviorState.BACKOFF
+                baseRatio < harassLevel -> BehaviorState.HARASS
                 else -> BehaviorState.STANDOFF
             }
+
+            ship.setCustomData("SCY_baseDamage", baseDamage)
+            ship.setCustomData("SCY_currentState", currentState)
         }
 
         private fun enforceState() {
-            val flagDuration = 0.1f
+            val flagDuration = 0.5f
 
             ship.aiFlags.apply {
                 when (currentState) {
@@ -248,6 +363,7 @@ class ScyEngineering: BaseHullMod() {
                         unsetFlag(ShipwideAIFlags.AIFlags.HARASS_MOVE_IN_COOLDOWN)
                         unsetFlag(ShipwideAIFlags.AIFlags.BACK_OFF)
                     }
+
                     BehaviorState.BACKOFF, BehaviorState.VENT -> {
                         //backoffDirection?.let { accelerateInDirection(ship, it) }
                         setFlag(ShipwideAIFlags.AIFlags.BACK_OFF, flagDuration)
@@ -259,24 +375,6 @@ class ScyEngineering: BaseHullMod() {
                     }
                 }
             }
-        }
-
-        private fun calculateShieldFlux(damage: DamageProfile?): Float {
-            if (damage == null) return 0f
-            return fluxToShield(DamageType.ENERGY, damage.energy, ship) +
-                    fluxToShield(DamageType.KINETIC, damage.kinetic, ship) +
-                    fluxToShield(DamageType.HIGH_EXPLOSIVE, damage.highExplosive, ship) +
-                    fluxToShield(DamageType.FRAGMENTATION, damage.fragmentation, ship)
-        }
-
-        private fun isSafeToVent(baseFluxGained: Float): Boolean {
-            val personality = ship.captain?.personalityAPI?.id
-            val isTimidOrCautious = personality == Personalities.TIMID || personality == Personalities.CAUTIOUS
-
-            return baseFluxGained < 0.05f &&
-                    ship.fluxLevel > 0.5f &&
-                    !isTimidOrCautious &&
-                    AIUtils.getNearbyEnemyMissiles(ship, 1000f).isEmpty()
         }
     }
 }

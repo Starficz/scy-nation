@@ -1,0 +1,36 @@
+{
+    "displayName": "Test",
+    "fluxCapacitors": 0,
+    "fluxVents": 0,
+    "goalVariant": false,
+    "hullId": "SCY_orthrus",
+    "hullMods": [],
+    "permaMods": [],
+    "sMods": [],
+    "suppressedMods": [],
+    "variantId": "SCY_orthrus_Test",
+    "weaponGroups": [
+        {
+            "autofire": true,
+            "mode": "LINKED",
+            "weapons": {
+                "BOT_LARGE": "SCY_scpb",
+                "TOP_LARGE": "SCY_scpb",
+                "TOP_MID": "SCY_kacc2",
+                "TOP_BOT_SMALL": "SCY_intercept",
+                "TOP_TOP_SMALL": "SCY_intercept",
+            }
+        },
+        {
+            "autofire": false,
+            "mode": "LINKED",
+            "weapons": {
+                "MISSILE": "SCY_mrm2",
+            }
+        },
+    ],
+    "wings": [],
+    "modules": [
+        {"ARMOR": "SCY_orthrusAR_Test"}
+    ],
+}

@@ -40,7 +40,7 @@ Right Armor,SCY_lamiaAR,,,,0,2000,200,0,,0,0,,0,0,0,50,50,200,NONE,,,,,,,,,,,,,,
 Dracanae,SCY_dracanae,Hunter Cruiser,Scyan Engineering,SCY_safeties,12,7500,700,11000,,300,125,,70,60,50,35,35,1100,OMNI,,90,0.5,1.7,,,120,180,130,100,2.5,40,9,120000,4,13,420,0.25,15,15,,scy_bp,,0.6,2,3,950
 Siren,SCY_siren,Light Cruiser,Scyan Engineering,SCY_teleport,14,6000,450,10000,,300,100,1,90,65,55,35,30,800,OMNI,,90,0.5,1.6,,,80,120,130,100,2,50,10,140000,4,14,420,0.25,20,20,,"scy_adv_bp, rare_bp",,0.6,2,3,951
 Corocotta,SCY_corocotta,Cruiser,Scyan Engineering,SCY_secondaryThrusters,14,7500,750,12500,,300,125,,80,50,40,30,25,1000,OMNI,,90,0.5,1.7,,,110,170,150,110,2.5,48,10,100000,5,15,420,0.25,20,20,,scy_bp,,0.6,2,3,952
-Corocotta (Armored),SCY_corocottaA,Heavy Cruiser,Scyan Engineering,SCY_twinShield,15,7500,750,12500,,300,125,,60,40,30,20,15,1200,OMNI,,90,0.5,1.7,,,140,200,120,100,3,33,9,130000,4,12,480,0.25,22,22,SHIP_WITH_MODULES,scy_adv_bp,,0.5,2,3,953
+Corocotta (Armored),SCY_corocottaA,Heavy Cruiser,Scyan Engineering,SCY_twinShield,15,7500,750,12500,,300,125,,60,40,30,20,15,1200,OMNI,,90,0.5,1.7,,,140,200,120,100,3,33,9,130000,4,12,480,0.25,22,22,SHIP_WITH_MODULES,scy_adv_bp,,0.5,2,3,953,
 Khalkotauroi,SCY_khalkotauroi,Beam Cruiser,Scyan Engineering,SCY_secondaryThrusters,15,7000,500,10500,,300,110,,80,60,50,30,25,875,OMNI,,90,0.5,1.7,,,90,115,70,80,2.5,32,10,140000,4,14,420,0.25,20,20,SHIP_WITH_MODULES,"scy_adv_bp, rare_bp",,0.7,2,3,954
 Erymanthian Boar,SCY_erymanthianboar,Missile Cruiser,Scyan Engineering,forgevats,15,7000,600,7800,,300,110,,75,55,45,25,20,1300,OMNI,,90,0.5,1.7,,,115,175,140,100,2.5,40,9,135000,4,15,420,0.25,21,21,,scy_adv_bp,,0.6,2,3,955
 Androphagos,SCY_manticore,Carrier,Scyan Engineering,SCY_ciwsDrones,15,6500,400,8500,,300,100,3,80,45,35,15,15,900,OMNI,,90,0.5,1.8,,,180,300,90,60,2.5,24,10,115000,4,12,420,0.25,20,20,CARRIER,scy_bp,,0.7,2,3,956
@@ -60,13 +60,16 @@ Rear Right Armor,SCY_corAR,,,,0,2500,250,0,,0,0,,0,0,0,50,50,400,NONE,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 Xanthus,SCY_xanthus,Sub-capital freighter,Scyan Engineering,,9,8000,150,4750,,100,50,,55,20,5,5,3,3000,OMNI,,45,0.6,2,,,25,50,1600,300,4,75,8,100000,2,20,480,0.25,10,10,"CIVILIAN, FREIGHTER",rare_bp,,0.7,2,4,960
-Keto,SCY_keto,Siege Carrier,Scyan Engineering,SCY_ciwsDrones4,27,10000,500,14300,,500,210,4,60,25,10,15,5,3200,OMNI,,90,0.6,1.5,,,300,600,400,240,8,30,9,450000,4,16,600,0.25,45,45,"CARRIER, SHIP_WITH_MODULES",rare_bp,,0.7,2,4,961
-Nemean Lion,SCY_nemeanlion,Battle Fortress,Scyan Engineering,SCY_targeting,28,15000,1000,22500,,500,215,,50,20,10,10,5,4200,OMNI,,90,0.6,2,,,300,500,300,210,7,30,8,400000,3,12,660,0.25,45,45,SHIP_WITH_MODULES,rare_bp,,0.6,2,4,962
+Orthrus,SCY_orthrus,Battlecruiser,Scyan Engineering,SCY_armorSwitch,24,11000,850,18500,,500,250,1,65,40,30,15,10,2500,OMNI,,90,0.55,1.85,,,250,400,250,200,5,40,10,350000,4,16,600,0.25,40,40,SHIP_WITH_MODULES,rare_bp,,0.7,2,4,960.5,
+Keto,SCY_keto,Siege Carrier,Scyan Engineering,SCY_ciwsDrones4,26,10000,500,14300,,500,210,4,60,25,10,15,5,3200,OMNI,,90,0.6,1.5,,,300,600,400,240,8,30,9,450000,4,16,600,0.25,45,45,"CARRIER, SHIP_WITH_MODULES",rare_bp,,0.7,2,4,961
+Nemean Lion,SCY_nemeanlion,Battle Fortress,Scyan Engineering,SCY_targeting,27,15000,1000,22500,,500,215,,50,20,10,10,5,4200,OMNI,,90,0.6,2,,,300,500,300,210,7,30,8,400000,3,12,660,0.25,45,45,SHIP_WITH_MODULES,rare_bp,,0.6,2,4,962
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+
 Front Left Armor,SCY_lionFL,,,,0,12000,600,0,,0,0,,0,0,0,50,50,800,NONE,,,,,,,,,,,,,,,,1,,,0,0,"UNBOARDABLE, HIDE_IN_CODEX, MODULE",module_hull_bar_only,,1,3,3,1004.1
 Front Right Armor,SCY_lionFR,,,,0,12000,600,0,,0,0,,0,0,0,50,50,800,NONE,,,,,,,,,,,,,,,,1,,,0,0,"UNBOARDABLE, HIDE_IN_CODEX, MODULE",module_hull_bar_only,,1,3,3,1004.2
 Rear Left Armor,SCY_lionRL,,,,0,10000,500,0,,0,0,,0,0,0,50,50,700,NONE,,,,,,,,,,,,,,,,1,,,0,0,"UNBOARDABLE, HIDE_IN_CODEX, MODULE",module_hull_bar_only,,1,3,3,1004.3
 Rear Right Armor,SCY_lionRR,,,,0,10000,500,0,,0,0,,0,0,0,50,50,700,NONE,,,,,,,,,,,,,,,,1,,,0,0,"UNBOARDABLE, HIDE_IN_CODEX, MODULE",module_hull_bar_only,,1,3,3,1004.4
+Right Armor,SCY_orthrusAR,,,,0,12000,600,0,,0,0,,0,0,0,50,50,800,NONE,,,,,,,,,,,,,,,,1,,,0,0,"UNBOARDABLE, HIDE_IN_CODEX, MODULE",module_hull_bar_only,,1,3,3,1004.5
 Gun Barrel,SCY_ketoAL,,,,0,4000,500,100,,50,0,,0,0,0,50,50,700,NONE,,,,,,,,,,,,,,,,1,,,0,0,"UNBOARDABLE, HIDE_IN_CODEX, MODULE",,,1,2,2,1005.1
 External Flight Decks,SCY_ketoAR,,,,0,5000,500,100,,50,0,,0,0,0,50,50,800,NONE,,,,,,,,,,,,,,,,1,,,0,0,"UNBOARDABLE, HIDE_IN_CODEX, MODULE",,,1,2,2,1005.2

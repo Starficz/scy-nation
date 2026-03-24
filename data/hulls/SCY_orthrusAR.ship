@@ -1,0 +1,37 @@
+{
+    "hullName": "Armor",
+    "hullId": "SCY_orthrusAR",
+    "hullSize": "FRIGATE",
+    "style": "SCYHULL",
+    "spriteName": "graphics/SCY/ships/SCY_orthrus_armor.png",
+    "height": 212,
+    "width": 34,
+    "center": [
+        17, 106
+    ],
+    "collisionRadius": 115,
+    "coversColor": "",
+    "shieldCenter": [
+        0, 0
+    ],
+    "shieldRadius": 110,
+    "viewOffset": 0,
+    "builtInMods": [
+        "reduced_explosion",
+        "always_detaches",
+        "SCY_armorChild"
+    ],
+    "builtInWings": [],
+    "builtInModules": null,
+    "weaponSlots": [],
+    "engineSlots": [],
+    "bounds": [
+           104.5,      -13,
+              88,        6,
+              60,       13,
+           -61.5,       13,
+           -88.5,      5.5,
+        
+          -105.5,      -13
+    ]
+}

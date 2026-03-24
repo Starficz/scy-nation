@@ -1,0 +1,17 @@
+{
+    "id":"SCY_armorSwitch",
+    "type":"STAT_MOD",
+    "aiType":"CUSTOM",
+    "aiScript":"org.scy.shipsystems.ai.ArmorSwitchAI",
+    "statsScript":"org.scy.shipsystems.ArmorSwitchStats",
+
+    "runScriptWhileIdle":true,
+    "useSound":"SCY_ping",
+    "outOfUsesSound":"gun_out_of_ammo",
+
+    "aiHints":{
+        "activeSpeedIncrease":40,
+        "burstMovementPotential":0,
+        "averageSpeedIncrease":40,
+    }
+}

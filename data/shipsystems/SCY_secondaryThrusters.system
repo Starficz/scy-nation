@@ -1,8 +1,8 @@
 {
     "id":"SCY_secondaryThrusters",
     "type":"ENGINE_MOD",
-    "aiType":"MANEUVERING_JETS",
-
+    "aiType":"CUSTOM",
+    "aiScript":"org.scy.shipsystems.ai.SecondaryThrustersAI",
     "statsScript":"org.scy.shipsystems.SCY_secondaryThrustersStats",
 
     "engineGlowColor":[100,165,255,255],

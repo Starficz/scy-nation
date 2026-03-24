@@ -10,6 +10,127 @@ import java.awt.Color
 import java.awt.Point
 import kotlin.math.*
 import kotlin.random.Random
+import org.scy.ReflectionUtils.invoke
+import com.fs.starfarer.api.combat.MutableStat
+import com.fs.starfarer.api.combat.ShipSystemAPI
+
+fun turnTowards(ship: ShipAPI, targetFacing: Float) {
+    val angularVel = ship.angularVelocity
+    val absAngularVel = abs(angularVel)
+    val turnDecel = ship.engineController.turnDeceleration
+
+    // Prevent division by zero if ship has no turn decel for some reason
+    if (turnDecel <= 0f) return
+
+    // Kinematic Equation: t = v / a
+    val timeToStop = absAngularVel / turnDecel
+
+    // Kinematic Equation: d = vt - 0.5 * a * t^2
+    val stoppingAngleDist = (absAngularVel * timeToStop) - (0.5f * turnDecel * timeToStop * timeToStop)
+
+    // Predict where the ship will be facing once it completely stops turning
+    val predictedFacing = ship.facing + sign(angularVel) * stoppingAngleDist
+
+    // LazyLib gets the absolute shortest angular distance between two angles
+    val diffPredictedToTarget = abs(MathUtils.getShortestRotation(predictedFacing, targetFacing))
+    val diffCurrentToTarget = abs(MathUtils.getShortestRotation(ship.facing, targetFacing))
+
+    // If the predicted stopping point is more than 1 degree away from our goal
+    if (diffPredictedToTarget > 1.0f) {
+
+        // MathUtils.getShortestRotation returns a positive value for Left turns, negative for Right turns.
+        // sign() normalizes this to 1.0f or -1.0f
+        var turnDir = sign(MathUtils.getShortestRotation(ship.facing, targetFacing))
+
+        // If we are currently rotating toward the target, BUT our stopping distance
+        // is greater than the distance to the target, we are going to overshoot!
+        if (sign(angularVel) == sign(turnDir) && stoppingAngleDist > diffCurrentToTarget) {
+            turnDir = -turnDir // Hit the brakes! (Reverse thrust)
+        }
+
+        // Execute the final thruster command
+        if (turnDir < 0f) {
+            ship.giveCommand(ShipCommand.TURN_RIGHT, null, 0)
+        } else if (turnDir > 0f) {
+            ship.giveCommand(ShipCommand.TURN_LEFT, null, 0)
+        }
+    }
+}
+
+/**
+ * Calculates the on time remaining (IN + ACTIVE + OUT) for a ShipSystem.
+ * Returns full time if not currently active.
+ */
+fun ShipSystemAPI.getOnTimeRemaining(): Float {
+    return when (this.state) {
+        ShipSystemAPI.SystemState.IN -> {
+            val remainingIn = this.chargeUpDur * (1f - this.effectLevel)
+            val activeDur = if (this.specAPI.isToggle) 1000000f else this.chargeActiveDur
+
+            remainingIn + activeDur + this.chargeDownDur
+        }
+
+        ShipSystemAPI.SystemState.ACTIVE -> {
+            val chargeUp = this.chargeUpDur
+            val activeDur = if (this.specAPI.isToggle) 1000000f else this.chargeActiveDur
+            val totalDur = chargeUp + activeDur
+
+            // Algebraically solve for float_6 (elapsedActive) using the vanilla ChargeTracker formula:
+            // DisplayedLevel = (ChargeUp + Elapsed) / (ChargeUp + Active)
+            val elapsedActive = if (totalDur > 0f) {
+                (this.invoke("getDisplayedChargeLevel") as Float * totalDur) - chargeUp
+            } else {
+                0f
+            }
+
+            val remainingActive = (activeDur - elapsedActive).coerceAtLeast(0f)
+
+            remainingActive + this.chargeDownDur
+        }
+
+        ShipSystemAPI.SystemState.OUT -> this.chargeDownDur * this.effectLevel
+        ShipSystemAPI.SystemState.IDLE -> this.chargeUpDur + this.chargeActiveDur + this.chargeDownDur
+        ShipSystemAPI.SystemState.COOLDOWN -> this.chargeUpDur + this.chargeActiveDur + this.chargeDownDur
+    }
+}
+
+/**
+ * Calculates what the modified value of this MutableStat would be
+ * if a specific source ID's modifiers were completely ignored.
+ *
+ */
+fun MutableStat.getModifiedValueWithout(sourceId: String): Float {
+    var flatMod = 0f
+    var percentMod = 0f
+    var mult = 1f
+
+    // Sum up all flat mods, ignoring the target source ID
+    for ((id, mod) in this.flatMods) {
+        if (id != sourceId) {
+            flatMod += mod.value
+        }
+    }
+
+    // Sum up all percent mods, ignoring the target source ID
+    for ((id, mod) in this.percentMods) {
+        if (id != sourceId) {
+            percentMod += mod.value
+        }
+    }
+
+    // Multiply all mult mods, ignoring the target source ID
+    for ((id, mod) in this.multMods) {
+        if (id != sourceId) {
+            mult *= mod.value
+        }
+    }
+
+    // Replicate the exact formula from MutableStat.recompute()
+    var modified = this.baseValue + (this.baseValue * percentMod / 100.0f) + flatMod
+    modified *= mult
+
+    return modified
+}
 
 fun accelerateInDirection(
     ship: ShipAPI,

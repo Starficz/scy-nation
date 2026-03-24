@@ -54,6 +54,8 @@ public class MissionDefinition implements MissionDefinitionPlugin {
 
 		api.addToFleet(FleetSide.PLAYER, "SCY_keto_Bomber", FleetMemberType.SHIP, "SNS Croustade", false);
 		api.addToFleet(FleetSide.PLAYER, "SCY_keto_Fighter", FleetMemberType.SHIP, "SNS Croustade", false);
+		api.addToFleet(FleetSide.PLAYER, "SCY_orthrus_Test", FleetMemberType.SHIP, "SNS Croustade", false);
+		api.addToFleet(FleetSide.PLAYER, "SCY_orthrus_Test", FleetMemberType.SHIP, "SNS Croustade", false);
 		api.addToFleet(FleetSide.PLAYER, "SCY_nemeanlion_Elite", FleetMemberType.SHIP, "SNS Crêpe", true);
 		
 		// Set up the enemy fleet
