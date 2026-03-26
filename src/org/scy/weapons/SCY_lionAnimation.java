@@ -7,9 +7,10 @@ import com.fs.starfarer.api.combat.EveryFrameWeaponEffectPlugin;
 import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.combat.WeaponAPI;
 import com.fs.starfarer.api.graphics.SpriteAPI;
-import org.magiclib.util.MagicAnim;
-import java.awt.Color;
 import org.apache.log4j.Logger;
+import org.magiclib.util.MagicAnim;
+
+import java.awt.*;
 
 public class SCY_lionAnimation implements EveryFrameWeaponEffectPlugin {
 

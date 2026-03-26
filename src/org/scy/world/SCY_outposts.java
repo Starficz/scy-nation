@@ -5,14 +5,10 @@
  */
 package org.scy.world;
 
-import static org.scy.SCY_txt.txt;
-
-import com.fs.starfarer.api.campaign.PlanetAPI;
-import com.fs.starfarer.api.campaign.SectorAPI;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.campaign.SectorGeneratorPlugin;
-import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.campaign.*;
 import org.lazywizard.lazylib.MathUtils;
+
+import static org.scy.SCY_txt.txt;
 
 /**
  * @author Tartiflette

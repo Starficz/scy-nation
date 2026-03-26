@@ -2,20 +2,15 @@
 package org.scy.weapons;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.combat.CombatEngineAPI;
-import com.fs.starfarer.api.combat.DamagingProjectileAPI;
-import com.fs.starfarer.api.combat.EveryFrameWeaponEffectPlugin;
-import com.fs.starfarer.api.combat.MissileAPI;
-import com.fs.starfarer.api.combat.OnFireEffectPlugin;
-import com.fs.starfarer.api.combat.ShipSystemAPI;
-import com.fs.starfarer.api.combat.WeaponAPI;
+import com.fs.starfarer.api.combat.*;
 import com.fs.starfarer.api.util.IntervalUtil;
+import org.lazywizard.lazylib.MathUtils;
 import org.magiclib.util.MagicRender;
-import java.awt.Color;
+
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import org.lazywizard.lazylib.MathUtils;
 
 public class SCY_remoteEffect implements EveryFrameWeaponEffectPlugin, OnFireEffectPlugin {
 

@@ -4,8 +4,9 @@ import com.fs.starfarer.api.combat.CombatEngineAPI;
 import com.fs.starfarer.api.combat.EveryFrameWeaponEffectPlugin;
 import com.fs.starfarer.api.combat.WeaponAPI;
 import com.fs.starfarer.api.util.IntervalUtil;
-import java.awt.Color;
 import org.lazywizard.lazylib.FastTrig;
+
+import java.awt.*;
 
 public class SCY_blinkerAEffect implements EveryFrameWeaponEffectPlugin {
   private boolean lightOn = true, runOnce = false;

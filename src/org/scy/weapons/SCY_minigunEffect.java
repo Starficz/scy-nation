@@ -7,11 +7,12 @@ import com.fs.starfarer.api.combat.BeamEffectPlugin;
 import com.fs.starfarer.api.combat.CombatEngineAPI;
 import com.fs.starfarer.api.combat.WeaponAPI.WeaponSize;
 import com.fs.starfarer.api.util.IntervalUtil;
-import org.magiclib.util.MagicRender;
-import java.awt.Color;
 import org.lazywizard.lazylib.MathUtils;
 import org.lazywizard.lazylib.VectorUtils;
 import org.lwjgl.util.vector.Vector2f;
+import org.magiclib.util.MagicRender;
+
+import java.awt.*;
 
 public class SCY_minigunEffect implements BeamEffectPlugin {
 

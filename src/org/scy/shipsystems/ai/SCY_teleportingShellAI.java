@@ -1,18 +1,14 @@
 package org.scy.shipsystems.ai;
 
-import com.fs.starfarer.api.combat.CombatEngineAPI;
+import com.fs.starfarer.api.combat.*;
 import com.fs.starfarer.api.combat.ShieldAPI.ShieldType;
-import com.fs.starfarer.api.combat.ShipAPI;
-import com.fs.starfarer.api.combat.ShipSystemAIScript;
-import com.fs.starfarer.api.combat.ShipSystemAPI;
-import com.fs.starfarer.api.combat.ShipwideAIFlags;
-import com.fs.starfarer.api.combat.WeaponAPI;
 import com.fs.starfarer.api.util.IntervalUtil;
-import java.util.List;
 import org.lazywizard.lazylib.MathUtils;
 import org.lazywizard.lazylib.VectorUtils;
 import org.lazywizard.lazylib.combat.AIUtils;
 import org.lwjgl.util.vector.Vector2f;
+
+import java.util.List;
 
 public class SCY_teleportingShellAI implements ShipSystemAIScript {
   private CombatEngineAPI engine;

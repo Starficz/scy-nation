@@ -1,18 +1,9 @@
 // By Tartiflette
 package org.scy.weapons;
 
-import com.fs.graphics.Sprite;
-import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.combat.CombatEngineAPI;
-import com.fs.starfarer.api.combat.DamagingProjectileAPI;
-import com.fs.starfarer.api.combat.EveryFrameWeaponEffectPlugin;
-import com.fs.starfarer.api.combat.OnFireEffectPlugin;
-import com.fs.starfarer.api.combat.WeaponAPI;
-import org.scy.ReflectionUtils;
-import org.scy.plugins.SCY_muzzleFlashesPlugin;
+import com.fs.starfarer.api.combat.*;
 import org.magiclib.util.MagicRender;
-
-import java.util.List;
+import org.scy.plugins.SCY_muzzleFlashesPlugin;
 
 public class SCY_addToMuzzlePlugin implements EveryFrameWeaponEffectPlugin, OnFireEffectPlugin {
 

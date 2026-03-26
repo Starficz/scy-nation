@@ -1,11 +1,11 @@
 package org.scy.hullmods;
 
-import static org.scy.SCY_txt.txt;
-
 import com.fs.starfarer.api.combat.BaseHullMod;
 import com.fs.starfarer.api.combat.MutableShipStatsAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.combat.ShipAPI.HullSize;
+
+import static org.scy.SCY_txt.txt;
 
 public class SCY_CommissionedCrew extends BaseHullMod {
 

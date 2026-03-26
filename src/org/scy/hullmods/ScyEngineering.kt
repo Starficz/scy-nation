@@ -13,7 +13,6 @@ import com.fs.starfarer.api.util.IntervalUtil
 import com.fs.starfarer.api.util.Misc
 import org.lazywizard.lazylib.VectorUtils
 import org.magiclib.kotlin.getGoSlowBurnLevel
-import org.magiclib.kotlin.getPersonalityName
 import org.magiclib.subsystems.MagicSubsystemsManager.addSubsystemToShip
 import org.magiclib.util.MagicIncompatibleHullmods
 import org.scy.*

@@ -1,14 +1,14 @@
 package org.scy;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.combat.*;
-import org.lazywizard.lazylib.*;
+import com.fs.starfarer.api.combat.CombatEngineAPI;
+import com.fs.starfarer.api.combat.ShipAPI;
+import org.lazywizard.lazylib.CollectionUtils;
+import org.lazywizard.lazylib.MathUtils;
 import org.lazywizard.lazylib.combat.AIUtils;
 import org.lwjgl.util.vector.Vector2f;
 
-import java.awt.*;
 import java.util.List;
-import java.util.*;
 
 public class StarficzAIUtils {
 

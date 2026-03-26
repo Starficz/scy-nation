@@ -1,23 +1,17 @@
 package org.scy.weapons;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.combat.CollisionClass;
-import com.fs.starfarer.api.combat.CombatEngineAPI;
-import com.fs.starfarer.api.combat.CombatEntityAPI;
-import com.fs.starfarer.api.combat.DamageType;
-import com.fs.starfarer.api.combat.DamagingProjectileAPI;
-import com.fs.starfarer.api.combat.MissileAPI;
-import com.fs.starfarer.api.combat.OnHitEffectPlugin;
-import com.fs.starfarer.api.combat.ShipAPI;
+import com.fs.starfarer.api.combat.*;
 import com.fs.starfarer.api.combat.listeners.ApplyDamageResultAPI;
-import org.magiclib.util.MagicLensFlare;
-import org.magiclib.util.MagicRender;
-import java.awt.Color;
-import java.util.List;
 import org.lazywizard.lazylib.MathUtils;
 import org.lazywizard.lazylib.combat.CombatUtils;
 import org.lazywizard.lazylib.combat.entities.SimpleEntity;
 import org.lwjgl.util.vector.Vector2f;
+import org.magiclib.util.MagicLensFlare;
+import org.magiclib.util.MagicRender;
+
+import java.awt.*;
+import java.util.List;
 
 public class SCY_ketoMainGunEffect implements OnHitEffectPlugin {
   private final Color PARTICLE_COLOR = new Color(250, 75, 25, 255);

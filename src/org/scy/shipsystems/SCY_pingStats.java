@@ -3,6 +3,7 @@ package org.scy.shipsystems;
 import com.fs.starfarer.api.combat.MutableShipStatsAPI;
 import com.fs.starfarer.api.impl.combat.BaseShipSystemScript;
 import com.fs.starfarer.api.plugins.ShipSystemStatsScript;
+
 import static org.scy.SCY_txt.txt;
 
 public class SCY_pingStats extends BaseShipSystemScript {

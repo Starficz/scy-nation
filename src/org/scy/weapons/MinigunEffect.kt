@@ -9,7 +9,6 @@ import org.lazywizard.lazylib.MathUtils
 import org.lazywizard.lazylib.VectorUtils
 import org.lazywizard.lazylib.ext.plus
 import org.lwjgl.util.vector.Vector2f
-import org.scy.ReflectionUtils
 import org.scy.ReflectionUtils.get
 import org.scy.ReflectionUtils.getFieldsWithMethodsMatching
 import org.scy.ReflectionUtils.getMethodsMatching

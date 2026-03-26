@@ -8,11 +8,12 @@ import com.fs.starfarer.api.combat.CombatEngineAPI;
 import com.fs.starfarer.api.combat.ViewportAPI;
 import com.fs.starfarer.api.combat.WeaponAPI;
 import com.fs.starfarer.api.graphics.SpriteAPI;
+import org.lazywizard.lazylib.MathUtils;
+import org.lwjgl.util.vector.Vector2f;
+
 import java.util.Iterator;
 import java.util.Map;
 import java.util.WeakHashMap;
-import org.lazywizard.lazylib.MathUtils;
-import org.lwjgl.util.vector.Vector2f;
 
 public class SCY_muzzleFlashesPlugin extends BaseEveryFrameCombatPlugin {
 

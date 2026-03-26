@@ -10,11 +10,6 @@ import java.awt.Color
 import java.awt.Point
 import kotlin.math.*
 import kotlin.random.Random
-import org.scy.ReflectionUtils.invoke
-import com.fs.starfarer.api.combat.MutableStat
-import com.fs.starfarer.api.combat.ShipSystemAPI
-import org.lazywizard.lazylib.ext.minus
-import org.lazywizard.lazylib.ext.plus
 
 fun turnTowards(ship: ShipAPI, targetFacing: Float) {
     val angularVel = ship.angularVelocity

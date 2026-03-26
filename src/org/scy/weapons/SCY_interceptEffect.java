@@ -1,16 +1,12 @@
 package org.scy.weapons;
 
-import com.fs.starfarer.api.combat.CombatEngineAPI;
-import com.fs.starfarer.api.combat.CombatEntityAPI;
-import com.fs.starfarer.api.combat.DamagingProjectileAPI;
-import com.fs.starfarer.api.combat.MissileAPI;
-import com.fs.starfarer.api.combat.OnHitEffectPlugin;
-import com.fs.starfarer.api.combat.ShipAPI;
+import com.fs.starfarer.api.combat.*;
 import com.fs.starfarer.api.combat.ShipAPI.HullSize;
 import com.fs.starfarer.api.combat.listeners.ApplyDamageResultAPI;
+import org.lwjgl.util.vector.Vector2f;
+
 import java.util.HashMap;
 import java.util.Map;
-import org.lwjgl.util.vector.Vector2f;
 
 public class SCY_interceptEffect implements OnHitEffectPlugin {
 

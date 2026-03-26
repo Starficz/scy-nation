@@ -3,19 +3,16 @@
 */
 package org.scy.weapons;
 
-import com.fs.starfarer.api.combat.CombatEngineAPI;
-import com.fs.starfarer.api.combat.EveryFrameWeaponEffectPlugin;
-import com.fs.starfarer.api.combat.ShipAPI;
-import com.fs.starfarer.api.combat.ShipEngineControllerAPI;
+import com.fs.starfarer.api.combat.*;
 import com.fs.starfarer.api.combat.ShipEngineControllerAPI.ShipEngineAPI;
-import com.fs.starfarer.api.combat.WeaponAPI;
 import com.fs.starfarer.api.graphics.SpriteAPI;
 import com.fs.starfarer.api.util.IntervalUtil;
+import org.lazywizard.lazylib.MathUtils;
 import org.magiclib.util.MagicRender;
-import java.awt.Color;
+
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import org.lazywizard.lazylib.MathUtils;
 
 public class SCY_aerospikeEffect implements EveryFrameWeaponEffectPlugin {
 

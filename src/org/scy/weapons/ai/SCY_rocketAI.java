@@ -4,20 +4,13 @@
 package org.scy.weapons.ai;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.combat.CollisionClass;
-import com.fs.starfarer.api.combat.CombatEngineAPI;
-import com.fs.starfarer.api.combat.CombatEntityAPI;
-import com.fs.starfarer.api.combat.GuidedMissileAI;
-import com.fs.starfarer.api.combat.MissileAIPlugin;
-import com.fs.starfarer.api.combat.MissileAPI;
-import com.fs.starfarer.api.combat.ShipAPI;
-import com.fs.starfarer.api.combat.ShipCommand;
-import org.magiclib.util.MagicTargeting;
+import com.fs.starfarer.api.combat.*;
 import org.lazywizard.lazylib.CollisionUtils;
 import org.lazywizard.lazylib.MathUtils;
 import org.lazywizard.lazylib.VectorUtils;
 import org.lazywizard.lazylib.combat.AIUtils;
 import org.lwjgl.util.vector.Vector2f;
+import org.magiclib.util.MagicTargeting;
 
 public class SCY_rocketAI implements MissileAIPlugin, GuidedMissileAI {
 

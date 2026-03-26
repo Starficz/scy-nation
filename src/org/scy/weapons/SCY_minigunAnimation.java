@@ -6,8 +6,8 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.combat.CombatEngineAPI;
 import com.fs.starfarer.api.combat.EveryFrameWeaponEffectPlugin;
 import com.fs.starfarer.api.combat.WeaponAPI;
-import org.scy.plugins.SCY_muzzleFlashesPlugin;
 import org.lazywizard.lazylib.MathUtils;
+import org.scy.plugins.SCY_muzzleFlashesPlugin;
 
 public class SCY_minigunAnimation implements EveryFrameWeaponEffectPlugin {
 

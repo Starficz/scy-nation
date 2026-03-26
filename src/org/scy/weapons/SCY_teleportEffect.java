@@ -1,19 +1,15 @@
 package org.scy.weapons;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.combat.CombatEngineAPI;
-import com.fs.starfarer.api.combat.CombatEntityAPI;
-import com.fs.starfarer.api.combat.DamageType;
-import com.fs.starfarer.api.combat.DamagingProjectileAPI;
-import com.fs.starfarer.api.combat.OnHitEffectPlugin;
-import com.fs.starfarer.api.combat.ShipAPI;
+import com.fs.starfarer.api.combat.*;
 import com.fs.starfarer.api.combat.listeners.ApplyDamageResultAPI;
-import org.scy.plugins.SCY_projectilesEffectPlugin;
-import org.magiclib.util.MagicRender;
-import java.awt.Color;
 import org.lazywizard.lazylib.MathUtils;
 import org.lazywizard.lazylib.combat.entities.SimpleEntity;
 import org.lwjgl.util.vector.Vector2f;
+import org.magiclib.util.MagicRender;
+import org.scy.plugins.SCY_projectilesEffectPlugin;
+
+import java.awt.*;
 
 public class SCY_teleportEffect implements OnHitEffectPlugin {
 

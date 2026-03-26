@@ -5,11 +5,9 @@ import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.BaseEveryFrameCombatPlugin
 import com.fs.starfarer.api.combat.ShipAPI
-import com.fs.starfarer.api.combat.ViewportAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.util.Misc
 import org.lazywizard.lazylib.MathUtils
-import org.lwjgl.opengl.GL11
 import org.lwjgl.util.vector.Vector2f
 import org.magiclib.kotlin.setAlpha
 import org.magiclib.util.MagicUI
@@ -17,7 +15,6 @@ import org.scy.ReflectionUtils
 import org.scy.armorAtCell
 import org.scy.weakestArmorRegion
 import java.awt.Color
-import java.io.IOException
 import kotlin.math.pow
 
 

@@ -2,19 +2,15 @@
 package org.scy.weapons;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.combat.CombatEngineAPI;
-import com.fs.starfarer.api.combat.DamagingProjectileAPI;
-import com.fs.starfarer.api.combat.EveryFrameWeaponEffectPlugin;
-import com.fs.starfarer.api.combat.OnFireEffectPlugin;
-import com.fs.starfarer.api.combat.ShipAPI;
-import com.fs.starfarer.api.combat.WeaponAPI;
-import org.magiclib.util.MagicLensFlare;
-import org.magiclib.util.MagicRender;
-import java.awt.Color;
+import com.fs.starfarer.api.combat.*;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.FastTrig;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
+import org.magiclib.util.MagicLensFlare;
+import org.magiclib.util.MagicRender;
+
+import java.awt.*;
 
 public class SCY_ketoMainEffect implements EveryFrameWeaponEffectPlugin, OnFireEffectPlugin {
 

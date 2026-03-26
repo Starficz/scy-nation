@@ -2,19 +2,7 @@
 package org.scy.weapons.ai;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.combat.CollisionClass;
-import com.fs.starfarer.api.combat.CombatEngineAPI;
-import com.fs.starfarer.api.combat.CombatEntityAPI;
-import com.fs.starfarer.api.combat.DamageType;
-import com.fs.starfarer.api.combat.GuidedMissileAI;
-import com.fs.starfarer.api.combat.MissileAIPlugin;
-import com.fs.starfarer.api.combat.MissileAPI;
-import com.fs.starfarer.api.combat.ShipAPI;
-import com.fs.starfarer.api.combat.ShipCommand;
-import org.magiclib.util.MagicFakeBeam;
-import org.magiclib.util.MagicRender;
-import org.magiclib.util.MagicTargeting;
-import java.awt.Color;
+import com.fs.starfarer.api.combat.*;
 import org.lazywizard.lazylib.FastTrig;
 import org.lazywizard.lazylib.MathUtils;
 import org.lazywizard.lazylib.VectorUtils;
@@ -22,6 +10,11 @@ import org.lazywizard.lazylib.combat.AIUtils;
 import org.lazywizard.lazylib.combat.CombatUtils;
 import org.lazywizard.lazylib.combat.entities.SimpleEntity;
 import org.lwjgl.util.vector.Vector2f;
+import org.magiclib.util.MagicFakeBeam;
+import org.magiclib.util.MagicRender;
+import org.magiclib.util.MagicTargeting;
+
+import java.awt.*;
 
 public class SCY_laserTorpedoAI implements MissileAIPlugin, GuidedMissileAI {
 

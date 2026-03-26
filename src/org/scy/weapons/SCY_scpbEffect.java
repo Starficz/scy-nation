@@ -6,12 +6,13 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.combat.BeamAPI;
 import com.fs.starfarer.api.combat.BeamEffectPlugin;
 import com.fs.starfarer.api.combat.CombatEngineAPI;
-import org.magiclib.plugins.MagicFakeBeamPlugin;
-import org.magiclib.util.MagicRender;
-import java.awt.Color;
 import org.lazywizard.lazylib.MathUtils;
 import org.lazywizard.lazylib.VectorUtils;
 import org.lwjgl.util.vector.Vector2f;
+import org.magiclib.plugins.MagicFakeBeamPlugin;
+import org.magiclib.util.MagicRender;
+
+import java.awt.*;
 
 public class SCY_scpbEffect implements BeamEffectPlugin {
 

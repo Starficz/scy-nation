@@ -2,23 +2,20 @@
 package org.scy.weapons;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.combat.CombatEngineAPI;
-import com.fs.starfarer.api.combat.DamagingProjectileAPI;
-import com.fs.starfarer.api.combat.EveryFrameWeaponEffectPlugin;
-import com.fs.starfarer.api.combat.ShipAPI;
-import com.fs.starfarer.api.combat.WeaponAPI;
-import org.magiclib.plugins.MagicFakeBeamPlugin;
-import org.scy.plugins.SCY_muzzleFlashesPlugin;
-import org.magiclib.util.MagicRender;
-import java.awt.Color;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import com.fs.starfarer.api.combat.*;
 import org.lazywizard.lazylib.MathUtils;
 import org.lazywizard.lazylib.VectorUtils;
 import org.lazywizard.lazylib.combat.AIUtils;
 import org.lazywizard.lazylib.combat.CombatUtils;
 import org.lwjgl.util.vector.Vector2f;
+import org.magiclib.plugins.MagicFakeBeamPlugin;
+import org.magiclib.util.MagicRender;
+import org.scy.plugins.SCY_muzzleFlashesPlugin;
+
+import java.awt.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class SCY_orionRedirect implements EveryFrameWeaponEffectPlugin {
 

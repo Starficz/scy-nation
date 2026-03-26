@@ -5,25 +5,19 @@
 package org.scy.weapons.ai;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.combat.CombatEngineAPI;
-import com.fs.starfarer.api.combat.CombatEntityAPI;
-import com.fs.starfarer.api.combat.DamageType;
-import com.fs.starfarer.api.combat.GuidedMissileAI;
-import com.fs.starfarer.api.combat.MissileAIPlugin;
-import com.fs.starfarer.api.combat.MissileAPI;
-import com.fs.starfarer.api.combat.ShipAPI;
-import com.fs.starfarer.api.combat.ShipCommand;
+import com.fs.starfarer.api.combat.*;
 import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import org.scy.plugins.SCY_projectilesEffectPlugin;
-import org.magiclib.util.MagicRender;
-import java.awt.Color;
-import java.util.List;
 import org.lazywizard.lazylib.FastTrig;
 import org.lazywizard.lazylib.MathUtils;
 import org.lazywizard.lazylib.VectorUtils;
 import org.lazywizard.lazylib.combat.AIUtils;
 import org.lwjgl.util.vector.Vector2f;
+import org.magiclib.util.MagicRender;
+import org.scy.plugins.SCY_projectilesEffectPlugin;
+
+import java.awt.*;
+import java.util.List;
 
 public class SCY_antiMissileAI implements MissileAIPlugin, GuidedMissileAI {
 

@@ -1,20 +1,16 @@
 package org.scy.weapons;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.combat.CombatEngineAPI;
-import com.fs.starfarer.api.combat.DamagingProjectileAPI;
-import com.fs.starfarer.api.combat.EveryFrameWeaponEffectPlugin;
-import com.fs.starfarer.api.combat.OnFireEffectPlugin;
-import com.fs.starfarer.api.combat.ShipAPI;
-import com.fs.starfarer.api.combat.WeaponAPI;
+import com.fs.starfarer.api.combat.*;
 import com.fs.starfarer.api.graphics.SpriteAPI;
 import com.fs.starfarer.api.util.IntervalUtil;
+import org.lazywizard.lazylib.MathUtils;
+import org.lwjgl.util.vector.Vector2f;
 import org.magiclib.util.MagicAnim;
 import org.magiclib.util.MagicLensFlare;
 import org.magiclib.util.MagicRender;
-import java.awt.Color;
-import org.lazywizard.lazylib.MathUtils;
-import org.lwjgl.util.vector.Vector2f;
+
+import java.awt.*;
 
 public class SCY_sirenMainAnimation implements EveryFrameWeaponEffectPlugin, OnFireEffectPlugin {
 

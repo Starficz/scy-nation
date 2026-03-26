@@ -1,12 +1,13 @@
 package org.scy.shipsystems;
 
-import static org.scy.SCY_txt.txt;
-
 import com.fs.starfarer.api.combat.MutableShipStatsAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.impl.combat.BaseShipSystemScript;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.scy.SCY_txt.txt;
 
 public class SCY_nemeanArmorStats extends BaseShipSystemScript {
 

@@ -4,7 +4,6 @@ package org.scy.weapons;
 
 import com.fs.starfarer.api.combat.CombatEngineAPI;
 import com.fs.starfarer.api.combat.EveryFrameWeaponEffectPlugin;
-// import com.fs.starfarer.api.combat.ShipSystemAPI;
 import com.fs.starfarer.api.combat.WeaponAPI;
 
 public class SCY_boarEffect implements EveryFrameWeaponEffectPlugin {

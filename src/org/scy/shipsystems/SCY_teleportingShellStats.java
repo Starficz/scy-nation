@@ -2,6 +2,7 @@ package org.scy.shipsystems;
 
 import com.fs.starfarer.api.combat.MutableShipStatsAPI;
 import com.fs.starfarer.api.impl.combat.BaseShipSystemScript;
+
 import static org.scy.SCY_txt.txt;
 
 public class SCY_teleportingShellStats extends BaseShipSystemScript {

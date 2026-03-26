@@ -1,15 +1,17 @@
 package org.scy.shipsystems;
 
 // import com.fs.starfarer.api.Global;
-import static org.scy.SCY_txt.txt;
 
 import com.fs.starfarer.api.combat.MutableShipStatsAPI;
 import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.combat.ShipSystemAPI;
 import com.fs.starfarer.api.impl.combat.BaseShipSystemScript;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
+
+import static org.scy.SCY_txt.txt;
 
 public class SCY_targetingStats extends BaseShipSystemScript {
 

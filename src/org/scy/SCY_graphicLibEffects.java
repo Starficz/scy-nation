@@ -4,13 +4,14 @@ By Tartiflette
 package org.scy;
 
 import com.fs.starfarer.api.combat.CombatEntityAPI;
-import java.awt.Color;
 import org.dark.shaders.distortion.DistortionShader;
 import org.dark.shaders.distortion.RippleDistortion;
 import org.dark.shaders.distortion.WaveDistortion;
 import org.dark.shaders.light.LightShader;
 import org.dark.shaders.light.StandardLight;
 import org.lwjgl.util.vector.Vector2f;
+
+import java.awt.*;
 
 public class SCY_graphicLibEffects {
 

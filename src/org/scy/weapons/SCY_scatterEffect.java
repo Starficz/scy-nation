@@ -6,11 +6,12 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.combat.CombatEngineAPI;
 import com.fs.starfarer.api.combat.EveryFrameWeaponEffectPlugin;
 import com.fs.starfarer.api.combat.WeaponAPI;
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.List;
 import org.lazywizard.lazylib.FastTrig;
 import org.lwjgl.util.vector.Vector2f;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SCY_scatterEffect implements EveryFrameWeaponEffectPlugin {
 

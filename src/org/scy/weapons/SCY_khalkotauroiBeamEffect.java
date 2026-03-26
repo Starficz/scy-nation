@@ -4,16 +4,16 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.combat.BeamAPI;
 import com.fs.starfarer.api.combat.BeamEffectPlugin;
 import com.fs.starfarer.api.combat.CombatEngineAPI;
-import com.fs.starfarer.api.combat.DamageType;
 import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.util.IntervalUtil;
-import org.magiclib.util.MagicRender;
-import java.awt.Color;
-import java.util.Iterator;
-import java.util.List;
 import org.apache.log4j.Logger;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
+import org.magiclib.util.MagicRender;
+
+import java.awt.*;
+import java.util.Iterator;
+import java.util.List;
 
 public class SCY_khalkotauroiBeamEffect implements BeamEffectPlugin {
 

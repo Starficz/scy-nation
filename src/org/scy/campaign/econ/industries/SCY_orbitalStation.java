@@ -1,6 +1,7 @@
 package org.scy.campaign.econ.industries;
 
 import com.fs.starfarer.api.impl.campaign.econ.impl.OrbitalStation;
+
 import static org.scy.SCY_txt.txt;
 
 public class SCY_orbitalStation extends OrbitalStation {

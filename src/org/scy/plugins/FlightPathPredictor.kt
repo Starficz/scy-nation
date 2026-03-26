@@ -1,15 +1,7 @@
 package org.scy.plugins
 
 import com.fs.starfarer.api.Global
-import com.fs.starfarer.api.combat.BaseEveryFrameCombatPlugin
-import com.fs.starfarer.api.combat.CombatEngineAPI
-import com.fs.starfarer.api.combat.DamageType
-import com.fs.starfarer.api.combat.GuidedMissileAI
-import com.fs.starfarer.api.combat.MissileAPI
-import com.fs.starfarer.api.combat.ShieldAPI
-import com.fs.starfarer.api.combat.ShipAPI
-import com.fs.starfarer.api.combat.ViewportAPI
-import com.fs.starfarer.api.combat.WeaponAPI
+import com.fs.starfarer.api.combat.*
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.loading.BeamWeaponSpecAPI
 import com.fs.starfarer.api.loading.MissileSpecAPI
@@ -17,12 +9,7 @@ import com.fs.starfarer.api.util.Misc
 import kotlinx.coroutines.*
 import org.lazywizard.lazylib.MathUtils
 import org.lazywizard.lazylib.VectorUtils
-import org.lazywizard.lazylib.ext.getAngle
-import org.lazywizard.lazylib.ext.getFacing
-import org.lazywizard.lazylib.ext.minus
-import org.lazywizard.lazylib.ext.plus
-import org.lazywizard.lazylib.ext.plusAssign
-import org.lazywizard.lazylib.ext.rotate
+import org.lazywizard.lazylib.ext.*
 import org.lwjgl.opengl.GL11
 import org.lwjgl.util.vector.Vector2f
 import org.magiclib.kotlin.getDistance
@@ -34,19 +21,11 @@ import org.scy.hullmods.ScyEngineering
 import org.scy.normalized
 import org.scy.times
 import java.awt.Color
-import java.util.UUID
+import java.util.*
 import java.util.concurrent.Executors
 import java.util.concurrent.ThreadFactory
 import java.util.concurrent.atomic.AtomicReference
-import kotlin.math.PI
-import kotlin.math.abs
-import kotlin.math.ceil
-import kotlin.math.cos
-import kotlin.math.max
-import kotlin.math.min
-import kotlin.math.sign
-import kotlin.math.sin
-import kotlin.math.tan
+import kotlin.math.*
 
 object FlightPathPredictor {
     const val TIME_STEP = 0.05f

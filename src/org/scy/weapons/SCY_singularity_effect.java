@@ -1,25 +1,20 @@
 package org.scy.weapons;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.combat.CollisionClass;
-import com.fs.starfarer.api.combat.CombatEngineAPI;
-import com.fs.starfarer.api.combat.CombatEntityAPI;
-import com.fs.starfarer.api.combat.DamageType;
-import com.fs.starfarer.api.combat.DamagingProjectileAPI;
-import com.fs.starfarer.api.combat.OnHitEffectPlugin;
-import com.fs.starfarer.api.combat.ShipAPI;
+import com.fs.starfarer.api.combat.*;
 import com.fs.starfarer.api.combat.listeners.ApplyDamageResultAPI;
-import org.scy.plugins.SCY_projectilesEffectPlugin;
+import org.lazywizard.lazylib.MathUtils;
+import org.lazywizard.lazylib.combat.CombatUtils;
+import org.lwjgl.util.vector.Vector2f;
 import org.magiclib.util.MagicRender;
 import org.scy.SCY_graphicLibEffects;
-import java.awt.Color;
+import org.scy.plugins.SCY_projectilesEffectPlugin;
+
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.lazywizard.lazylib.MathUtils;
-import org.lazywizard.lazylib.combat.CombatUtils;
-import org.lwjgl.util.vector.Vector2f;
 
 public class SCY_singularity_effect implements OnHitEffectPlugin {
 

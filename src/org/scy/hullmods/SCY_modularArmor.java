@@ -1,27 +1,21 @@
 package org.scy.hullmods;
 
-import static org.scy.SCY_txt.txt;
-
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.combat.*;
-import com.fs.starfarer.api.combat.listeners.DamageTakenModifier;
 import com.fs.starfarer.api.impl.campaign.ids.HullMods;
 import com.fs.starfarer.api.ui.Alignment;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
-import com.fs.starfarer.api.util.Pair;
-import com.fs.starfarer.combat.entities.DamagingExplosion;
-import org.lazywizard.lazylib.CollisionUtils;
-import org.lazywizard.lazylib.MathUtils;
-import org.lazywizard.lazylib.combat.DefenseUtils;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.util.vector.Vector2f;
 
 import java.awt.*;
-import java.util.*;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static org.scy.SCY_txt.txt;
 
 public class SCY_modularArmor extends BaseHullMod {
 

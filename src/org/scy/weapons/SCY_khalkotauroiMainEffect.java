@@ -1,7 +1,5 @@
 package org.scy.weapons;
 
-import static org.scy.SCY_txt.txt;
-
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.combat.CombatEngineAPI;
 import com.fs.starfarer.api.combat.EveryFrameWeaponEffectPlugin;
@@ -9,7 +7,10 @@ import com.fs.starfarer.api.combat.ShipAPI;
 import com.fs.starfarer.api.combat.WeaponAPI;
 import com.fs.starfarer.api.util.IntervalUtil;
 import org.magiclib.util.MagicUI;
-import java.awt.Color;
+
+import java.awt.*;
+
+import static org.scy.SCY_txt.txt;
 
 public class SCY_khalkotauroiMainEffect implements EveryFrameWeaponEffectPlugin {
 

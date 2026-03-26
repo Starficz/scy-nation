@@ -5,7 +5,8 @@ import com.fs.starfarer.api.combat.CombatEngineAPI;
 import com.fs.starfarer.api.combat.EveryFrameWeaponEffectPlugin;
 import com.fs.starfarer.api.combat.WeaponAPI;
 import com.fs.starfarer.api.util.IntervalUtil;
-import java.awt.Color;
+
+import java.awt.*;
 
 public class SCY_lightEffect implements EveryFrameWeaponEffectPlugin {
 
