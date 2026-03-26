@@ -13,13 +13,13 @@ import com.fs.starfarer.api.util.IntervalUtil
 import com.fs.starfarer.api.util.Misc
 import org.lazywizard.lazylib.VectorUtils
 import org.magiclib.kotlin.getGoSlowBurnLevel
+import org.magiclib.kotlin.getPersonalityName
 import org.magiclib.subsystems.MagicSubsystemsManager.addSubsystemToShip
 import org.magiclib.util.MagicIncompatibleHullmods
 import org.scy.*
 import org.scy.ReflectionUtils.getFieldsMatching
 import org.scy.ReflectionUtils.getMethodsMatching
 import org.scy.ReflectionUtils.invoke
-import org.scy.plugins.DamageTimeline
 import org.scy.plugins.FlightPathPredictor
 import org.scy.plugins.FlightPathPredictorManager
 import org.scy.plugins.MobilityProfile
@@ -213,10 +213,11 @@ class ScyEngineering: BaseHullMod() {
     class ScyAiV2(val ship: ShipAPI) : AdvanceableListener {
 
         enum class BehaviorState {
+            ADVANCE,
             STANDOFF,
-            HARASS,
             BACKOFF,
-            VENT
+            DISENGAGE,
+            VENTING,
         }
 
         private val interval = IntervalUtil(0.05f, 0.1f)
@@ -227,15 +228,17 @@ class ScyEngineering: BaseHullMod() {
 
         // Internal AI State
         private var currentState = BehaviorState.STANDOFF
+        private var safeToVent = false
+        private var halfVentTime = 0f
 
         init {
             val (vent, harass, backoff) = when (ship.captain?.personalityAPI?.id) {
-                Personalities.TIMID -> Triple(0.2f, 0.2f, 0.4f)
-                Personalities.CAUTIOUS -> Triple(0.3f, 0.4f, 0.6f)
-                Personalities.STEADY -> Triple(0.4f, 0.6f, 0.8f)
-                Personalities.AGGRESSIVE -> Triple(0.5f, 0.7f, 0.9f)
+                Personalities.TIMID -> Triple(0.2f, 0.2f, 0.7f)
+                Personalities.CAUTIOUS -> Triple(0.3f, 0.4f, 0.8f)
+                Personalities.STEADY -> Triple(0.4f, 0.6f, 0.9f)
+                Personalities.AGGRESSIVE -> Triple(0.5f, 0.7f, 0.95f)
                 Personalities.RECKLESS -> Triple(0.6f, 0.8f, 1.0f)
-                else -> Triple(0.4f, 0.6f, 0.8f)
+                else -> Triple(0.4f, 0.6f, 0.9f)
             }
             ventLevel = vent
             harassLevel = harass
@@ -259,15 +262,17 @@ class ScyEngineering: BaseHullMod() {
 
             enforceState()
 
-            if (currentState == BehaviorState.VENT && !ship.fluxTracker.isVenting)
+            if (safeToVent && ship.fluxLevel > 0.2f && !ship.fluxTracker.isVenting) {
+                halfVentTime = ship.fluxTracker.timeToVent/2
                 ship.giveCommand(ShipCommand.VENT_FLUX, null, 0)
+            }
         }
 
         private fun evaluateState(predictor: FlightPathPredictorManager) {
             val safePoint = StarficzAIUtils.getBackingOffStrafePoint(ship)
 
             if (safePoint == null) {
-                currentState = BehaviorState.HARASS
+                currentState = BehaviorState.ADVANCE
                 return
             }
 
@@ -325,9 +330,10 @@ class ScyEngineering: BaseHullMod() {
                     ?: 0f
 
                 val sysRatio = (backoffSysFlux + ship.currFlux) / ship.maxFlux
-                ship.setCustomData("SCY_useMobilitySystemToBackoff", sysRatio > backoffLevel)
+                ship.setCustomData("SCY_useMobilitySystemToBackoff", sysRatio > backoffLevel*1.1f)
 
-                noSysDamageResult // Return No-Sys damage to process generic state handling
+                if (isSecondaryThrusters && (ship.system.isOn || ship.system.isCoolingDown)) noSysDamageResult
+                else sysDamageResult
             } else {
                 predictor.queueRequest(ship, backupVector)
                 predictor.getResult(ship, backupVector)
@@ -335,14 +341,17 @@ class ScyEngineering: BaseHullMod() {
             val timeToRaiseShields =  ship.shield?.let{ it.unfoldTime * (60f/it.arc).coerceAtMost(1f) } ?: 0f
 
             val backoffFlux = backoffDamage?.fluxToShield(currentTime, FlightPathPredictor.PREDICTION_DURATION, ship) ?: 0f
-            val ventDamageTaken = backoffDamage?.getTotalDamage(currentTime, ship.fluxTracker.timeToVent + timeToRaiseShields) ?: Float.MAX_VALUE
+            val unsafeTime =  ship.fluxTracker.timeToVent + timeToRaiseShields + 0.2f
+            val ventDamageTaken = backoffDamage?.getTotalDamage(currentTime, unsafeTime) ?: Float.MAX_VALUE
             val backoffRatio = (backoffFlux + ship.currFlux) / ship.maxFlux
 
+            safeToVent = ventDamageTaken < 100f
+
             currentState = when {
-                ship.fluxTracker.isVenting -> BehaviorState.BACKOFF
-                ventDamageTaken < 100f && ship.fluxLevel > ventLevel && !ship.fluxTracker.isVenting -> BehaviorState.VENT
+                ship.fluxTracker.isVenting -> BehaviorState.VENTING
+                ship.fluxLevel > backoffLevel || (currentState == BehaviorState.DISENGAGE && ship.fluxLevel > ventLevel) -> BehaviorState.DISENGAGE
                 backoffRatio > backoffLevel -> BehaviorState.BACKOFF
-                baseRatio < harassLevel -> BehaviorState.HARASS
+                baseRatio < harassLevel -> BehaviorState.ADVANCE
                 else -> BehaviorState.STANDOFF
             }
 
@@ -351,27 +360,49 @@ class ScyEngineering: BaseHullMod() {
         }
 
         private fun enforceState() {
-            val flagDuration = 0.5f
-
+            val flagDuration = 0.05f
             ship.aiFlags.apply {
                 when (currentState) {
-                    BehaviorState.HARASS -> {
-                        //setFlag(ShipwideAIFlags.AIFlags.MANEUVER_TARGET, flagDuration)
+                    BehaviorState.ADVANCE -> {
                         setFlag(ShipwideAIFlags.AIFlags.HARASS_MOVE_IN, flagDuration)
                         setFlag(ShipwideAIFlags.AIFlags.DO_NOT_BACK_OFF, flagDuration)
                         setFlag(ShipwideAIFlags.AIFlags.DO_NOT_BACK_OFF_EVEN_WHILE_VENTING, flagDuration)
                         unsetFlag(ShipwideAIFlags.AIFlags.HARASS_MOVE_IN_COOLDOWN)
                         unsetFlag(ShipwideAIFlags.AIFlags.BACK_OFF)
+                        (getCustom(ShipwideAIFlags.AIFlags.BACK_OFF_MIN_RANGE) as? Float)?.let {
+                            if (it >= 4000f) unsetFlag(ShipwideAIFlags.AIFlags.BACK_OFF_MIN_RANGE)
+                        }
                     }
-
-                    BehaviorState.BACKOFF, BehaviorState.VENT -> {
-                        //backoffDirection?.let { accelerateInDirection(ship, it) }
+                    BehaviorState.BACKOFF-> {
                         setFlag(ShipwideAIFlags.AIFlags.BACK_OFF, flagDuration)
-                        //setFlag(ShipwideAIFlags.AIFlags.NEEDS_HELP, flagDuration)
+                        setFlag(ShipwideAIFlags.AIFlags.DO_NOT_PURSUE, flagDuration)
+                        unsetFlag(ShipwideAIFlags.AIFlags.DO_NOT_BACK_OFF)
+                    }
+                    BehaviorState.VENTING ->{
+                        if (!safeToVent) {
+                            setFlag(ShipwideAIFlags.AIFlags.BACK_OFF_MIN_RANGE, flagDuration, 4000f)
+                            setFlag(ShipwideAIFlags.AIFlags.BACK_OFF, flagDuration)
+                            setFlag(ShipwideAIFlags.AIFlags.DO_NOT_PURSUE, flagDuration)
+                            unsetFlag(ShipwideAIFlags.AIFlags.DO_NOT_BACK_OFF)
+                        } else {
+                            setFlag(ShipwideAIFlags.AIFlags.DO_NOT_BACK_OFF, flagDuration)
+                            unsetFlag(ShipwideAIFlags.AIFlags.BACK_OFF)
+                            unsetFlag(ShipwideAIFlags.AIFlags.DO_NOT_PURSUE)
+                            (getCustom(ShipwideAIFlags.AIFlags.BACK_OFF_MIN_RANGE) as? Float)?.let {
+                                if (it >= 4000f) unsetFlag(ShipwideAIFlags.AIFlags.BACK_OFF_MIN_RANGE)
+                            }
+                        }
+                    }
+                    BehaviorState.DISENGAGE -> {
+                        setFlag(ShipwideAIFlags.AIFlags.BACK_OFF_MIN_RANGE, flagDuration, 4000f)
+                        setFlag(ShipwideAIFlags.AIFlags.BACK_OFF, flagDuration)
                         setFlag(ShipwideAIFlags.AIFlags.DO_NOT_PURSUE, flagDuration)
                         unsetFlag(ShipwideAIFlags.AIFlags.DO_NOT_BACK_OFF)
                     }
                     BehaviorState.STANDOFF -> {
+                        setFlag(ShipwideAIFlags.AIFlags.DO_NOT_BACK_OFF, flagDuration)
+                        unsetFlag(ShipwideAIFlags.AIFlags.BACK_OFF)
+                        unsetFlag(ShipwideAIFlags.AIFlags.DO_NOT_PURSUE)
                     }
                 }
             }

@@ -3,6 +3,7 @@ By Tartiflette
  */
 package org.scy;
 
+import com.fs.starfarer.api.Global;
 import org.magiclib.util.MagicSettings;
 
 import java.util.ArrayList;
