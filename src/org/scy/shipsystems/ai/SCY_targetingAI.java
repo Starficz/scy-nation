@@ -48,6 +48,17 @@ public class SCY_targetingAI implements ShipSystemAIScript {
       }
     }
 
+    ship.getAIFlags().setFlag(
+      ShipwideAIFlags.AIFlags.BACK_OFF_MIN_RANGE,
+      0.1f,
+      maxRange * (40 + baseRangePercent) / baseRangePercent
+    );
+
+    ship.getAIFlags().setFlag(
+      ShipwideAIFlags.AIFlags.MANEUVER_RANGE_FROM_TARGET,
+      0.1f,
+      maxRange * (20 + baseRangePercent) / baseRangePercent
+    );
 
     timer.advance(amount);
     if (timer.intervalElapsed()) {
@@ -60,7 +71,6 @@ public class SCY_targetingAI implements ShipSystemAIScript {
         }
       }
 
-      ship.getAIFlags().setFlag(ShipwideAIFlags.AIFlags.BACK_OFF_MIN_RANGE, 1.0F, maxRange);
 
       if (targetDistance > maxRange) {
         if (SCY_targetingStats.getMode(ship) != targetingMode.HEAVY && AIUtils.canUseSystemThisFrame(ship)) {

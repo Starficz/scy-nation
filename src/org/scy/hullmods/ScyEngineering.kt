@@ -6,23 +6,18 @@ import com.fs.starfarer.api.combat.ShipAPI.HullSize
 import com.fs.starfarer.api.combat.listeners.AdvanceableListener
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.impl.campaign.ids.Personalities
-import com.fs.starfarer.api.loading.WeaponSlotAPI
 import com.fs.starfarer.api.ui.Alignment
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.util.IntervalUtil
 import com.fs.starfarer.api.util.Misc
+import org.lazywizard.lazylib.MathUtils
 import org.lazywizard.lazylib.VectorUtils
 import org.magiclib.kotlin.getGoSlowBurnLevel
-import org.magiclib.subsystems.MagicSubsystemsManager.addSubsystemToShip
 import org.magiclib.util.MagicIncompatibleHullmods
 import org.scy.*
-import org.scy.ReflectionUtils.getFieldsMatching
-import org.scy.ReflectionUtils.getMethodsMatching
-import org.scy.ReflectionUtils.invoke
 import org.scy.plugins.FlightPathPredictor
 import org.scy.plugins.FlightPathPredictorManager
 import org.scy.plugins.MobilityProfile
-import org.scy.subsystems.EngineJumpstart
 
 class ScyEngineering: BaseHullMod() {
     private val VENT_MULT = 3f
@@ -60,61 +55,6 @@ class ScyEngineering: BaseHullMod() {
         }
 
         ship.mutableStats.ventRateMult.modifyPercent(id, ship.variant.numFluxCapacitors * VENTING_BONUS[ship.hullSize]!!)
-    }
-
-    override fun applyEffectsAfterShipAddedToCombatEngine(ship: ShipAPI, id: String?) {
-        // changing weapon mount arcs sure is complicated
-        if (ship.hullSpec.hullId == "SCY_orthrus") {
-
-            val originalVariant = ship.variant ?: return
-            val originalHullSpec = ship.hullSpec ?: return
-
-            // Clone the Variant
-            val cloneVariantMethod = originalVariant.getMethodsMatching(
-                name = "clone",
-                returnType = ShipVariantAPI::class.java,
-                numOfParams = 0
-            ).firstOrNull() ?: return
-
-            val clonedVariant = originalVariant.invoke(cloneVariantMethod) as ShipVariantAPI
-
-            // Clone the HullSpec
-            val cloneHullMethod = originalHullSpec.getMethodsMatching(
-                name = "clone",
-                returnType = ShipHullSpecAPI::class.java,
-                numOfParams = 0
-            ).firstOrNull() ?: return
-
-            val clonedHullSpec = originalHullSpec.invoke(cloneHullMethod) as ShipHullSpecAPI
-
-            // Inject the cloned HullSpec into our isolated variant
-            clonedVariant.invoke("setHullSpec", clonedHullSpec)
-
-            // Inject the isolated variant back into the Ship instance
-            val variantFields = ship.getFieldsMatching(
-                fieldAccepts = originalVariant::class.java,
-                searchSuperclass = true
-            )
-            val specField = variantFields.firstOrNull { it.get(ship) === originalVariant }
-            specField?.set(ship, clonedVariant)
-
-            // Update the instantiated Weapon objects to point to the newly cloned slots
-            ship.allWeapons.forEach { w ->
-                val originalSlot = w.slot
-
-                val newSlot = clonedHullSpec.getWeaponSlotAPI(originalSlot.id) ?: return@forEach
-
-                w.getFieldsMatching(fieldAssignableTo = WeaponSlotAPI::class.java, searchSuperclass = true)
-                    .filter { it.get(w) === originalSlot }
-                    .forEach { it.set(w, newSlot) }
-            }
-        }
-
-        // engine jumpstart and custom SCY ai
-        if (ship.hullSize != HullSize.FIGHTER && ship.parentStation == null) {
-            addSubsystemToShip(ship, EngineJumpstart(ship))
-            if (!ship.hasListenerOfClass(ScyAiV2::class.java)) ship.addListener(ScyAiV2(ship))
-        }
     }
 
     override fun advanceInCampaign(member: FleetMemberAPI?, amount: Float) {
@@ -227,15 +167,16 @@ class ScyEngineering: BaseHullMod() {
 
         // Internal AI State
         private var currentState = BehaviorState.STANDOFF
-        private var safeToVent = false
+        private var ventNow = false
         private var halfVentTime = 0f
+        private var getCloser = false
 
         init {
             val (vent, harass, backoff) = when (ship.captain?.personalityAPI?.id) {
                 Personalities.TIMID -> Triple(0.2f, 0.2f, 0.7f)
                 Personalities.CAUTIOUS -> Triple(0.3f, 0.4f, 0.8f)
-                Personalities.STEADY -> Triple(0.4f, 0.6f, 0.9f)
-                Personalities.AGGRESSIVE -> Triple(0.5f, 0.7f, 0.95f)
+                Personalities.STEADY -> Triple(0.4f, 0.6f, 0.85f)
+                Personalities.AGGRESSIVE -> Triple(0.5f, 0.7f, 0.9f)
                 Personalities.RECKLESS -> Triple(0.6f, 0.8f, 1.0f)
                 else -> Triple(0.4f, 0.6f, 0.9f)
             }
@@ -261,13 +202,16 @@ class ScyEngineering: BaseHullMod() {
 
             enforceState()
 
-            if (safeToVent && ship.fluxLevel > 0.2f && !ship.fluxTracker.isVenting) {
+            if (ventNow && ship.fluxLevel > 0.2f && !ship.fluxTracker.isVenting) {
                 halfVentTime = ship.fluxTracker.timeToVent/2
                 ship.giveCommand(ShipCommand.VENT_FLUX, null, 0)
             }
         }
 
         private fun evaluateState(predictor: FlightPathPredictorManager) {
+            val optimalRange = ship.aiFlags.getCustom(ShipwideAIFlags.AIFlags.MANEUVER_RANGE_FROM_TARGET) as? Float ?: 0f
+            getCloser = ship.shipTarget?.let{ MathUtils.getDistance(it, ship) > optimalRange } ?: false
+
             val safePoint = StarficzAIUtils.getBackingOffStrafePoint(ship)
 
             if (safePoint == null) {
@@ -340,11 +284,21 @@ class ScyEngineering: BaseHullMod() {
             val timeToRaiseShields =  ship.shield?.let{ it.unfoldTime * (60f/it.arc).coerceAtMost(1f) } ?: 0f
 
             val backoffFlux = backoffDamage?.fluxToShield(currentTime, FlightPathPredictor.PREDICTION_DURATION, ship) ?: 0f
-            val unsafeTime =  ship.fluxTracker.timeToVent + timeToRaiseShields + 0.2f
-            val ventDamageTaken = backoffDamage?.getTotalDamage(currentTime, unsafeTime) ?: Float.MAX_VALUE
+            val dangerTime =  ship.fluxTracker.timeToVent + timeToRaiseShields + 0.2f
+            val (ventArmorDamageTaken, ventHullDamageTaken) =
+                backoffDamage?.damageToArmorAndHull(currentTime, dangerTime, ship)
+                    ?: Pair(Float.MAX_VALUE, Float.MAX_VALUE)
             val backoffRatio = (backoffFlux + ship.currFlux) / ship.maxFlux
 
-            safeToVent = ventDamageTaken < 100f
+            val armor = if (ship.childModulesCopy.isNotEmpty()) ship.armorGrid.armorRating * 1.5f
+                        else ship.armorGrid.armorAtCell(ship.armorGrid.weakestArmorRegion()!!) ?: 0f
+
+            val ventNowResult = backoffDamage?.compareVentingVsNotVenting(
+                currentTime, dangerTime, (1-ship.fluxLevel)*ship.maxFlux, ship, startingArmor = armor)
+
+            ventNow = (ventArmorDamageTaken < (ship.armorGrid.armorRating * if (ship.childModulesCopy.isNotEmpty()) 1.5f else 1f)/10
+                    && ventHullDamageTaken < ship.maxHitpoints/50)
+                    || ventNowResult?.isVentingSafer == true
 
             currentState = when {
                 ship.fluxTracker.isVenting -> BehaviorState.VENTING
@@ -360,6 +314,7 @@ class ScyEngineering: BaseHullMod() {
 
         private fun enforceState() {
             val flagDuration = 0.05f
+
             ship.aiFlags.apply {
                 when (currentState) {
                     BehaviorState.ADVANCE -> {
@@ -369,7 +324,7 @@ class ScyEngineering: BaseHullMod() {
                         unsetFlag(ShipwideAIFlags.AIFlags.HARASS_MOVE_IN_COOLDOWN)
                         unsetFlag(ShipwideAIFlags.AIFlags.BACK_OFF)
                         (getCustom(ShipwideAIFlags.AIFlags.BACK_OFF_MIN_RANGE) as? Float)?.let {
-                            if (it >= 4000f) unsetFlag(ShipwideAIFlags.AIFlags.BACK_OFF_MIN_RANGE)
+                            if (it >= 2500f) unsetFlag(ShipwideAIFlags.AIFlags.BACK_OFF_MIN_RANGE)
                         }
                     }
                     BehaviorState.BACKOFF-> {
@@ -378,8 +333,8 @@ class ScyEngineering: BaseHullMod() {
                         unsetFlag(ShipwideAIFlags.AIFlags.DO_NOT_BACK_OFF)
                     }
                     BehaviorState.VENTING ->{
-                        if (!safeToVent) {
-                            setFlag(ShipwideAIFlags.AIFlags.BACK_OFF_MIN_RANGE, flagDuration, 4000f)
+                        if (!ventNow) {
+                            setFlag(ShipwideAIFlags.AIFlags.BACK_OFF_MIN_RANGE, flagDuration, 2500f)
                             setFlag(ShipwideAIFlags.AIFlags.BACK_OFF, flagDuration)
                             setFlag(ShipwideAIFlags.AIFlags.DO_NOT_PURSUE, flagDuration)
                             unsetFlag(ShipwideAIFlags.AIFlags.DO_NOT_BACK_OFF)
@@ -388,18 +343,18 @@ class ScyEngineering: BaseHullMod() {
                             unsetFlag(ShipwideAIFlags.AIFlags.BACK_OFF)
                             unsetFlag(ShipwideAIFlags.AIFlags.DO_NOT_PURSUE)
                             (getCustom(ShipwideAIFlags.AIFlags.BACK_OFF_MIN_RANGE) as? Float)?.let {
-                                if (it >= 4000f) unsetFlag(ShipwideAIFlags.AIFlags.BACK_OFF_MIN_RANGE)
+                                if (it >= 2500f) unsetFlag(ShipwideAIFlags.AIFlags.BACK_OFF_MIN_RANGE)
                             }
                         }
                     }
                     BehaviorState.DISENGAGE -> {
-                        setFlag(ShipwideAIFlags.AIFlags.BACK_OFF_MIN_RANGE, flagDuration, 4000f)
+                        setFlag(ShipwideAIFlags.AIFlags.BACK_OFF_MIN_RANGE, flagDuration, 2500f)
                         setFlag(ShipwideAIFlags.AIFlags.BACK_OFF, flagDuration)
                         setFlag(ShipwideAIFlags.AIFlags.DO_NOT_PURSUE, flagDuration)
                         unsetFlag(ShipwideAIFlags.AIFlags.DO_NOT_BACK_OFF)
                     }
                     BehaviorState.STANDOFF -> {
-                        setFlag(ShipwideAIFlags.AIFlags.DO_NOT_BACK_OFF, flagDuration)
+                        if (getCloser) setFlag(ShipwideAIFlags.AIFlags.DO_NOT_BACK_OFF, flagDuration)
                         unsetFlag(ShipwideAIFlags.AIFlags.BACK_OFF)
                         unsetFlag(ShipwideAIFlags.AIFlags.DO_NOT_PURSUE)
                     }

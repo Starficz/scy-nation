@@ -440,9 +440,15 @@ fun interpolateColorNicely(from: Color, to: Color, progress: Float): Color {
 
 operator fun Vector2f.times(scalar: Float): Vector2f = Vector2f(this.x * scalar, this.y * scalar)
 
+inline fun Vector2f.addScaled(other: Vector2f, scale: Float) {
+    this.x += other.x * scale
+    this.y += other.y * scale
+}
+
 fun Vector2f.dot(other: Vector2f): Float {
     return this.x * other.x + this.y * other.y
 }
+
 fun Vector2f.normalized(): Vector2f {
     val l = this.length()
     return if (l.isApproximatelyZero()) Vector2f(0f,0f) // Return a new zero vector
