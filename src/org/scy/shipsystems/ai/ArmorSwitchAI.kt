@@ -6,7 +6,7 @@ import com.fs.starfarer.api.util.IntervalUtil
 import org.lazywizard.lazylib.MathUtils
 import org.lazywizard.lazylib.VectorUtils
 import org.lwjgl.util.vector.Vector2f
-import org.scy.plugins.DamageTimeline
+import org.scy.combatai.predictor.DamageTimeline
 import org.scy.turnTowards
 
 class ArmorSwitchAI : ShipSystemAIScript {

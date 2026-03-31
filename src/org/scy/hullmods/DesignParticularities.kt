@@ -3,17 +3,13 @@ package org.scy.hullmods
 import com.fs.starfarer.api.combat.BaseHullMod
 import com.fs.starfarer.api.combat.MutableShipStatsAPI
 import com.fs.starfarer.api.combat.ShipAPI
-import com.fs.starfarer.api.combat.ShipAPI.HullSize
 import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.impl.campaign.ids.Stats
 import com.fs.starfarer.api.loading.WeaponSlotAPI
-import org.magiclib.subsystems.MagicSubsystemsManager.addSubsystemToShip
 import org.scy.ReflectionUtils.getFieldsMatching
 import org.scy.ReflectionUtils.getMethodsMatching
 import org.scy.ReflectionUtils.invoke
-import org.scy.hullmods.ScyEngineering.ScyAiV2
-import org.scy.subsystems.EngineJumpstart
 
 class DesignParticularities : BaseHullMod() {
     override fun applyEffectsBeforeShipCreation(hullSize: ShipAPI.HullSize, stats: MutableShipStatsAPI, id: String) {
@@ -71,12 +67,6 @@ class DesignParticularities : BaseHullMod() {
                     .filter { it.get(w) === originalSlot }
                     .forEach { it.set(w, newSlot) }
             }
-        }
-
-        // engine jumpstart and custom SCY ai
-        if (ship.hullSize != HullSize.FIGHTER && ship.parentStation == null) {
-            addSubsystemToShip(ship, EngineJumpstart(ship))
-            if (!ship.hasListenerOfClass(ScyAiV2::class.java)) ship.addListener(ScyAiV2(ship))
         }
     }
 }

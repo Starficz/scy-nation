@@ -4,7 +4,7 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.*
 import org.lazywizard.lazylib.combat.AIUtils
 import org.lwjgl.util.vector.Vector2f
-import org.scy.plugins.DamageTimeline
+import org.scy.combatai.predictor.DamageTimeline
 
 class SCY_stasisShieldAI: ShipSystemAIScript {
     lateinit var ship: ShipAPI
