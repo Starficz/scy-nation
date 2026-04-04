@@ -1,4 +1,4 @@
-package org.scy.combatai.predictor
+package org.starficz.combatai.predictor
 
 
 import com.fs.starfarer.api.Global
@@ -13,7 +13,7 @@ import org.lazywizard.lazylib.MathUtils
 import org.lazywizard.lazylib.ext.getFacing
 import org.lwjgl.opengl.GL11
 import org.lwjgl.util.vector.Vector2f
-import org.scy.combatai.ScyAiV2
+import org.starficz.combatai.CombatAIv2
 import java.awt.Color
 import java.util.*
 import java.util.concurrent.Executors
@@ -41,7 +41,9 @@ object PredictorThreadPool {
 class PredictorManager private constructor() {
 
     companion object {
-        const val DATA_KEY = "SCY_FLIGHT_PATH_PREDICTOR"
+
+        private const val DATA_KEY = "STARFICZ_COMBAT_PREDICTOR"
+        const val FLAG_KEY = "NEEDS_STARFICZ_COMBAT_PREDICTOR"
         fun getInstance(engine: CombatEngineAPI): PredictorManager {
             if (!engine.customData.containsKey(DATA_KEY)) {
                 engine.customData[DATA_KEY] = PredictorManager()
@@ -195,8 +197,12 @@ class PredictorManager private constructor() {
                         val baseSim = CombatSimulation(combatState)
                         val aiShipIds = freshestRequests.map { it.shipId }.toSet()
 
-                        // Concurrent prediction via the refactored CombatSimulation
-                        val deferredResults = freshestRequests.map { req ->
+                        val validRequests = freshestRequests.filter { req ->
+                            baseSim.snapshot.ships.any { it.id == req.shipId } &&
+                                    baseSim.timelines.containsKey(req.shipId)
+                        }
+
+                        val deferredResults = validRequests.map { req ->
                             async {
                                 val branchSim = baseSim.branch()
                                 branchSim.updateShip(req.shipId, req.accelDir, req.mobility)
@@ -303,14 +309,14 @@ class PredictorManager private constructor() {
         GL11.glLineWidth(4f)
         for (shipId in drawnShips) {
             val ship = shipMap[shipId] ?: continue
-            val behaviorState = ship.customData["SCY_currentState"] as? ScyAiV2.BehaviorState ?: continue
+            val behaviorState = ship.customData[CombatAIv2.BEHAVIOR_STATE] as? CombatAIv2.BehaviorState ?: continue
 
             when (behaviorState) {
-                ScyAiV2.BehaviorState.ADVANCE -> GL11.glColor4f(0f, 1f, 0f, 0.8f)
-                ScyAiV2.BehaviorState.STANDOFF  -> GL11.glColor4f(0f, 1f, 1f, 0.8f)
-                ScyAiV2.BehaviorState.BACKOFF  -> GL11.glColor4f(1f, 1f, 0f, 0.8f)
-                ScyAiV2.BehaviorState.DISENGAGE  -> GL11.glColor4f(1f, 0f, 0f, 0.8f)
-                ScyAiV2.BehaviorState.VENTING  -> GL11.glColor4f(1f, 1f, 1f, 0.8f)
+                CombatAIv2.BehaviorState.ADVANCE -> GL11.glColor4f(0f, 1f, 0f, 0.8f)
+                CombatAIv2.BehaviorState.STANDOFF  -> GL11.glColor4f(0.5f, 1f, 0f, 0.8f)
+                CombatAIv2.BehaviorState.BACKOFF  -> GL11.glColor4f(1f, 0.5f, 0f, 0.8f)
+                CombatAIv2.BehaviorState.DISENGAGE  -> GL11.glColor4f(1f, 0f, 0f, 0.8f)
+                CombatAIv2.BehaviorState.VENTING  -> GL11.glColor4f(1f, 1f, 1f, 0.8f)
             }
 
             GL11.glBegin(GL11.GL_LINE_LOOP)
@@ -349,14 +355,14 @@ class CombatPlugin : BaseEveryFrameCombatPlugin() {
     override fun advance(amount: Float, events: List<InputEventAPI>?) {
         val engine = Global.getCombatEngine() ?: return
         if (engine.isPaused) return
-        if (engine.customData["NeedsDamagePredictor"] != true) return
+        if (engine.customData[PredictorManager.FLAG_KEY] != true) return
 
         PredictorManager.getInstance(engine).advance(engine)
     }
 
     override fun renderInWorldCoords(viewport: ViewportAPI) {
         val engine = Global.getCombatEngine() ?: return
-        if (engine.customData["NeedsDamagePredictor"] != true) return
+        if (engine.customData[PredictorManager.FLAG_KEY] != true) return
 
         PredictorManager.getInstance(engine).renderDebug(viewport)
     }

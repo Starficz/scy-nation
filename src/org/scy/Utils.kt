@@ -6,6 +6,7 @@ import com.fs.starfarer.api.util.Misc
 import org.lazywizard.lazylib.MathUtils
 import org.lazywizard.lazylib.VectorUtils
 import org.lwjgl.util.vector.Vector2f
+import org.scy.ReflectionUtils.invoke
 import java.awt.Color
 import java.awt.Point
 import kotlin.math.*
@@ -51,6 +52,43 @@ fun turnTowards(ship: ShipAPI, targetFacing: Float) {
         } else if (turnDir > 0f) {
             ship.giveCommand(ShipCommand.TURN_LEFT, null, 0)
         }
+    }
+}
+
+/**
+ * Calculates the on time remaining (IN + ACTIVE + OUT) for a ShipSystem.
+ * Returns full time if not currently active.
+ */
+fun ShipSystemAPI.getOnTimeRemaining(): Float {
+    return when (this.state) {
+        ShipSystemAPI.SystemState.IN -> {
+            val remainingIn = this.chargeUpDur * (1f - this.effectLevel)
+            val activeDur = if (this.specAPI.isToggle) 1000000f else this.chargeActiveDur
+
+            remainingIn + activeDur + this.chargeDownDur
+        }
+
+        ShipSystemAPI.SystemState.ACTIVE -> {
+            val chargeUp = this.chargeUpDur
+            val activeDur = if (this.specAPI.isToggle) 1000000f else this.chargeActiveDur
+            val totalDur = chargeUp + activeDur
+
+            // Algebraically solve for float_6 (elapsedActive) using the vanilla ChargeTracker formula:
+            // DisplayedLevel = (ChargeUp + Elapsed) / (ChargeUp + Active)
+            val elapsedActive = if (totalDur > 0f) {
+                (this.invoke("getDisplayedChargeLevel") as Float * totalDur) - chargeUp
+            } else {
+                0f
+            }
+
+            val remainingActive = (activeDur - elapsedActive).coerceAtLeast(0f)
+
+            remainingActive + this.chargeDownDur
+        }
+
+        ShipSystemAPI.SystemState.OUT -> this.chargeDownDur * this.effectLevel
+        ShipSystemAPI.SystemState.IDLE -> this.chargeUpDur + this.chargeActiveDur + this.chargeDownDur
+        ShipSystemAPI.SystemState.COOLDOWN -> this.chargeUpDur + this.chargeActiveDur + this.chargeDownDur
     }
 }
 

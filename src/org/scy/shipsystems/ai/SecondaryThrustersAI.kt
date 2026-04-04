@@ -6,7 +6,8 @@ import com.fs.starfarer.api.util.IntervalUtil
 import org.lazywizard.lazylib.MathUtils
 import org.lazywizard.lazylib.combat.AIUtils
 import org.lwjgl.util.vector.Vector2f
-import org.scy.combatai.predictor.DamageTimeline
+import org.starficz.combatai.CombatAIv2
+import org.starficz.combatai.predictor.DamageTimeline
 
 class SecondaryThrustersAI : ShipSystemAIScript {
     lateinit var ship: ShipAPI
@@ -29,8 +30,8 @@ class SecondaryThrustersAI : ShipSystemAIScript {
         if (!AIUtils.canUseSystemThisFrame(ship)) return
         interval.advance(amount)
         if (!interval.intervalElapsed()) return
-        val baseDamage = ship.customData["SCY_baseDamage"] as? DamageTimeline
-        val useSysToBackoff = ship.customData["SCY_useMobilitySystemToBackoff"] as Boolean? ?: false
+        val baseDamage = ship.customData[CombatAIv2.BASE_DAMAGE] as? DamageTimeline
+        val useSysToBackoff = ship.customData[CombatAIv2.USE_MOVEMENT_SYSTEM_TO_BACKOFF] as Boolean? ?: false
 
         val currentTime = Global.getCombatEngine().getTotalElapsedTime(false)
         val optimalRange = ship.aiFlags.getCustom(ShipwideAIFlags.AIFlags.MANEUVER_RANGE_FROM_TARGET) as? Float ?: 0f

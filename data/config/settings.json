@@ -3,7 +3,7 @@
         "SCY_projectilesEffectPlugin":"org.scy.plugins.SCY_projectilesEffectPlugin",
         "SCY_muzzleFlashesPlugin":"org.scy.plugins.SCY_muzzleFlashesPlugin",
         "SCY_ArmorPaperdollsPlugin": "org.scy.plugins.SCY_ArmorPaperdollsPlugin",
-        "SCY_CombatPredictorPlugin": "org.scy.combatai.predictor.CombatPlugin"
+        "Starficz_CombatPredictorPlugin": "org.starficz.combatai.predictor.CombatPlugin"
     },
 
     "designTypeColors":{

@@ -1,4 +1,4 @@
-package org.scy.combatai.predictor
+package org.starficz.combatai.predictor
 
 import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.util.Misc
@@ -166,7 +166,9 @@ class CombatSimulation(
                 }
 
                 if (targetLocX != null && targetLocY != null) {
-                    val angleToTarget = Vector2f(myLocX, myLocY).getAngle(Vector2f(targetLocX, targetLocY))
+                    val dx = targetLocX - myLocX
+                    val dy = targetLocY - myLocY
+                    val angleToTarget = Math.toDegrees(FastTrig.atan2(dy.toDouble(), dx.toDouble())).toFloat()
                     val rotationNeeded = MathUtils.getShortestRotation(currentFacing, angleToTarget)
                     val stoppingDist = (currentAngVel * currentAngVel) / (2f * ship.turnAcceleration)
                     val movingTowards = (sign(rotationNeeded) == sign(currentAngVel)) && abs(currentAngVel) > 0.1f

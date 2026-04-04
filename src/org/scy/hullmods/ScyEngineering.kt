@@ -11,8 +11,8 @@ import org.magiclib.kotlin.getGoSlowBurnLevel
 import org.magiclib.subsystems.MagicSubsystemsManager.addSubsystemToShip
 import org.magiclib.util.MagicIncompatibleHullmods
 import org.scy.*
-import org.scy.combatai.ScyAiV2
 import org.scy.subsystems.EngineJumpstart
+import org.starficz.combatai.CombatAIv2
 
 class ScyEngineering: BaseHullMod() {
     private val VENT_MULT = 3f
@@ -56,7 +56,7 @@ class ScyEngineering: BaseHullMod() {
         // engine jumpstart and custom SCY ai
         if (ship.hullSize != HullSize.FIGHTER && ship.parentStation == null) {
             addSubsystemToShip(ship, EngineJumpstart(ship))
-            if (!ship.hasListenerOfClass(ScyAiV2::class.java)) ship.addListener(ScyAiV2(ship))
+            if (!ship.hasListenerOfClass(CombatAIv2::class.java)) ship.addListener(CombatAIv2(ship))
         }
     }
 

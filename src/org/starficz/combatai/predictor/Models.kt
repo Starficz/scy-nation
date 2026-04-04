@@ -1,8 +1,9 @@
-package org.scy.combatai.predictor
+package org.starficz.combatai.predictor
 
 import com.fs.starfarer.api.combat.DamageType
 import com.fs.starfarer.api.combat.ShieldAPI
 import com.fs.starfarer.api.combat.ShipAPI
+import org.json.JSONObject
 import org.lwjgl.util.vector.Vector2f
 import org.scy.armorAtCell
 import org.scy.damageAfterArmor
@@ -22,7 +23,8 @@ class CombatSnapshot(
     val snapshotTime: Float,
     val ships: List<ShipStateSnapshot>,
     val weapons: HashMap<String, List<WeaponSnapshot>>,
-    val missiles: List<MissileSnapshot>
+    val missiles: List<MissileSnapshot>,
+    val projectiles: List<ProjectileSnapshot>
 )
 
 class ShipStateSnapshot(
@@ -111,11 +113,29 @@ class MissileWeaponSnapshot(
     val missileAccel: Float, val missileMaxSpeed: Float,
     val missileTurnRate: Float, val missileTurnAccel: Float,
     val maxFlightTime: Float,
-    val doNotAim: Boolean
+    val flameoutTime: Float,
+    val fadeTime: Float,
+    val armingTime: Float,
+    val isNoCollisionFading: Boolean,
+    val isReduceDamageFading: Boolean,
+    val doNotAim: Boolean,
+    val demParams: DemParams? // <--- ADDED
 ) : WeaponSnapshot(
     localMountOffset, localRestingAngle, localCurrentAngle, arc, range, turnRate,
     damageType, empPerBurst, damagePerBurst, hitStrength, firingTime,
     cooldownTime, currentlyFiring, timeLeftInState, disabledTime, conservative, ammoLeft
+)
+
+class ProjectileSnapshot(
+    val location: Vector2f,
+    val velocity: Vector2f,
+    val owner: Int,
+    val damageAmount: Float,
+    val empAmount: Float,
+    val damageType: DamageType,
+    val hitStrength: Float,
+    val remainingFlightTime: Float,
+    val delay: Float = 0f
 )
 
 class MissileSnapshot(
@@ -135,9 +155,19 @@ class MissileSnapshot(
     val turnAcceleration: Float,
     val flightTime: Float,
     val maxFlightTime: Float,
+    val flameoutTime: Float,
+    val fadeTime: Float,
+    val armingTime: Float,
+    val isNoCollisionFading: Boolean,
+    val isReduceDamageFading: Boolean,
     val conservative: Boolean,
-    val targetId: String?
+    val targetId: String?,
+    val demParams: DemParams?,
+    val initialDemState: DemState,
+    val initialDemElapsed: Float
 )
+
+enum class DemState { WAIT, TURN_TO_TARGET, SIGNAL, FIRE, DONE }
 
 class MobilityProfile(
     val maxSpeedOverride1: Float,
@@ -255,10 +285,12 @@ class DamageTimeline(val startTime: Float) {
         // Track armor state throughout the prediction timeframe
         var currentArmor = startingArmor
 
-        for (damage in damageInstances) {
-            // Check absolute bounds
-            if (damage.time !in (currentTime - lagBuffer)..endTime) continue
+        val sorted = damageInstances
+            .filter { it.time in (currentTime - lagBuffer)..endTime }
+            .sortedBy { it.time }
 
+
+        for (damage in sorted) {
             // Evaluate damage using your helper
             val (armorDmg, hullDmg) = damageAfterArmor(
                 damageType = damage.type,
@@ -289,7 +321,7 @@ class DamageTimeline(val startTime: Float) {
         val totalNotVentingDamage: Float get() = notVentingArmorDamage + notVentingHullDamage
 
         // not every enemy will actually target you. only flip true if we are fairly sure.
-        val isVentingSafer: Boolean get() = totalVentingDamage * 1.3f < totalNotVentingDamage
+        val isVentingSafer: Boolean get() = totalVentingDamage * 1.2f < totalNotVentingDamage
     }
 
     /**
@@ -302,7 +334,7 @@ class DamageTimeline(val startTime: Float) {
         spareFlux: Float,
         ship: ShipAPI,
         useModifiedShieldMult: Boolean = false,
-        startingArmor: Float = ship.armorGrid.armorAtCell(ship.armorGrid.weakestArmorRegion()!!) ?: 0f
+        startingArmor: Float = ship.armorGrid.weakestArmorRegion()?.let { ship.armorGrid.armorAtCell(it) } ?: 0f
     ): VentingDamageResult {
         val stats = ship.mutableStats ?: return VentingDamageResult(0f, 0f, 0f, 0f)
 
