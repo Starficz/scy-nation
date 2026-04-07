@@ -3,7 +3,6 @@ package org.starficz.combatai
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.*
 import com.fs.starfarer.api.combat.listeners.AdvanceableListener
-import com.fs.starfarer.api.impl.campaign.ids.Personalities
 import com.fs.starfarer.api.util.IntervalUtil
 import com.fs.starfarer.api.util.Misc
 import org.lazywizard.lazylib.MathUtils
@@ -20,37 +19,30 @@ import org.starficz.combatai.predictor.PredictorManager
 
 class CombatAIv2(val ship: ShipAPI) : AdvanceableListener {
     companion object {
-        const val BUFFER_TIME = 0.2f
+        const val BUFFER_TIME = 0.1f
         const val MIN_VENT_LEVEL = 0.2f
-        const val SAFE_SHIELD_ARC = 0.2f
+        const val SAFE_SHIELD_ARC = 60f
         const val MAX_ARMOR_DAMAGE_LEVEL_TO_VENT = 0.1f
         const val MAX_HULL_DAMAGE_LEVEL_TO_VENT = 0.05f
         const val STOP_VENTING_BELOW_HULL_LEVEL = 0.5f
         const val MAX_FLUX_LEVEL_RAISE_TO_HARASS = 0.3f
+        const val REENGAGE_IF_FLUX_DROPS_BELOW_LEVEL = 0.4f
+        const val FORCE_ADVANCE_IF_FLUX_BELOW_LEVEL = 0.7f
+        const val DISENGAGE_IF_FLUX_ABOVE_LEVEL = 1f
+        const val BACKOFF_IF_FLUX_ABOVE_LEVEL = 0.85f
+
 
         const val BASE_DAMAGE = "BASE_DAMAGE"
         const val BACKOFF_DAMAGE = "BACKOFF_DAMAGE"
         const val BEHAVIOR_STATE = "BEHAVIOR_STATE"
         const val USE_MOVEMENT_SYSTEM_TO_BACKOFF = "USE_MOVEMENT_SYSTEM_BACKOFF"
 
-        val EVALUATORS: List<SystemEvaluator> = listOf(
+        private val EVALUATORS: List<SystemEvaluator> = listOf(
             ScyThrustersEvaluator(),
             ScyArmorSwitchEvaluator(),
             ManeuveringJetsEvaluator(),
             PlasmaJetsEvaluator()
         )
-
-        data class AiConfig(val ventLevel: Float, val harassLevel: Float, val backoffLevel: Float)
-        fun getConfigForPersonality(personalityId: String?): AiConfig {
-            return when (personalityId) {
-                Personalities.TIMID         -> AiConfig(0.2f, 0.2f, 0.7f)
-                Personalities.CAUTIOUS      -> AiConfig(0.3f, 0.4f, 0.8f)
-                Personalities.STEADY        -> AiConfig(0.4f, 0.6f, 0.85f)
-                Personalities.AGGRESSIVE    -> AiConfig(0.5f, 0.7f, 0.9f)
-                Personalities.RECKLESS      -> AiConfig(0.6f, 0.8f, 1.0f)
-                else                        -> AiConfig(0.4f, 0.6f, 0.9f)
-            }
-        }
     }
 
     enum class BehaviorState {
@@ -63,20 +55,20 @@ class CombatAIv2(val ship: ShipAPI) : AdvanceableListener {
 
     private val interval = IntervalUtil(0.05f, 0.1f)
     private var currentSituation: TacticalVariables? = null
-    private val config = getConfigForPersonality(ship.captain?.personalityAPI?.id)
 
     private val ventLogic = VentLogic()
     private val mobilitySystemLogic = MobilitySystemLogic()
-    private val behaviorLogic = BehaviorLogic(config)
+    private val behaviorLogic = BehaviorLogic()
 
     init { Global.getCombatEngine().customData[PredictorManager.FLAG_KEY] = true }
 
     override fun advance(amount: Float) {
         val engine = Global.getCombatEngine() ?: return
+        if (engine.isUIAutopilotOn && engine.playerShip == ship) return
         interval.advance(amount)
 
         if (interval.intervalElapsed()) {
-            currentSituation = TacticalVariables(ship, engine, EVALUATORS, config.backoffLevel)
+            currentSituation = TacticalVariables(ship, engine, EVALUATORS, BACKOFF_IF_FLUX_ABOVE_LEVEL)
 
             ship.setCustomData(BASE_DAMAGE, currentSituation?.baseDamage)
             ship.setCustomData(BACKOFF_DAMAGE, currentSituation?.backoffDamage)
@@ -86,6 +78,7 @@ class CombatAIv2(val ship: ShipAPI) : AdvanceableListener {
 
         if (snap.isVanillaFallback) {
             ship.setCustomData(BEHAVIOR_STATE, "VANILLA_FALLBACK")
+            if (snap.enforceOverride) mobilitySystemLogic.shouldUseSystem(ship, true)
             return
         }
 
@@ -109,7 +102,8 @@ class CombatAIv2(val ship: ShipAPI) : AdvanceableListener {
         val backoffVector: Vector2f = safePoint?.let { ship.location.getDirectionalVector(it) } ?: Misc.ZERO
 
         val getCloser = run {
-            val range = ship.aiFlags.getCustom(ShipwideAIFlags.AIFlags.MANEUVER_RANGE_FROM_TARGET) as? Float ?: 0f
+            val targetRange = ship.aiFlags.getCustom(ShipwideAIFlags.AIFlags.MANEUVER_RANGE_FROM_TARGET) as? Float
+            val range = ((targetRange ?: 0f) - 50f).coerceAtLeast(0f)
             ship.shipTarget?.let { MathUtils.getDistanceSquared(it, ship) > range*range } ?: true
         }
 
@@ -149,7 +143,6 @@ class CombatAIv2(val ship: ShipAPI) : AdvanceableListener {
     }
 
     class VentLogic {
-        var ventNow = false
         var safeToVent = false
 
         fun execute(ship: ShipAPI, snap: TacticalVariables) {
@@ -175,7 +168,7 @@ class CombatAIv2(val ship: ShipAPI) : AdvanceableListener {
             }
 
             val hullLimit = run {
-                val hullLevelLimit = if (ship.hullLevel < STOP_VENTING_BELOW_HULL_LEVEL) 0.01f
+                val hullLevelLimit = if (ship.hullLevel < STOP_VENTING_BELOW_HULL_LEVEL) 0.001f
                 else MAX_HULL_DAMAGE_LEVEL_TO_VENT
 
                 ship.maxHitpoints * hullLevelLimit
@@ -186,9 +179,10 @@ class CombatAIv2(val ship: ShipAPI) : AdvanceableListener {
 
             // vent if safe, or safer then not venting
             safeToVent = ventArmor < armorLimit && ventHull < hullLimit
-            ventNow = safeToVent || (aggressiveVentResult?.isVentingSafer == true && ship.hullLevel > STOP_VENTING_BELOW_HULL_LEVEL)
+            val defensiveVent = aggressiveVentResult?.isVentingSafer == true && ship.hullLevel > STOP_VENTING_BELOW_HULL_LEVEL
+            val shouldVent = (safeToVent || defensiveVent) && !ship.usableWeapons.any { it.isInBurst }
 
-            if (ventNow && ship.fluxLevel > MIN_VENT_LEVEL && !ship.fluxTracker.isVenting) {
+            if (shouldVent && ship.fluxLevel > MIN_VENT_LEVEL && !ship.fluxTracker.isVenting) {
                 ship.giveCommand(ShipCommand.VENT_FLUX, null, 0)
             }
         }
@@ -210,28 +204,36 @@ class CombatAIv2(val ship: ShipAPI) : AdvanceableListener {
                 else -> false
             }
 
-            val sys = ship.system ?: return
-            val isReady = sys.state == ShipSystemAPI.SystemState.IDLE || (sys.specAPI.isToggle && !sys.isOn)
+            shouldUseSystem(ship, shouldFire)
+        }
 
-            if (shouldFire && isReady) {
-                ship.giveCommand(ShipCommand.USE_SYSTEM, null, 0)
-            } else if (!shouldFire) {
-                if (sys.specAPI.isToggle && sys.isOn) ship.giveCommand(ShipCommand.USE_SYSTEM, null, 0)
-                else ship.blockCommandForOneFrame(ShipCommand.USE_SYSTEM)
+        fun shouldUseSystem(ship: ShipAPI, shouldUse: Boolean = false){
+            val sys = ship.system ?: return
+
+            if (sys.specAPI.isToggle){
+                if (!ship.system.isCoolingDown && (shouldUse xor ship.system.isOn))
+                    ship.giveCommand(ShipCommand.USE_SYSTEM, null, 0)
+            } else {
+                if (shouldUse && sys.state == ShipSystemAPI.SystemState.IDLE) {
+                    ship.giveCommand(ShipCommand.USE_SYSTEM, null, 0)
+                } else if (!shouldUse) {
+                    ship.blockCommandForOneFrame(ShipCommand.USE_SYSTEM)
+                }
             }
         }
     }
 
-    class BehaviorLogic(val config: AiConfig) {
+    class BehaviorLogic {
         var currentState = BehaviorState.STANDOFF
 
         fun execute(ship: ShipAPI, snap: TacticalVariables, safeToVent: Boolean) {
             currentState = when {
                 ship.fluxTracker.isVenting -> BehaviorState.VENTING
-                ship.fluxLevel > config.ventLevel && currentState == BehaviorState.DISENGAGE -> BehaviorState.DISENGAGE
-                snap.backoffRatio > 1f -> BehaviorState.DISENGAGE
-                snap.backoffRatio > config.backoffLevel -> BehaviorState.BACKOFF
-                snap.baseRatio < config.harassLevel -> BehaviorState.ADVANCE
+                ship.fluxLevel > REENGAGE_IF_FLUX_DROPS_BELOW_LEVEL &&
+                        currentState == BehaviorState.DISENGAGE -> BehaviorState.DISENGAGE
+                snap.backoffRatio > DISENGAGE_IF_FLUX_ABOVE_LEVEL -> BehaviorState.DISENGAGE
+                snap.backoffRatio > BACKOFF_IF_FLUX_ABOVE_LEVEL -> BehaviorState.BACKOFF
+                snap.baseRatio < FORCE_ADVANCE_IF_FLUX_BELOW_LEVEL-> BehaviorState.ADVANCE
                 else -> BehaviorState.STANDOFF
             }
 

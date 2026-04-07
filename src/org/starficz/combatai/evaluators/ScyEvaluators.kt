@@ -23,7 +23,7 @@ class ScyThrustersEvaluator : ActiveMobilityEvaluator() {
 }
 
 class ScyArmorSwitchEvaluator : ToggleMobilityEvaluator() {
-    override val enforceOverride = false
+    override val enforceOverride = true
     override val systemId = "SCY_armorSwitch"
 
     override fun getOnProfile(ship: ShipAPI, base: MobilityProfile): MobilityProfile {

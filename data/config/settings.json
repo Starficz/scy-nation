@@ -3,6 +3,7 @@
         "SCY_projectilesEffectPlugin":"org.scy.plugins.SCY_projectilesEffectPlugin",
         "SCY_muzzleFlashesPlugin":"org.scy.plugins.SCY_muzzleFlashesPlugin",
         "SCY_ArmorPaperdollsPlugin": "org.scy.plugins.SCY_ArmorPaperdollsPlugin",
+        "SCY_AntiMissilePlugin": "org.scy.plugins.SCY_AntiMissilePlugin",
         "Starficz_CombatPredictorPlugin": "org.starficz.combatai.predictor.CombatPlugin"
     },
 
@@ -213,6 +214,19 @@
             "SCY_lionRR" : "graphics/SCY/ships/paperdolls/SCY_nemeanLion_armorRearRight_01_paperdoll.png",
             "SCY_ketoAL" : "graphics/SCY/ships/paperdolls/SCY_keto_gun_paperdoll.png",
             "SCY_ketoAR" : "graphics/SCY/ships/paperdolls/SCY_keto_flightdeck_paperdoll.png"
+        },
+        "orthrus_armor": {
+            "SCY_orthrus_armor_0": "graphics/SCY/weapons/SCY_orthrus_armor/SCY_orthrus_armor_under.png",
+            "SCY_orthrus_armor_1": "graphics/SCY/weapons/SCY_orthrus_armor/SCY_orthrus_armor_01.png",
+            "SCY_orthrus_armor_2": "graphics/SCY/weapons/SCY_orthrus_armor/SCY_orthrus_armor_02.png",
+            "SCY_orthrus_armor_3": "graphics/SCY/weapons/SCY_orthrus_armor/SCY_orthrus_armor_03.png",
+            "SCY_orthrus_armor_4": "graphics/SCY/weapons/SCY_orthrus_armor/SCY_orthrus_armor_04.png",
+            "SCY_orthrus_armor_5": "graphics/SCY/weapons/SCY_orthrus_armor/SCY_orthrus_armor_05.png",
+            "SCY_orthrus_armor_6": "graphics/SCY/weapons/SCY_orthrus_armor/SCY_orthrus_armor_06.png",
+            "SCY_orthrus_armor_7": "graphics/SCY/weapons/SCY_orthrus_armor/SCY_orthrus_armor_07.png",
+            "SCY_orthrus_armor_8": "graphics/SCY/weapons/SCY_orthrus_armor/SCY_orthrus_armor_08.png",
+            "SCY_orthrus_armor_9": "graphics/SCY/weapons/SCY_orthrus_armor/SCY_orthrus_armor_09.png",
+            "SCY_orthrus_armor_10": "graphics/SCY/weapons/SCY_orthrus_armor/SCY_orthrus_armor_10.png"
         }
     }
 }

@@ -337,7 +337,7 @@ private fun ShipAPI.captureWeaponState(): List<WeaponSnapshot> {
                 firingTime = 1f
                 cooldownTime = 0f
                 damagePerBurst = weapon.derivedStats.dps
-                hitStrength = weapon.damage.damage / 2
+                hitStrength = weapon.derivedStats.dps / 2
                 empPerBurst = weapon.derivedStats.empPerSecond
                 timeLeftInState = 0f
             }

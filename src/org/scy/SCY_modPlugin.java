@@ -33,6 +33,7 @@ public class SCY_modPlugin extends BaseModPlugin {
 
     public static final String antiMissile_ID = "SCY_antiS";
     public static final String swarmer_ID = "SCY_swarmS";
+    public static final String kinetic_ID = "SCY_mrmS";
     public static final String coasting_ID = "SCY_coastingS";
     public static final String laser_ID = "SCY_laserS";
     public static final String bomberTorpedo_ID = "SCY_bomberTorpedo";
@@ -54,43 +55,27 @@ public class SCY_modPlugin extends BaseModPlugin {
 
     @Override
     public PluginPick<MissileAIPlugin> pickMissileAI(MissileAPI missile, ShipAPI launchingShip) {
-        switch (missile.getProjectileSpecId()) {
-            case rocket_ID:
-                return new PluginPick<MissileAIPlugin>(
-                        new SCY_rocketAI(missile, launchingShip), CampaignPlugin.PickPriority.MOD_SPECIFIC);
-            case antiMissile_ID:
-                return new PluginPick<MissileAIPlugin>(
-                        new SCY_antiMissileAI(missile, launchingShip),
-                        CampaignPlugin.PickPriority.MOD_SPECIFIC);
-            case swarmer_ID:
-                return new PluginPick<MissileAIPlugin>(
-                        new SCY_swarmerAI(missile, launchingShip), CampaignPlugin.PickPriority.MOD_SPECIFIC);
-            case coasting_ID:
-                return new PluginPick<MissileAIPlugin>(
-                        new SCY_coastingMissileAI(missile, launchingShip),
-                        CampaignPlugin.PickPriority.MOD_SPECIFIC);
-            case laser_ID:
-                return new PluginPick<MissileAIPlugin>(
-                        new SCY_laserTorpedoAI(missile, launchingShip),
-                        CampaignPlugin.PickPriority.MOD_SPECIFIC);
-            case bomberTorpedo_ID:
-                return new PluginPick<MissileAIPlugin>(
-                        new SCY_laserTorpedoAI(missile, launchingShip),
-                        CampaignPlugin.PickPriority.MOD_SPECIFIC);
-            case cluster_ID:
-                return new PluginPick<MissileAIPlugin>(
-                        new SCY_clusterTorpedoAI(missile, launchingShip),
-                        CampaignPlugin.PickPriority.MOD_SPECIFIC);
-            case arc_ID:
-                return new PluginPick<MissileAIPlugin>(
-                        new SCY_arcMissileAI(missile, launchingShip), CampaignPlugin.PickPriority.MOD_SPECIFIC);
-            case phase_ID:
-                return new PluginPick<MissileAIPlugin>(
-                        new SCY_phaseTorpedoAI(missile, launchingShip),
-                        CampaignPlugin.PickPriority.MOD_SPECIFIC);
-            default:
-        }
-        return null;
+        return switch (missile.getProjectileSpecId()) {
+            case rocket_ID -> new PluginPick<>(
+                    new SCY_rocketAI(missile, launchingShip), CampaignPlugin.PickPriority.MOD_SPECIFIC);
+            case antiMissile_ID -> new PluginPick<>(
+                    new SCY_antiMissileAI(missile, launchingShip), CampaignPlugin.PickPriority.MOD_SPECIFIC);
+            case swarmer_ID -> new PluginPick<>(
+                    new SCY_swarmerAI(missile, launchingShip), CampaignPlugin.PickPriority.MOD_SPECIFIC);
+            case coasting_ID -> new PluginPick<>(
+                    new SCY_coastingMissileAI(missile, launchingShip), CampaignPlugin.PickPriority.MOD_SPECIFIC);
+            case laser_ID, bomberTorpedo_ID -> new PluginPick<>(
+                    new SCY_laserTorpedoAI(missile, launchingShip), CampaignPlugin.PickPriority.MOD_SPECIFIC);
+            case cluster_ID -> new PluginPick<>(
+                    new SCY_clusterTorpedoAI(missile, launchingShip), CampaignPlugin.PickPriority.MOD_SPECIFIC);
+            case arc_ID -> new PluginPick<>(
+                    new SCY_arcMissileAI(missile, launchingShip), CampaignPlugin.PickPriority.MOD_SPECIFIC);
+            case phase_ID -> new PluginPick<>(
+                    new SCY_phaseTorpedoAI(missile, launchingShip), CampaignPlugin.PickPriority.MOD_SPECIFIC);
+            case kinetic_ID -> new PluginPick<>(
+                    new SCY_kineticMissileAI(missile, launchingShip), CampaignPlugin.PickPriority.MOD_SPECIFIC);
+            default -> null;
+        };
     }
 
     ////////////////////////////////////////

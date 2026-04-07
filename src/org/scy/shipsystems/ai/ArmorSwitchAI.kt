@@ -6,6 +6,7 @@ import com.fs.starfarer.api.util.IntervalUtil
 import org.lazywizard.lazylib.MathUtils
 import org.lazywizard.lazylib.VectorUtils
 import org.lwjgl.util.vector.Vector2f
+import org.scy.ReflectionUtils.set
 import org.starficz.combatai.predictor.DamageTimeline
 import org.scy.turnTowards
 import org.starficz.combatai.CombatAIv2
@@ -29,10 +30,22 @@ class ArmorSwitchAI : ShipSystemAIScript {
         collisionDangerDir: Vector2f?,
         target: ShipAPI?
     ) {
+        ship.shipAI?.config?.turnToFaceWithUndamagedArmor = false
+        ship.aiFlags.setFlag(ShipwideAIFlags.AIFlags.PREFER_RIGHT_BROADSIDE, 0.1f)
+        ship.aiFlags.unsetFlag(ShipwideAIFlags.AIFlags.PREFER_LEFT_BROADSIDE)
+
+        if (ship.shipTarget != null) {
+            val angleToThreat = VectorUtils.getAngle(ship.location, ship.shipTarget.location)
+            val targetFacing = MathUtils.clampAngle(angleToThreat + 40f)
+
+            turnTowards(ship, targetFacing)
+        }
+
+        return
         interval.advance(amount)
         if (!interval.intervalElapsed()) return
 
-        ship.shipAI?.config?.turnToFaceWithUndamagedArmor = false;
+        ship.shipAI?.config?.turnToFaceWithUndamagedArmor = false
 
         val baseDamage = ship.customData[CombatAIv2.BASE_DAMAGE] as? DamageTimeline
         val useSysToBackoff = ship.customData[CombatAIv2.USE_MOVEMENT_SYSTEM_TO_BACKOFF] as Boolean? ?: false
@@ -54,9 +67,6 @@ class ArmorSwitchAI : ShipSystemAIScript {
             if (ship.shipTarget != null){
                 val angleToThreat = VectorUtils.getAngle(ship.location, ship.shipTarget.location)
                 val targetFacing = MathUtils.clampAngle(angleToThreat + 45f)
-
-                ship.blockCommandForOneFrame(ShipCommand.TURN_LEFT)
-                ship.blockCommandForOneFrame(ShipCommand.TURN_RIGHT)
 
                 turnTowards(ship, targetFacing)
             }

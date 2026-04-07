@@ -42,7 +42,7 @@ abstract class BaseMobilityEvaluator : SystemEvaluator {
     protected fun getNoSysProfile(ship: ShipAPI): MobilityProfile {
         val stats = ship.mutableStats
 
-        if (ship.system.isActive) {
+        if (ship.system.isActive && !ship.system.specAPI.isToggle) {
             return MobilityProfile(
                 stats.maxSpeed.modifiedValue,
                 stats.acceleration.modifiedValue,

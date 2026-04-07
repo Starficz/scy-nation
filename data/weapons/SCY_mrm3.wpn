@@ -1,0 +1,42 @@
+{
+	"id":"SCY_mrm3",
+	"specClass":"projectile",
+	"type":"MISSILE",
+	"size":"LARGE",
+	"turretSprite":"graphics/SCY/weapons/SCY_orthrus_launcher.png",
+	"hardpointSprite":"graphics/SCY/weapons/SCY_orthrus_launcher.png",
+	"hardpointOffsets":[
+        25, -12,
+        25, -6,
+        25, 0,
+        25, 6,
+        25, 12
+    ],
+	"turretOffsets":[
+        15, -12,
+        15, -6,
+        15, 0,
+        15, 6,
+        15, 12
+    ],
+	"hardpointAngleOffsets":[-2, -1, 0, 1, 2],
+	"turretAngleOffsets":[-2, -1, 0, 1, 2],
+	"barrelMode":"ALTERNATING",
+	"animationType":"SMOKE",
+	"interruptibleBurst":false,
+	"autocharge":true,
+	"displayArcRadius":10,
+	"smokeSpec":{"particleSizeMin":10.0,
+                     "particleSizeRange":14.0,
+                     "cloudParticleCount":3,
+                     "cloudDuration":1.5,
+                     "cloudRadius":12.0;
+                     "blowbackParticleCount":3,
+                     "blowbackDuration":0.45,
+                     "blowbackLength":20.0,
+                     "blowbackSpread":6.0,
+                     "particleColor":[190,180,160,95]},
+	"projectileSpecId":"SCY_mrmS",
+	#"everyFrameEffect":"org.scy.weapons.SCY_manticoreSwarmAnimation",
+	"fireSoundTwo":"SCY_mrm_fire",
+}

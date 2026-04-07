@@ -1,13 +1,13 @@
 {
-	"id":"SCY_Zdish1",
+	"id":"SCY_orthrus_armor",  # this id must match what's in the spreadsheet
 	"specClass":"beam",
 	"type":"DECORATIVE",
 	"size":"SMALL",
 	"showDamageWhenDecorative":true,
-	"turretSprite":"graphics/SCY/weapons/deco/SCY_dish1.png",
-	"hardpointSprite":"",
-        #"renderHints":["RENDER_ADDITIVE"],
-	"renderBelowAllWeapons":"true",
+	"turretSprite":"graphics/SCY/weapons/SCY_orthrus_armor/SCY_orthrus_armor_00.png",
+	"hardpointSprite":"graphics/SCY/weapons/SCY_orthrus_armor/SCY_orthrus_armor_00.png",
+	"numFrames":11,
+	"frameRate":0,
 	"turretOffsets":[0, 0],
 	"turretAngleOffsets":[0],
 	"hardpointOffsets":[0, 0],
@@ -18,6 +18,5 @@
 	"width":1.0,
 	"textureType":ROUGH,
 	"textureScrollSpeed":1.0,
-	"pixelsPerTexel":5.0,	
-    "everyFrameEffect":"org.scy.weapons.SCY_dishEffect",
+	"pixelsPerTexel":5.0
 }

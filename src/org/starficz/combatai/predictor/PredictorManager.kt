@@ -29,7 +29,7 @@ object PredictorThreadPool {
     private val threads = max(2, Runtime.getRuntime().availableProcessors())
     private val threadFactory = ThreadFactory { r ->
         Thread(r).apply {
-            name = "ScyPredictor-Worker-${UUID.randomUUID().toString().take(4)}"
+            name = "Starficz-Predictor-Worker-${UUID.randomUUID().toString().take(4)}"
             isDaemon = true
             priority = Thread.MIN_PRIORITY
         }
@@ -360,10 +360,10 @@ class CombatPlugin : BaseEveryFrameCombatPlugin() {
         PredictorManager.getInstance(engine).advance(engine)
     }
 
-    override fun renderInWorldCoords(viewport: ViewportAPI) {
-        val engine = Global.getCombatEngine() ?: return
-        if (engine.customData[PredictorManager.FLAG_KEY] != true) return
-
-        PredictorManager.getInstance(engine).renderDebug(viewport)
-    }
+//    override fun renderInWorldCoords(viewport: ViewportAPI) {
+//        val engine = Global.getCombatEngine() ?: return
+//        if (engine.customData[PredictorManager.FLAG_KEY] != true) return
+//
+//        PredictorManager.getInstance(engine).renderDebug(viewport)
+//    }
 }

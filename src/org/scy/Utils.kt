@@ -12,6 +12,32 @@ import java.awt.Point
 import kotlin.math.*
 import kotlin.random.Random
 
+fun calculateInterceptTime(
+    shooterPos: Vector2f,
+    shooterVel: Vector2f,
+    targetPos: Vector2f,
+    targetVel: Vector2f,
+    projectileSpeed: Float
+): Float? {
+    val relPos = Vector2f.sub(targetPos, shooterPos, null)
+    val relVel = Vector2f.sub(targetVel, shooterVel, null)
+
+    val a = Vector2f.dot(relVel, relVel) - (projectileSpeed * projectileSpeed)
+    val b = 2f * Vector2f.dot(relPos, relVel)
+    val c = Vector2f.dot(relPos, relPos)
+
+    val discriminant = b * b - 4f * a * c
+    if (discriminant < 0f) return null // Impossible to catch
+
+    val sqrtDisc = sqrt(discriminant)
+    val t1 = (-b + sqrtDisc) / (2f * a)
+    val t2 = (-b - sqrtDisc) / (2f * a)
+
+    if (max(t1, t2) < 0f) return null // Intercept is in the past
+
+    return if (t1 < 0f) t2 else if (t2 < 0f) t1 else min(t1, t2)
+}
+
 fun turnTowards(ship: ShipAPI, targetFacing: Float) {
     val angularVel = ship.angularVelocity
     val absAngularVel = abs(angularVel)
@@ -49,8 +75,10 @@ fun turnTowards(ship: ShipAPI, targetFacing: Float) {
         // Execute the final thruster command
         if (turnDir < 0f) {
             ship.giveCommand(ShipCommand.TURN_RIGHT, null, 0)
+            ship.blockCommandForOneFrame(ShipCommand.TURN_LEFT)
         } else if (turnDir > 0f) {
             ship.giveCommand(ShipCommand.TURN_LEFT, null, 0)
+            ship.blockCommandForOneFrame(ShipCommand.TURN_RIGHT)
         }
     }
 }

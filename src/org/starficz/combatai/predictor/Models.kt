@@ -14,7 +14,7 @@ import kotlin.math.max
 
 object Constants {
     const val TIME_STEP = 0.05f
-    const val PREDICTION_DURATION = 20f
+    const val PREDICTION_DURATION = 20f // in seconds
     val TOTAL_FUTURE_STATES = ceil(PREDICTION_DURATION / TIME_STEP).toInt()
     const val ENGINE_COAST_ASSUMPTION = 5f
 }
