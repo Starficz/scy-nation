@@ -7,9 +7,9 @@ import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.impl.campaign.ids.Stats
 import com.fs.starfarer.api.loading.WeaponSlotAPI
-import org.scy.ReflectionUtils.getFieldsMatching
-import org.scy.ReflectionUtils.getMethodsMatching
-import org.scy.ReflectionUtils.invoke
+import org.starficz.ReflectionUtils.getFieldsMatching
+import org.starficz.ReflectionUtils.getMethodsMatching
+import org.starficz.ReflectionUtils.invoke
 
 class DesignParticularities : BaseHullMod() {
     override fun applyEffectsBeforeShipCreation(hullSize: ShipAPI.HullSize, stats: MutableShipStatsAPI, id: String) {

@@ -9,10 +9,10 @@ import org.lazywizard.lazylib.MathUtils
 import org.lazywizard.lazylib.VectorUtils
 import org.lazywizard.lazylib.ext.plus
 import org.lwjgl.util.vector.Vector2f
-import org.scy.ReflectionUtils.get
-import org.scy.ReflectionUtils.getFieldsWithMethodsMatching
-import org.scy.ReflectionUtils.getMethodsMatching
-import org.scy.ReflectionUtils.invoke
+import org.starficz.ReflectionUtils.get
+import org.starficz.ReflectionUtils.getFieldsWithMethodsMatching
+import org.starficz.ReflectionUtils.getMethodsMatching
+import org.starficz.ReflectionUtils.invoke
 import org.scy.getNearestSegmentOnBounds
 import org.scy.nextFloat
 import org.scy.plugins.SCY_muzzleFlashesPlugin

@@ -6,7 +6,6 @@ import com.fs.starfarer.api.util.Misc
 import org.lazywizard.lazylib.MathUtils
 import org.lazywizard.lazylib.VectorUtils
 import org.lwjgl.util.vector.Vector2f
-import org.scy.ReflectionUtils.invoke
 import java.awt.Color
 import java.awt.Point
 import kotlin.math.*
@@ -81,81 +80,6 @@ fun turnTowards(ship: ShipAPI, targetFacing: Float) {
             ship.blockCommandForOneFrame(ShipCommand.TURN_RIGHT)
         }
     }
-}
-
-/**
- * Calculates the on time remaining (IN + ACTIVE + OUT) for a ShipSystem.
- * Returns full time if not currently active.
- */
-fun ShipSystemAPI.getOnTimeRemaining(): Float {
-    return when (this.state) {
-        ShipSystemAPI.SystemState.IN -> {
-            val remainingIn = this.chargeUpDur * (1f - this.effectLevel)
-            val activeDur = if (this.specAPI.isToggle) 1000000f else this.chargeActiveDur
-
-            remainingIn + activeDur + this.chargeDownDur
-        }
-
-        ShipSystemAPI.SystemState.ACTIVE -> {
-            val chargeUp = this.chargeUpDur
-            val activeDur = if (this.specAPI.isToggle) 1000000f else this.chargeActiveDur
-            val totalDur = chargeUp + activeDur
-
-            // Algebraically solve for float_6 (elapsedActive) using the vanilla ChargeTracker formula:
-            // DisplayedLevel = (ChargeUp + Elapsed) / (ChargeUp + Active)
-            val elapsedActive = if (totalDur > 0f) {
-                (this.invoke("getDisplayedChargeLevel") as Float * totalDur) - chargeUp
-            } else {
-                0f
-            }
-
-            val remainingActive = (activeDur - elapsedActive).coerceAtLeast(0f)
-
-            remainingActive + this.chargeDownDur
-        }
-
-        ShipSystemAPI.SystemState.OUT -> this.chargeDownDur * this.effectLevel
-        ShipSystemAPI.SystemState.IDLE -> this.chargeUpDur + this.chargeActiveDur + this.chargeDownDur
-        ShipSystemAPI.SystemState.COOLDOWN -> this.chargeUpDur + this.chargeActiveDur + this.chargeDownDur
-    }
-}
-
-/**
- * Calculates what the modified value of this MutableStat would be
- * if a specific source ID's modifiers were completely ignored.
- *
- */
-fun MutableStat.getModifiedValueWithout(sourceId: String): Float {
-    var flatMod = 0f
-    var percentMod = 0f
-    var mult = 1f
-
-    // Sum up all flat mods, ignoring the target source ID
-    for ((id, mod) in this.flatMods) {
-        if (id != sourceId) {
-            flatMod += mod.value
-        }
-    }
-
-    // Sum up all percent mods, ignoring the target source ID
-    for ((id, mod) in this.percentMods) {
-        if (id != sourceId) {
-            percentMod += mod.value
-        }
-    }
-
-    // Multiply all mult mods, ignoring the target source ID
-    for ((id, mod) in this.multMods) {
-        if (id != sourceId) {
-            mult *= mod.value
-        }
-    }
-
-    // Replicate the exact formula from MutableStat.recompute()
-    var modified = this.baseValue + (this.baseValue * percentMod / 100.0f) + flatMod
-    modified *= mult
-
-    return modified
 }
 
 

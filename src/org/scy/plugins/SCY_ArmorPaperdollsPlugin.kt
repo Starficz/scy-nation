@@ -11,7 +11,7 @@ import org.lazywizard.lazylib.MathUtils
 import org.lwjgl.util.vector.Vector2f
 import org.magiclib.kotlin.setAlpha
 import org.magiclib.util.MagicUI
-import org.scy.ReflectionUtils
+import org.starficz.ReflectionUtils
 import org.scy.armorAtCell
 import org.scy.weakestArmorRegion
 import java.awt.Color

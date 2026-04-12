@@ -92,6 +92,7 @@ object GeneralMissileAI {
         minSpeed: Float = 1f
     ) {
         val speed = missile.velocity.length()
+        val speedRatio = (speed / missile.maxSpeed).coerceIn(0f, 1f)
         val phiDes = VectorUtils.getAngle(missile.location, interceptPoint)
 
         // Proportional Navigation Math with psiRad adjustment
@@ -104,7 +105,7 @@ object GeneralMissileAI {
             val omegaV = missile.acceleration / speed
 
             val interceptTime = timeToIntercept.coerceAtLeast(0.1f)
-            val arg = (proportionalNavN * betaRad) / (interceptTime * omegaV)
+            val arg = (proportionalNavN * (2 - speedRatio) * betaRad) / (interceptTime * omegaV)
             val psiRad = asin(arg.coerceIn(-1f, 1f))
 
             phiV + Math.toDegrees(psiRad.toDouble()).toFloat()
@@ -126,11 +127,11 @@ object GeneralMissileAI {
         }
 
         // Acceleration control
-        val headingErrorToPhi = abs(MathUtils.getShortestRotation(theta, phiDes))
-        val speedRatio = (speed / missile.maxSpeed).coerceIn(0f, 1f)
-        val threshold = 60f + 30f * speedRatio // Scales linearly between 60deg and 90deg
-
-        if (headingErrorToPhi < threshold) {
+        val headingErrorToThetaDes = abs(MathUtils.getShortestRotation(theta, thetaDes))
+        val threshold = 30f + 30f * speedRatio
+        // As long as the missile is within 60 degrees of the mathematically ideal heading, burn.
+        // (You can safely use a static threshold here, 60 is a very generous cone)
+        if (headingErrorToThetaDes < threshold) {
             missile.giveCommand(ShipCommand.ACCELERATE)
         }
     }

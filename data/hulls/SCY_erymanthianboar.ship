@@ -151,7 +151,7 @@
       "mount": "HARDPOINT",
       "arc": 0,
       "angle": -90,
-      "locations": [40.5, -22]
+      "locations": [40, -22]
     },
     {
       "id": "WS0010",
@@ -160,7 +160,7 @@
       "mount": "HARDPOINT",
       "arc": 0,
       "angle": 90,
-      "locations": [40.5, 22]
+      "locations": [40, 22]
     }
   ],
   "engineSlots": [

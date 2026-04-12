@@ -4,8 +4,8 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.*
 import org.lazywizard.lazylib.combat.AIUtils
 import org.lwjgl.util.vector.Vector2f
-import org.starficz.combatai.CombatAIv2
-import org.starficz.combatai.predictor.DamageTimeline
+import org.starficz.combataitweaks.predictor.DamageTimeline
+import org.starficz.combataitweaks.CombatAIv2
 
 class SCY_stasisShieldAI: ShipSystemAIScript {
     lateinit var ship: ShipAPI

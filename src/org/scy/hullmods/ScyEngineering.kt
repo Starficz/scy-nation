@@ -12,7 +12,8 @@ import org.magiclib.subsystems.MagicSubsystemsManager.addSubsystemToShip
 import org.magiclib.util.MagicIncompatibleHullmods
 import org.scy.*
 import org.scy.subsystems.EngineJumpstart
-import org.starficz.combatai.CombatAIv2
+import org.starficz.combataitweaks.CombatAIv2
+import org.starficz.combataitweaks.ui.ConfigDialog.Companion.ENABLE_CAT_AI_TAG
 
 class ScyEngineering: BaseHullMod() {
     private val VENT_MULT = 3f
@@ -49,6 +50,8 @@ class ScyEngineering: BaseHullMod() {
             }
         }
 
+        Global.getSettings().allHullModSpecs.forEach { it.tags }
+
         ship.mutableStats.ventRateMult.modifyPercent(id, ship.variant.numFluxCapacitors * VENTING_BONUS[ship.hullSize]!!)
     }
 
@@ -56,7 +59,13 @@ class ScyEngineering: BaseHullMod() {
         // engine jumpstart and custom SCY ai
         if (ship.hullSize != HullSize.FIGHTER && ship.parentStation == null) {
             addSubsystemToShip(ship, EngineJumpstart(ship))
-            if (!ship.hasListenerOfClass(CombatAIv2::class.java)) ship.addListener(CombatAIv2(ship))
+
+            if(Global.getSettings().modManager.isModEnabled("CombatAITweaks")){
+                if(!ship.variant.hasTag(ENABLE_CAT_AI_TAG)) ship.variant.addTag(ENABLE_CAT_AI_TAG)
+            }
+            else{
+                if (!ship.hasListenerOfClass(CombatAIv2::class.java)) ship.addListener(CombatAIv2(ship))
+            }
         }
     }
 

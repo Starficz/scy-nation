@@ -3,7 +3,7 @@
     "hullId": "SCY_orthrusAR",
     "hullSize": "FRIGATE",
     "style": "SCYHULL",
-    "spriteName": "graphics/SCY/weapons/SCY_orthrus_armor/SCY_orthrus_armor_under.png",
+    "spriteName": "graphics/SCY/ships/SCY_orthrus_armor/11.png",
     "height": 212,
     "width": 32,
     "center": [

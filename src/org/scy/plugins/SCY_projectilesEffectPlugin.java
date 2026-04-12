@@ -12,6 +12,7 @@ import org.lazywizard.lazylib.combat.CombatUtils;
 import org.lazywizard.lazylib.combat.entities.SimpleEntity;
 import org.lwjgl.util.vector.Vector2f;
 import org.magiclib.util.MagicRender;
+import org.starficz.combataitweaks.predictor.CATCombatPlugin;
 
 import java.awt.*;
 import java.util.*;
@@ -66,9 +67,9 @@ public class SCY_projectilesEffectPlugin extends BaseEveryFrameCombatPlugin {
     //        ORION.clear();
     SCORCHER.clear();
     FLAKED.clear();
-    SINGULARITIES.clear();
-    ANTIMISSILES.clear();
-    TELEPORT.clear();
+    cleanSlate();
+    if (!engine.hasPluginOfClass(CATCombatPlugin.class))
+      engine.addPlugin(new CATCombatPlugin());
   }
 
   public static void cleanSlate() {
@@ -160,15 +161,8 @@ public class SCY_projectilesEffectPlugin extends BaseEveryFrameCombatPlugin {
           }
         }
       }
-      // check antimissiles timed
-      if (!ANTIMISSILES.isEmpty()) {
-        checkAntimissiles(engine);
-      }
     }
-    // forced antimissile check
-    if (forceCheck) {
-      checkAntimissiles(engine);
-    }
+
 
     // check for Scorcher explosions
     if (!SCORCHER.isEmpty()) {
@@ -945,40 +939,6 @@ public class SCY_projectilesEffectPlugin extends BaseEveryFrameCombatPlugin {
     }
   }
 
-  //////////////////////////////
-  //                          //
-  //      ANTI MISSILES       //
-  //                          //
-  //////////////////////////////
-
-  public static List<MissileAPI> getAntimissiles() {
-    List<MissileAPI> missiles = new ArrayList<>();
-
-    for (MissileAPI m : ANTIMISSILES.keySet()) {
-      if (ANTIMISSILES.get(m) != null) {
-        missiles.add(ANTIMISSILES.get(m));
-      }
-    }
-    return missiles;
-  }
-
-  public static void addAntimissiles(MissileAPI antimissile, MissileAPI target) {
-    ANTIMISSILES.put(antimissile, target);
-  }
-
-  public static void forceCheck() {
-    forceCheck = true;
-  }
-
-  private void checkAntimissiles(CombatEngineAPI engine) {
-    for (Iterator<MissileAPI> iter = ANTIMISSILES.keySet().iterator(); iter.hasNext(); ) {
-      MissileAPI c = iter.next();
-      if (!engine.isEntityInPlay(c) || !engine.isEntityInPlay(ANTIMISSILES.get(c))) {
-        iter.remove();
-      }
-    }
-    forceCheck = false;
-  }
 
   public void setLocation(CombatEntityAPI entity, Vector2f location) {
     Vector2f dif = new Vector2f(location);

@@ -3,8 +3,7 @@
         "SCY_projectilesEffectPlugin":"org.scy.plugins.SCY_projectilesEffectPlugin",
         "SCY_muzzleFlashesPlugin":"org.scy.plugins.SCY_muzzleFlashesPlugin",
         "SCY_ArmorPaperdollsPlugin": "org.scy.plugins.SCY_ArmorPaperdollsPlugin",
-        "SCY_AntiMissilePlugin": "org.scy.plugins.SCY_AntiMissilePlugin",
-        "Starficz_CombatPredictorPlugin": "org.starficz.combatai.predictor.CombatPlugin"
+        "SCY_AntiMissilePlugin": "org.scy.plugins.SCY_AntiMissilePlugin"
     },
 
     "designTypeColors":{
@@ -13,18 +12,18 @@
 
     "graphics":{
 		"characters":{
-			"railey":"graphics/SCY/portraits/SCY_portrait08.png",
+			"railey":"graphics/SCY/portraits/SCY_portrait08.png"
 		},
         "blueprint_packages":{
             "SCY_basic_package":"graphics/SCY/icons/cargo/SCY_package.png",
             "SCY_tech_package":"graphics/SCY/icons/cargo/SCY_adv_package.png",
-            "SCY_weapon_package":"graphics/SCY/icons/cargo/SCY_wep_package.png",
+            "SCY_weapon_package":"graphics/SCY/icons/cargo/SCY_wep_package.png"
         },		
         "misc":{            		
             "SCY_ringsS":"graphics/planets/US_rings_dust1.png",			
             "SCY_ringsD":"graphics/planets/US_rings_special2.png",			
             "SCY_ringsR":"graphics/planets/US_rings_special3.png",
-            "SCY_ringsC":"graphics/planets/US_rings_special1.png",
+            "SCY_ringsC":"graphics/planets/US_rings_special1.png"
         },	
         "fx":{
             "SCY_singularity":"graphics/SCY/fx/SCY_singularityS.png",
@@ -33,17 +32,17 @@
             "SCY_khalkC":"graphics/SCY/fx/SCY_grrr_flareC.png",
 			
             "SCY_splashFull":"graphics/SCY/fx/SCY_splash_full.png",
-            "SCY_splashPart":"graphics/SCY/fx/SCY_splash_quarter.png",
+            "SCY_splashPart":"graphics/SCY/fx/SCY_splash_quarter.png"
         },
         "illustrations":{
             "SCY_elysee":"graphics/SCY/illustrations/SCY_elysee.jpg",
-            "SCY_miningColony":"graphics/SCY/illustrations/SCY_miningColony.jpg",
+            "SCY_miningColony":"graphics/SCY/illustrations/SCY_miningColony.jpg"
         },
         "beams":{
-            "fakeBeamFX":"graphics/FAKEBEAM/fakeBeamFXsharp.png",
+            "fakeBeamFX":"graphics/FAKEBEAM/fakeBeamFXsharp.png"
         },
         "icons": {
-            "scy_modules": "graphics/SCY/icons/hullsys/scy_modules_ico.png",
+            "scy_modules": "graphics/SCY/icons/hullsys/scy_modules_ico.png"
         },
         "hullmodHeaders": {
             "SCY_engines": "graphics/SCY/icons/hullmodHeaders/scy_engine_tooltip_quack.png",
@@ -191,7 +190,7 @@
             "SCY_kacc2HM_8":"graphics/SCY/weapons/muzzles/SCY_kacc2HM_08.png",
             "SCY_kacc2HM_9":"graphics/SCY/weapons/muzzles/SCY_kacc2HM_09.png",
             "SCY_kacc2HM_10":"graphics/SCY/weapons/muzzles/SCY_kacc2HM_10.png",
-            "SCY_kacc2HM_11":"graphics/SCY/weapons/muzzles/SCY_kacc2HM_11.png",
+            "SCY_kacc2HM_11":"graphics/SCY/weapons/muzzles/SCY_kacc2HM_11.png"
         },
         "paperdolls": {
             "SCY_lamiaAF" : "graphics/SCY/ships/paperdolls/SCY_lamiaAF_paperdoll.png",
@@ -216,17 +215,17 @@
             "SCY_ketoAR" : "graphics/SCY/ships/paperdolls/SCY_keto_flightdeck_paperdoll.png"
         },
         "orthrus_armor": {
-            "SCY_orthrus_armor_0": "graphics/SCY/weapons/SCY_orthrus_armor/SCY_orthrus_armor_under.png",
-            "SCY_orthrus_armor_1": "graphics/SCY/weapons/SCY_orthrus_armor/SCY_orthrus_armor_01.png",
-            "SCY_orthrus_armor_2": "graphics/SCY/weapons/SCY_orthrus_armor/SCY_orthrus_armor_02.png",
-            "SCY_orthrus_armor_3": "graphics/SCY/weapons/SCY_orthrus_armor/SCY_orthrus_armor_03.png",
-            "SCY_orthrus_armor_4": "graphics/SCY/weapons/SCY_orthrus_armor/SCY_orthrus_armor_04.png",
-            "SCY_orthrus_armor_5": "graphics/SCY/weapons/SCY_orthrus_armor/SCY_orthrus_armor_05.png",
-            "SCY_orthrus_armor_6": "graphics/SCY/weapons/SCY_orthrus_armor/SCY_orthrus_armor_06.png",
-            "SCY_orthrus_armor_7": "graphics/SCY/weapons/SCY_orthrus_armor/SCY_orthrus_armor_07.png",
-            "SCY_orthrus_armor_8": "graphics/SCY/weapons/SCY_orthrus_armor/SCY_orthrus_armor_08.png",
-            "SCY_orthrus_armor_9": "graphics/SCY/weapons/SCY_orthrus_armor/SCY_orthrus_armor_09.png",
-            "SCY_orthrus_armor_10": "graphics/SCY/weapons/SCY_orthrus_armor/SCY_orthrus_armor_10.png"
+            "SCY_orthrus_armor_0": "graphics/SCY/ships/SCY_orthrus_armor/11.png",
+            "SCY_orthrus_armor_1": "graphics/SCY/ships/SCY_orthrus_armor/10.png",
+            "SCY_orthrus_armor_2": "graphics/SCY/ships/SCY_orthrus_armor/9.png",
+            "SCY_orthrus_armor_3": "graphics/SCY/ships/SCY_orthrus_armor/8.png",
+            "SCY_orthrus_armor_4": "graphics/SCY/ships/SCY_orthrus_armor/7.png",
+            "SCY_orthrus_armor_5": "graphics/SCY/ships/SCY_orthrus_armor/6.png",
+            "SCY_orthrus_armor_6": "graphics/SCY/ships/SCY_orthrus_armor/5.png",
+            "SCY_orthrus_armor_7": "graphics/SCY/ships/SCY_orthrus_armor/4.png",
+            "SCY_orthrus_armor_8": "graphics/SCY/ships/SCY_orthrus_armor/3.png",
+            "SCY_orthrus_armor_9": "graphics/SCY/ships/SCY_orthrus_armor/2.png",
+            "SCY_orthrus_armor_10": "graphics/SCY/ships/SCY_orthrus_armor/1.png"
         }
     }
 }

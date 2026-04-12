@@ -27,7 +27,10 @@
         "FLAME_RIGHT": "SCY_Zflame3",
         "HEAT_LEFT": "SCY_XcruiserHeat",
         "HEAT_RIGHT": "SCY_XcruiserHeat_noScript",
-        "ARMOR_DECO": "SCY_orthrus_armor"
+        "BLINKER1": "SCY_ZblinkerA",
+        "BLINKER2": "SCY_ZblinkerA",
+        "BLINKER3": "SCY_ZblinkerA",
+        "BLINKER4": "SCY_ZblinkerA"
     },
     "builtInWings": [],
     "builtInModules": null,
@@ -205,7 +208,7 @@
             "arc": 0,
             "angle": 90,
             "locations": [
-                      38,     21.5
+                      38,       21
             ]
         },
         {
@@ -216,19 +219,51 @@
             "arc": 0,
             "angle": 0,
             "locations": [
-                      67,      -53
+                      67,      -54
             ]
         },
         {
-            "id": "ARMOR_DECO",
+            "id": "BLINKER1",
             "size": "SMALL",
             "type": "DECORATIVE",
             "mount": "TURRET",
-            "renderOrderMod": 100,
             "arc": 0,
             "angle": 0,
             "locations": [
-                      67,      -53
+                   -79.5,    -51.5
+            ]
+        },
+        {
+            "id": "BLINKER2",
+            "size": "SMALL",
+            "type": "DECORATIVE",
+            "mount": "TURRET",
+            "arc": 0,
+            "angle": 0,
+            "locations": [
+                   -79.5,     51.5
+            ]
+        },
+        {
+            "id": "BLINKER3",
+            "size": "SMALL",
+            "type": "DECORATIVE",
+            "mount": "TURRET",
+            "arc": 0,
+            "angle": 0,
+            "locations": [
+                   196.5,    -26.5
+            ]
+        },
+        {
+            "id": "BLINKER4",
+            "size": "SMALL",
+            "type": "DECORATIVE",
+            "mount": "TURRET",
+            "arc": 0,
+            "angle": 0,
+            "locations": [
+                   196.5,    -41.5
             ]
         },
         {

@@ -9,15 +9,14 @@ import com.fs.starfarer.api.impl.combat.BaseShipSystemScript
 import com.fs.starfarer.api.plugins.ShipSystemStatsScript
 import com.fs.starfarer.api.util.Misc
 import org.lazywizard.lazylib.MathUtils
-import org.scy.ReflectionUtils
-import org.scy.ReflectionUtils.get
-import org.scy.ReflectionUtils.getFieldsMatching
-import org.scy.ReflectionUtils.invoke
-import org.scy.ReflectionUtils.set
+import org.starficz.ReflectionUtils.get
+import org.starficz.ReflectionUtils.getFieldsMatching
+import org.starficz.ReflectionUtils.invoke
+import org.starficz.ReflectionUtils.set
 import kotlin.math.roundToInt
-import org.scy.ReflectionUtils.getMethodsMatching
-import org.scy.ReflectionUtils.ReflectedField
-import org.scy.ReflectionUtils.ReflectedMethod
+import org.starficz.ReflectionUtils.getMethodsMatching
+import org.starficz.ReflectionUtils.ReflectedField
+import org.starficz.ReflectionUtils.ReflectedMethod
 import java.util.HashMap
 
 class ArmorSwitchStats : BaseShipSystemScript() {
@@ -34,8 +33,8 @@ class ArmorSwitchStats : BaseShipSystemScript() {
     )
 
     private var fieldsInitialized = false
-    private var aimTrackerAngleField: ReflectionUtils.ReflectedField? = null
-    private var aimTrackerArcField: ReflectionUtils.ReflectedField? = null
+    private var aimTrackerAngleField: ReflectedField? = null
+    private var aimTrackerArcField: ReflectedField? = null
 
     private var originalShieldFacing = 0f
     private var SYSTEM_STATUS_KEY_1: Any = Any()
@@ -82,12 +81,6 @@ class ArmorSwitchStats : BaseShipSystemScript() {
         stats.maxTurnRate.modifyPercent(id, rotAccelPercentage)
 
         val engine = Global.getCombatEngine()
-        if (ship.shield != null && effectLevel > 0f && (!engine.isUIAutopilotOn || engine.playerShip != ship)) {
-            ship.shield.activeArc
-            ship.shield.forceFacing(Misc.interpolate(originalShieldFacing, originalShieldFacing + MathUtils.getShortestRotation(originalShieldFacing, ship.facing+25f) , effectLevel))
-        } else {
-            originalShieldFacing = ship.shield?.facing ?: 0f
-        }
 
         if (engine.playerShip === ship) {
             if (effectLevel > 0) {
@@ -100,65 +93,73 @@ class ArmorSwitchStats : BaseShipSystemScript() {
             }
         }
 
-        val overlap = 0.1f
-        val weaponSlotAnimationLevel = (effectLevel / (0.5f + overlap/2)).coerceIn(0f, 1f)
-        val armorAnimationLevel = ((effectLevel - (0.5f - overlap/2)) / (0.5f + overlap/2)).coerceIn(0f, 1f)
+        ship.childModulesCopy.firstOrNull()?.let{ armorModule ->
+            // animation levels
+            val overlap = 0.2f
+            val weaponSlotAnimationLevel = (effectLevel / (0.5f + overlap/2)).coerceIn(0f, 1f)
+            val armorAnimationLevel = ((effectLevel - (0.5f - overlap/2)) / (0.5f + overlap/2)).coerceIn(0f, 1f)
 
-        val armorModule = ship.childModulesCopy.firstOrNull()
-        ship.allWeapons.find { it.slot.id == "ARMOR_DECO" }?.animation?.let { animation ->
-            val num = animation.numFrames
+            val frames = 11
 
             val animationFrame = when {
                 armorAnimationLevel <= 0f -> 0
-                armorAnimationLevel >= 1f -> num - 1
-                else -> (armorAnimationLevel * (num - 2)).toInt().coerceIn(0, num - 3) + 1
+                armorAnimationLevel >= 1f -> frames - 1
+                else -> (armorAnimationLevel * (frames - 2)).toInt().coerceIn(0, frames - 3) + 1
             }
-            if (currentFrame != animationFrame) {
-                armorModule?.let {
-                    it.setSprite("orthrus_armor", "SCY_orthrus_armor_$animationFrame")
-                    val shift = intArrayOf(0, 2, 4, 6, 9, 11, 13, 16, 17, 18, 19)
-                    decalManager.update(it, -shift[animationFrame].toFloat(), 0f)
-                }
-                currentFrame = animationFrame
-            }
-        }
 
-        armorModule?.let { armor ->
-            if (effectLevel >= 0.65f) {
-                if (armor.collisionClass != CollisionClass.SHIP) {
-                    armor.collisionClass = CollisionClass.SHIP
-                    armor.layer = CombatEngineLayers.CONTRAILS_LAYER
-                    engine.invoke("getRenderer")?.invoke("recompile", armor)
+            // make module collidable / non collidable, and render at the correct layers
+            if (animationFrame >= 3) {
+                if (armorModule.collisionClass != CollisionClass.SHIP) {
+                    armorModule.collisionClass = CollisionClass.SHIP
+                    armorModule.layer = CombatEngineLayers.CONTRAILS_LAYER
+                    engine.invoke("getRenderer")?.invoke("recompile", armorModule)
                 }
             } else {
-                if (armor.collisionClass != CollisionClass.NONE) {
-                    armor.collisionClass = CollisionClass.NONE
-                    armor.layer = CombatEngineLayers.FRIGATES_LAYER
-                    engine.invoke("getRenderer")?.invoke("recompile", armor)
+                if (armorModule.collisionClass != CollisionClass.NONE) {
+                    armorModule.collisionClass = CollisionClass.NONE
+                }
+
+                if (ship.fluxTracker.isVenting) {
+                    if (armorModule.layer != CombatEngineLayers.ASTEROIDS_LAYER) {
+                        armorModule.layer = CombatEngineLayers.ASTEROIDS_LAYER
+                        engine.invoke("getRenderer")?.invoke("recompile", armorModule)
+                    }
+                } else if (armorModule.layer != CombatEngineLayers.FRIGATES_LAYER) {
+                    armorModule.layer = CombatEngineLayers.FRIGATES_LAYER
+                    engine.invoke("getRenderer")?.invoke("recompile", armorModule)
                 }
             }
-        }
 
-        initArcReflection(ship)
-
-        ship.allWeapons.forEach { w ->
-            val target = targetStates[w.slot.id] ?: return@forEach
-
-            val (baseAngle, baseArc) = baseSlots.getOrPut(w.slot.id) {
-                Pair(w.slot.angle, w.slot.arc)
+            // animate the module sprite
+            if (currentFrame != animationFrame) {
+                armorModule.setSprite("orthrus_armor", "SCY_orthrus_armor_$animationFrame")
+                val shift = intArrayOf(0, 2, 4, 6, 9, 11, 13, 16, 17, 18, 19)
+                decalManager.update(armorModule, -shift[animationFrame].toFloat(), 0f)
+                currentFrame = animationFrame
             }
 
-            val currentAngle = MathUtils.clampAngle(
-                baseAngle + (MathUtils.getShortestRotation(baseAngle, target.angle) * weaponSlotAnimationLevel)
-            )
-            val currentArc = Misc.interpolate(baseArc, target.arc, weaponSlotAnimationLevel)
+            // limit/unlimit the arcs of the weapons
+            initArcReflection(ship)
 
-            w.slot.angle = currentAngle
-            w.slot.arc = currentArc
+            ship.allWeapons.forEach { w ->
+                val target = targetStates[w.slot.id] ?: return@forEach
 
-            w.invoke("getAimTracker")?.let { tracker ->
-                aimTrackerAngleField?.let { tracker.set(it, currentAngle) }
-                aimTrackerArcField?.let { tracker.set(it, currentArc) }
+                val (baseAngle, baseArc) = baseSlots.getOrPut(w.slot.id) {
+                    Pair(w.slot.angle, w.slot.arc)
+                }
+
+                val currentAngle = MathUtils.clampAngle(
+                    baseAngle + (MathUtils.getShortestRotation(baseAngle, target.angle) * weaponSlotAnimationLevel)
+                )
+                val currentArc = Misc.interpolate(baseArc, target.arc, weaponSlotAnimationLevel)
+
+                w.slot.angle = currentAngle
+                w.slot.arc = currentArc
+
+                w.invoke("getAimTracker")?.let { tracker ->
+                    aimTrackerAngleField?.let { tracker.set(it, currentAngle) }
+                    aimTrackerArcField?.let { tracker.set(it, currentArc) }
+                }
             }
         }
     }
@@ -174,6 +175,8 @@ class DamageDecalManager {
     private var currentOffsetX = 0f
 
     private var currentOffsetY = 0f
+
+    private val trackedDecals = mutableSetOf<Any>()
     /**
      * Call this method every frame.
      * @param ship The target ship object (ShipAPI).
@@ -197,12 +200,22 @@ class DamageDecalManager {
         val offsetChanged = deltaX != 0f || deltaY != 0f
 
         // 3. Apply shifts if needed
-        if (offsetChanged) {
-            for (decal in decalMap.values) {
-                if (decal == null) continue
+        for (decal in decalMap.values) {
+            if (decal == null) continue
 
+            // add() returns true if the decal wasn't in the set (meaning it spawned this frame).
+            val isNew = trackedDecals.add(decal)
+
+            // We ONLY shift if the offset changed AND the decal isn't brand new.
+            // A brand new decal spawned at the correct translated bounds, so it needs 0 adjustment today.
+            if (offsetChanged && !isNew) {
                 shiftDecal(decal, deltaX, deltaY)
             }
+        }
+
+        // 4. Memory cleanup: Remove decals from our tracker that no longer exist in the game's map
+        if (trackedDecals.size > decalMap.size) {
+            trackedDecals.retainAll(decalMap.values.toSet())
         }
 
         // Update tracked state
