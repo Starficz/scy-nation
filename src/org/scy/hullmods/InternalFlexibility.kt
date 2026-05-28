@@ -1,5 +1,6 @@
 package org.scy.hullmods
 
+import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.BaseHullMod
 import com.fs.starfarer.api.combat.MutableShipStatsAPI
 import com.fs.starfarer.api.combat.ShipAPI
@@ -7,11 +8,55 @@ import com.fs.starfarer.api.combat.ShipHullSpecAPI
 import com.fs.starfarer.api.combat.ShipVariantAPI
 import com.fs.starfarer.api.impl.campaign.ids.Stats
 import com.fs.starfarer.api.loading.WeaponSlotAPI
+import com.fs.starfarer.api.ui.Alignment
+import com.fs.starfarer.api.ui.TooltipMakerAPI
+import com.fs.starfarer.api.util.Misc
+import org.scy.brighter
 import org.starficz.ReflectionUtils.getFieldsMatching
 import org.starficz.ReflectionUtils.getMethodsMatching
 import org.starficz.ReflectionUtils.invoke
 
 class InternalFlexibility : BaseHullMod() {
+    override fun addPostDescriptionSection(
+        tooltip: TooltipMakerAPI,
+        hullSize: ShipAPI.HullSize?,
+        ship: ShipAPI?,
+        width: Float,
+        isForModSpec: Boolean
+    ) {
+        val imageHeight = 64f
+        val headingPad = 20f
+        val underHeadingPad = 10f
+        val listPad = 3f
+
+        val activeTextColor = Misc.getTextColor()
+        val activeNegativeColor = Misc.getNegativeHighlightColor()
+        val activeHeaderBannerColor = Misc.getDarkPlayerColor()
+        val activeHeaderTextColor = brighter(Misc.getButtonTextColor(), 0.8f)
+        val activeHighlightColor = Misc.getHighlightColor()
+
+        // Scy Engines
+        tooltip.addSectionHeading("Oversized Turret Gyros", activeHeaderTextColor, activeHeaderBannerColor , Alignment.MID, headingPad)
+        tooltip.beginImageWithText(Global.getSettings().getSpriteName("hullmodHeaders", "SCY_flux"), imageHeight)
+            .apply {
+                addPara("By default, much of the internals are taken up by massive turret gyros.", listPad)
+                addPara("Without a %s, increases the turn rate of all turrets by %s.",
+                    listPad, activeTextColor, activeHighlightColor, "Converted Hanger", "2x")
+            }
+        tooltip.addImageWithText(underHeadingPad)
+
+        tooltip.addSectionHeading("Expanded Hangers", activeHeaderTextColor, activeHeaderBannerColor , Alignment.MID, headingPad)
+        tooltip.beginImageWithText(Global.getSettings().getSpriteName("hullmodHeaders", "SCY_flux"), imageHeight)
+            .apply {
+                addPara("Swapping gyros for extra nanoforges allows a %s to be installed despite the existing fighter bay, increasing the total fighter bays to %s while negating most downsides.", listPad, activeTextColor, activeHighlightColor, "Converted Hangar", "2")
+            }
+        tooltip.addImageWithText(underHeadingPad)
+    }
+
+    override fun getTooltipWidth(): Float {
+        return 390f
+    }
+
     override fun applyEffectsBeforeShipCreation(hullSize: ShipAPI.HullSize, stats: MutableShipStatsAPI, id: String) {
 
         // converted hanger allowed for +1 bay with minimal downside

@@ -451,6 +451,8 @@ SCY_khalkotauroiMain,WEAPON," The main armament of the Khalkotauroi-class cruise
 ,,,,,
 SCY_mrm,WEAPON," The Erymanthian Boar launcher fires twelve reliable medium range missiles equipped with a shield piecing high density tip. This allows for 360 degrees of coverage with a swarm of light missiles that would be wise to not ignore.",Assault,,
 SCY_mrm2,WEAPON," The Erymanthian Boar side launcher fires six reliable medium range missiles equipped with a shield piecing high density tip. This allows for 360 degrees of coverage with a swarm of light missiles that would be wise to not ignore.",Assault,,
+SCY_mrm3,WEAPON," The Orthrus side launcher fires three waves of five reliable medium range missiles equipped with a shield piecing high density tip. This allows for 360 degrees of coverage with a swarm of light missiles that would be wise to not ignore.",Assault,,
+,,,,,
 ,,,,,
 ,,,,,
 ,,,,,
@@ -736,6 +738,14 @@ SCY_keto,SHIP," As all military institutions, the Scyan Navy is always looking f
 ,,,,,
 ,,,,,
 ,,,,,
+SCY_orthrus,SHIP," Conceived after the reconnection with the rest of the Sector, the Orthrus-class battlecruiser fills the Scyan Navy's need for a fast capital-grade vessel where the Nemean Lion is too slow. Combining advanced Scyan engineering with more conventional Sector technologies, this hybrid design features a single asymmetric hydraulic armor plate that requires high pilot skill to employ effectively, alongside a modular hangar deck capable of rapid expansion. The result is an unconventional but highly mobile vessel, designed to lead rapid-response operations where heavier assets cannot easily reach.
+
+ To preserve the agility required of a battlecruiser, engineers could not afford the massive weight of a full armor suite. Instead, they adapted the Nemean Lion's hydraulic armor technology in a radically scaled-back format, installing only a single, large composite plate. This asymmetric configuration significantly reduces the ship's overall mass, but it demands exceptional skill from the helm. A pilot must constantly coordinate the ship's orientation to face threats with the armored flank, all while managing the tactical drawback that deploying the plate temporarily blocks the firing arcs of the adjacent weapon systems.
+
+ Additionally, the Orthrus features a highly adaptable modular interior designed to appeal to commanders operating far from Tartarus. While it ships with a single standard flight deck for immediate fighter support, the structural frame includes pre-routed power lines and modular bay bulkheads that allow for the rapid expansion of its hangar capacity. This flexibility allows the battlecruiser to adapt to changing fleet compositions, though finding pilots capable of mastering its offset defense scheme remains a persistent bottleneck for the Admiralty.",,,
+,,,,,
+,,,,,
+,,,,,
 SCY_xanthus,SHIP," When the Scyan Navy started to construct outposts deep in hyperspace, it faced a logistical problem: the nimble Balius freighter was simply unable to haul the largest parts of the stations. It was decided to create a small fleet of special transports, modular to accommodate any cargo, and fast enough to keep up with normal fleets. The result is the Xanthus-class sub-capital freighter. Massing between cruisers and battleships, these cargo transports sacrifice hauling capacity for more speed.
 
  They are however very expensive, and only few of them have been built. Being as costly to maintain in flight as staying idle in a dock, the Scyan Engineering College was forced to find an efficient manner to minimize the loading and unloading time. They came up with large-scale containers that can hold a whole Balius' worth of cargo. Each Xanthus can carry up to three of these, and exchange them in a matter of minutes if the dockyard crew is well trained. Then the ship can take off to its next destination, and the personnel can take time to unload the containers properly.",,,
@@ -841,6 +851,11 @@ SCY_emp,SHIP_SYSTEM,"Miniaturized EMP emitter with much lower range and duration
 ,,,,,
 ,,,,,
 SCY_ping,SHIP_SYSTEM,"Using its frigate sized radar array, the Erymanthian Boar-class cruiser is able to detect hostile signatures in a larger radius than other Scyan vessels. The fragile circuits inside are unable to sustain the massive power required for long before failing so the system is only used for short durations.",Defense,"Massive radar ping reveals a large portion of the surroundings for a short period.",
+,,,,,
+,,,,,
+,,,,,
+SCY_armorSwitch,SHIP_SYSTEM,"By diverting the power links from the rear large mount to the main engines when the main armor is raised, the Orthrus class can dynamically switch between a full firing solution or increased mobility and defense in a matter of seconds.",Defense,"Allows switching between defensive/evasive or offensive modes.
+Increases Speed and raises Armor, or allows a full firing solution.",
 ,,,,,
 ,,,,,
 ,,,,,

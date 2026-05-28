@@ -5,6 +5,7 @@ import com.fs.starfarer.api.combat.CollisionClass
 import com.fs.starfarer.api.combat.CombatEngineLayers
 import com.fs.starfarer.api.combat.MutableShipStatsAPI
 import com.fs.starfarer.api.combat.ShipAPI
+import com.fs.starfarer.api.combat.ShipSystemAPI
 import com.fs.starfarer.api.impl.combat.BaseShipSystemScript
 import com.fs.starfarer.api.plugins.ShipSystemStatsScript
 import com.fs.starfarer.api.util.Misc
@@ -36,12 +37,13 @@ class ArmorSwitchStats : BaseShipSystemScript() {
     private var aimTrackerAngleField: ReflectedField? = null
     private var aimTrackerArcField: ReflectedField? = null
 
-    private var originalShieldFacing = 0f
     private var SYSTEM_STATUS_KEY_1: Any = Any()
     private var SYSTEM_STATUS_KEY_2: Any = Any()
 
     private val decalManager = DamageDecalManager()
     private var currentFrame = 0
+
+    private var combinedEffectLevel = 0f
 
     private fun initArcReflection(ship: ShipAPI) {
         if (fieldsInitialized) return
@@ -70,11 +72,14 @@ class ArmorSwitchStats : BaseShipSystemScript() {
     ) {
         val ship = stats?.entity as? ShipAPI ?: return
 
-        val speedPercentage = 40f * effectLevel
+        if (ship.childModulesCopy.isEmpty() || !ship.childModulesCopy.firstOrNull()!!.isAlive)
+            ship.system.forceState(ShipSystemAPI.SystemState.IDLE, 0f)
+
+        val speedIncrease = 40f * effectLevel
         val lateralAccelPercentage = 150f * effectLevel
         val rotAccelPercentage = -50f * effectLevel
 
-        stats.maxSpeed.modifyFlat(id, speedPercentage)
+        stats.maxSpeed.modifyFlat(id, speedIncrease)
         stats.acceleration.modifyPercent(id, lateralAccelPercentage)
         stats.deceleration.modifyPercent(id, lateralAccelPercentage)
         stats.turnAcceleration.modifyPercent(id, rotAccelPercentage)
@@ -89,15 +94,28 @@ class ArmorSwitchStats : BaseShipSystemScript() {
                     "+${lateralAccelPercentage.roundToInt()}% Lateral Accel",
                     "- ${-rotAccelPercentage.roundToInt()}% Rotational Accel", true)
                 engine.maintainStatusForPlayerShip(SYSTEM_STATUS_KEY_1, modularIcon,
-                    "Shell Mode", "+${speedPercentage.roundToInt()} Max Speed", false)
+                    "Shell Mode", "+${speedIncrease.roundToInt()} Max Speed", false)
             }
         }
+
+        if (!engine.isPaused){
+            val delta = engine.elapsedInLastFrame / ship.system.chargeUpDur
+
+            combinedEffectLevel = if (ship.fluxTracker.isVenting) {
+                (combinedEffectLevel + delta).coerceAtMost(1f)
+            } else {
+                (combinedEffectLevel - delta).coerceAtLeast(0f)
+            }
+
+            combinedEffectLevel = combinedEffectLevel.coerceAtLeast(effectLevel)
+        }
+
 
         ship.childModulesCopy.firstOrNull()?.let{ armorModule ->
             // animation levels
             val overlap = 0.2f
-            val weaponSlotAnimationLevel = (effectLevel / (0.5f + overlap/2)).coerceIn(0f, 1f)
-            val armorAnimationLevel = ((effectLevel - (0.5f - overlap/2)) / (0.5f + overlap/2)).coerceIn(0f, 1f)
+            val weaponSlotAnimationLevel = (combinedEffectLevel / (0.5f + overlap/2)).coerceIn(0f, 1f)
+            val armorAnimationLevel = ((combinedEffectLevel - (0.5f - overlap/2)) / (0.5f + overlap/2)).coerceIn(0f, 1f)
 
             val frames = 11
 

@@ -163,7 +163,7 @@ public class SCY_modularArmor extends BaseHullMod {
     CombatEngineAPI engine = Global.getCombatEngine();
     if(engine.getPlayerShip() == ship && speedRatio > 0.01f){
       String modularIcon = Global.getSettings().getSpriteName("icons", "scy_modules");
-      engine.maintainStatusForPlayerShip(SPEED_STATUS_KEY, modularIcon, "Damaged Modular Armor", "+" + Math.round((speedRatio * SPEED_BONUS * 100)) + " top speed" , false);
+      engine.maintainStatusForPlayerShip(SPEED_STATUS_KEY, modularIcon, "Damaged Modular Armor", "+" + Math.round((speedRatio * SPEED_BONUS * 100)) + "% top speed" , false);
     }
   }
 

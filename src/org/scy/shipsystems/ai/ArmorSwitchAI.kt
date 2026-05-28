@@ -39,9 +39,11 @@ class ArmorSwitchAI : ShipSystemAIScript {
         if (!ship.system.isCoolingDown && (useSystem xor ship.system.isOn))
             ship.giveCommand(ShipCommand.USE_SYSTEM, null, 0)
 
+        if (ship.childModulesCopy.isEmpty() || !ship.childModulesCopy.firstOrNull()!!.isAlive) return
+
         if (armorTanking || useSysToBackoff && ship.shipTarget != null) {
             val angleToThreat = VectorUtils.getAngle(ship.location, ship.shipTarget.location)
-            val targetFacing = MathUtils.clampAngle(angleToThreat + 45f)
+            val targetFacing = MathUtils.clampAngle(angleToThreat + 15f)
 
             turnTowards(ship, targetFacing)
         }
