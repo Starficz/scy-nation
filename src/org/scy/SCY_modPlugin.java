@@ -21,11 +21,13 @@ import org.dark.shaders.light.LightData;
 import org.dark.shaders.util.ShaderLib;
 import org.dark.shaders.util.TextureData;
 import org.magiclib.util.MagicCampaign;
+import org.scy.plugins.SCY_ArmorPaperdollsPlugin;
 import org.scy.plugins.SCY_muzzleFlashesPlugin;
 import org.scy.plugins.SCY_projectilesEffectPlugin;
 import org.scy.weapons.ai.*;
 import org.scy.world.MarketHelpers;
 import org.scy.world.SCY_gen;
+import org.starficz.staruiframework.StarUIManager;
 
 // import org.scy.SCY_shipsStealth;
 
@@ -95,6 +97,7 @@ public class SCY_modPlugin extends BaseModPlugin {
         } catch (ClassNotFoundException ex) {
         }
         SCY_settingsData.loadHullmodData();
+        StarUIManager.INSTANCE.registerPlugin(new SCY_ArmorPaperdollsPlugin());
     }
 
     ////////////////////////////////////////

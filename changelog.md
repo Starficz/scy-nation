@@ -1,13 +1,23 @@
 ## Version 1.12.0
+### New Ship
+- Orthrus-Class Battlecruiser
+  - Featuring a Unique Armor mode mechanic, with Weapon arc changes
+
 ### Ship Balance Changes
 - Scyan Engineering Hullmod (All Ships)
-  + Improved Engagement/Retreat/Venting AI
+  + New multithreaded Engagement/Retreat/Venting AI 
 
 
 - Khalkotauroi
   + Gamma Ray Radiation Reactor
     + 1000 Range -> 1050 Range
     + Modules now add Base DPS instead of Flat DPS
+
+### Fighter Balance Changes
+The Ker's cluster bomb had a range of only 800, compared to 1200 of most other bombers.
+This has been buffed as I felt they were dying to pd too often.
+- Ker Bomber
+  + 800 range -> 1000 range
 
 ### Weapon Balance Changes
 - Nano-needle Minigun mk.3
@@ -24,7 +34,6 @@ so a small adjustment has been made to keep these weapons relevant in the modern
   
 ###  Bugfixes/Misc
 - Fixed refit screen displaying half shield arc for twin-shield system ships
-
 
 ## Version 1.11.1
 - Fixed Twin-Layer Shielding not resetting correctly

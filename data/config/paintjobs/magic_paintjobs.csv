@@ -1,5 +1,6 @@
 id,hullIds,name,paintjobFamily,spriteId,unlockedAutomatically,tags,unlockConditions,description,
 # magiclib_hullid_examplePaintjob,onslaught,Oldslaught,Old,graphics/ships/oldslaught.png,false,,Complete the 'Slayer' achievement to unlock.,Original Onslaught sprite.,
+SCY_bluesky_orthrus,SCY_orthrus,Bluesky,Bluesky,graphics/bluesky/ships/SCY_orthrus.png,true,,,,
 SCY_bluesky_nemeanlion,SCY_nemeanlion,Bluesky,Bluesky,graphics/bluesky/ships/SCY_nemeanLion.png,true,,,,
 SCY_bluesky_lion_armorFL,SCY_lionFL,Bluesky,Bluesky,graphics/bluesky/ships/SCY_nemeanLion_armorFrontLeft.png,true,,,,
 SCY_bluesky_lion_armorFR,SCY_lionFR,Bluesky,Bluesky,graphics/bluesky/ships/SCY_nemeanLion_armorFrontRight.png,true,,,,

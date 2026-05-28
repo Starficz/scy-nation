@@ -1,0 +1,10 @@
+{
+    "displayName": "Standard",
+    "fluxCapacitors": 0,
+    "fluxVents": 0,
+    "goalVariant": false,
+    "hullId": "SCY_orthrusAR",
+    "hullMods": [],
+    "variantId": "SCY_orthrusAR_standard",
+    "weaponGroups": []
+}

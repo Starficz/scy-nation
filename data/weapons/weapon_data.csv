@@ -4,7 +4,7 @@ name,id,tier,rarity,base value,range,damage/second,damage/shot,emp,impact,turn r
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 Light Energy Blaster,SCY_Fseb,1,,1000,500,,300,50,1,35,6,,,,ENERGY,,,0,2.5,,,0,10,3,3,,1000,,,10,0.5,,SYSTEM,,,Scyan Engineering,,,,,,,,,,,,
 Small Flak,SCY_Fflak,1,,750,450,,150,,3,60,5,,,,FRAGMENTATION,,,0,2,,,0,10,2,10,,500,,,30,,,"SYSTEM,PD",,,Scyan Engineering,,,,,,,,,,,,
-Cluster Torpedo,SCY_Fcluster,1,,400,800,,1650,0,50,20,5,1,,,HIGH_EXPLOSIVE,,,0,5,,,,,,,,300,-100,12,300,,,"SYSTEM,STRIKE,GUIDED_POOR",,,Scyan Engineering,,,,,,,,,,,,
+Cluster Torpedo,SCY_Fcluster,1,,400,1000,,1650,0,50,20,5,1,,,HIGH_EXPLOSIVE,,,0,5,,,,,,,,300,-100,12,300,,,"SYSTEM,STRIKE,GUIDED_POOR",,,Scyan Engineering,,,,,,,,,,,,
 Light Lance,SCY_Fbeam,1,,1000,500,250,,,0,180,7,,,,ENERGY,,500,0.1,0.7,0.2,1.5,,,,,1000000,,,,,0.5,,SYSTEM,,,Scyan Engineering,,,,,,,,,,,,
 Drone Grav-hammer,SCY_Fhammer,0,,500,150,,100,50,2000,180,5,,,,FRAGMENTATION,,,,1,1,,0,0,0,0,,800,,,30,,,"SYSTEM,PD",,,Scyan Engineering,,,,,,,,,,,,
 KE Rocket Rail,SCY_Frocket,0,,300,600,,200,,20,30,2,1,0.02,,KINETIC,,,0,1,1,,,,,,,500,100,2,75,,,"SYSTEM,STRIKE,USE_VS_FRIGATES,GUIDED_POOR",,,Scyan Engineering,,,,,,,,,,,,
@@ -60,7 +60,7 @@ Ricochet Gun,SCY_ricochet,2,0.5,7500,900,,600,,20,5,20,4,0.5,,HIGH_EXPLOSIVE,800
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 # LARGE MISSILES,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 Laser Torpedo Pod,SCY_laser3,2,,5000,2000,,2000,1000,0,7,24,15,,,ENERGY,,,,6,,,,,,,,250,100,16,400,,,"DO_NOT_AIM,STRIKE","strike14, missile18, scy_wep_bp, damage_special, damage_soft_flux",,Scyan Engineering,,General,,,,,"%s Detonates at range and generates a spray of 10 beams, each dealing 200 Energy damage.",Laser warhead: |10 |200 Energy,Direct impact detonations only deal half its rated damage potential.,,,
-Heavy Modular Swarmer,SCY_swarmer,2,,4000,1500,,75,75,10,5,18,600,,,ENERGY,30,,,10,30,0.1,,,,,,300,50,10,45,,,"DO_NOT_AIM,DO_NOT_CONSERVE,ANTI_FTR","utility18, missile15, scy_wep_bp, SR",,Scyan Engineering,,Fighter Suppression,,,,,,,,,,
+Heavy Modular Swarmer,SCY_swarmer,2,,4000,1500,,75,75,10,5,18,600,,,ENERGY,30,,,10,30,0.1,,,,,,300,50,15,45,,,"DO_NOT_AIM,DO_NOT_CONSERVE,ANTI_FTR","utility18, missile15, scy_wep_bp, SR",,Scyan Engineering,,Fighter Suppression,,,,,,,,,,
 Singularity Torpedo Launcher,SCY_singularity,3,0.2,7000,4000,,2000,2000,75,10,23,15,,,ENERGY,,,,20,,,,,,,,300,50,16,300,,,"DO_NOT_AIM,STRIKE","utility19, missile14, rare_bp, LR",,Scyan Engineering,,Special,,,,,%s Creates a temporary singularity that pulls all nearby entities on impact.,Singularity warhead:,,,,
 Phased Missile Launcher,SCY_phased,3,0.4,6000,5000,,2000,,20,5,25,15,,,HIGH_EXPLOSIVE,1000,,,8,,,,,,,,300,15,20,200,,,DO_NOT_AIM,"utility15, missile16, scy_wep_bp, LR",,Scyan Engineering,,Torpedo,,,,,"%s Phased for most of the distance, deploys a mine when close to the target. ",Phased missile:,,,,
 ,SCY_phase_mine,0,,200000,1000,,2000,,,,,,,,HIGH_EXPLOSIVE,0,,,,,,0,0,0,0,,100,0,15,500,,,SYSTEM,,,,,,,,,,,,,,,38.5

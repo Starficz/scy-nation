@@ -19,7 +19,7 @@
     "builtInMods": [
         "SCY_engineering",
         "SCY_armorplating",
-        "SCY_designParticularities"
+        "SCY_internalFlexibility"
     ],
     "builtInWeapons": {
         "MISSILE": "SCY_mrm3",

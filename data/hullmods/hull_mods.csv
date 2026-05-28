@@ -28,4 +28,4 @@ Scyan Interception Protocols,SCY_CommissionedCrew,,,,,,,,TRUE,,0,0,0,0,org.scy.h
 #####,,,,,,,,,,,,,,,,,,
 #####,,,,,,,,,,,,,,,,,,
 #####,,,,,,,,,,,,,,,,,,
-Design Particularities,SCY_designParticularities,,,,,,,,TRUE,,0,0,0,0,org.scy.hullmods.DesignParticularities,,,,graphics/hullmods/design_compromises.png
+Internal Flexibility,SCY_internalFlexibility,,,,,,,,TRUE,,0,0,0,0,org.scy.hullmods.InternalFlexibility,The ship's internals are highly flexible and can support different configurations according to its captains needs. ,Flexible bonuses to different stats depending on hullmod layout.,graphics/hullmods/design_compromises.png,

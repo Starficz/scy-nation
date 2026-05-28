@@ -1,5 +1,6 @@
 id,paintjobFamilies,weaponIds,spriteMap
 #decos,,,
+SCY_bluesky_orthrus_missile,Bluesky,SCY_mrm3,graphics/SCY/weapons/SCY_orthrus_launcher.png -> graphics/bluesky/weapons/SCY_orthrus_launcher.png
 SCY_bluesky_lion_armor_deco_FL,Bluesky,SCY_WWlionAFL,graphics/SCY/ships/SCY_nemeanLion_armorFrontLeft.png -> graphics/bluesky/ships/SCY_nemeanLion_armorFrontLeft.png
 SCY_bluesky_lion_armor_deco_FR,Bluesky,SCY_WWlionAFR,graphics/SCY/ships/SCY_nemeanLion_armorFrontRight.png -> graphics/bluesky/ships/SCY_nemeanLion_armorFrontRight.png
 SCY_bluesky_lion_armor_deco_RL,Bluesky,SCY_WWlionARL,graphics/SCY/ships/SCY_nemeanLion_armorRearLeft.png -> graphics/bluesky/ships/SCY_nemeanLion_armorRearLeft.png

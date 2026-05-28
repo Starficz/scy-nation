@@ -3,7 +3,8 @@
         "SCY_projectilesEffectPlugin":"org.scy.plugins.SCY_projectilesEffectPlugin",
         "SCY_muzzleFlashesPlugin":"org.scy.plugins.SCY_muzzleFlashesPlugin",
         "SCY_ArmorPaperdollsPlugin": "org.scy.plugins.SCY_ArmorPaperdollsPlugin",
-        "SCY_AntiMissilePlugin": "org.scy.plugins.SCY_AntiMissilePlugin"
+        "SCY_AntiMissilePlugin": "org.scy.plugins.SCY_AntiMissilePlugin",
+        "StarUIFrameworkCombatHandler":"org.starficz.staruiframework.internal.CombatUIAdderScript"
     },
 
     "designTypeColors":{

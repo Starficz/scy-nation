@@ -11,17 +11,25 @@ import org.starficz.ReflectionUtils.getFieldsMatching
 import org.starficz.ReflectionUtils.getMethodsMatching
 import org.starficz.ReflectionUtils.invoke
 
-class DesignParticularities : BaseHullMod() {
+class InternalFlexibility : BaseHullMod() {
     override fun applyEffectsBeforeShipCreation(hullSize: ShipAPI.HullSize, stats: MutableShipStatsAPI, id: String) {
+
+        // converted hanger allowed for +1 bay with minimal downside
         stats.dynamic.getMod(Stats.FORCE_ALLOW_CONVERTED_HANGAR).modifyFlat(id, 1f)
         stats.dynamic.getMod(Stats.CONVERTED_HANGAR_NO_CREW_INCREASE).modifyFlat(id, 1f)
         stats.dynamic.getMod(Stats.CONVERTED_HANGAR_NO_REARM_INCREASE).modifyFlat(id, 1f)
         stats.dynamic.getMod(Stats.CONVERTED_HANGAR_NO_REFIT_PENALTY).modifyFlat(id, 1f)
-        stats.weaponTurnRateBonus.modifyMult(id, 2f)
-        stats.beamWeaponTurnRateBonus.modifyMult(id, 2f)
     }
 
+
     override fun applyEffectsAfterShipAddedToCombatEngine(ship: ShipAPI, id: String?) {
+
+        // if converted hanger is installed, no super gyros
+        if ("converted_hangar" !in ship.variant.hullMods) {
+            ship.mutableStats.weaponTurnRateBonus.modifyMult(id, 2f)
+            ship.mutableStats.beamWeaponTurnRateBonus.modifyMult(id, 2f)
+        }
+
         // changing weapon mount arcs sure is complicated
         if (ship.hullSpec.hullId == "SCY_orthrus") {
 
